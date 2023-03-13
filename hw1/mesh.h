@@ -10,4 +10,6 @@ public:
 private:
 	unsigned int VAOID;
 	int vertex_count = 0;
+	
+
 };

@@ -158,6 +158,23 @@ void myDisplay(void)
     glClearColor(0.10, 0.10, 0.10, 1.0);  //Dark grey background
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
+    //layout(location = 4) uniform vec4  lightInfopos; //0: ¥­¦æ¥ú
+    //layout(location = 5) uniform vec3  lightInfodir;
+    //layout(location = 6) uniform vec3  lightInfocolor;
+    //layout(location = 7) uniform float  lightInfoexpo;   //should up to 1
+    //layout(location = 8) uniform float lightInfostrength;
+    //layout(location = 10) uniform vec3 cameraPos;
+    //layout(location = 11) uniform float ambient;
+
+    glUniform4f(4, 0, -70, 0, 1.0);
+    glUniform3f(5, 1,1,1);
+    glUniform3f(6, 1,1,1);
+    glUniform1f(7, 0);
+    glUniform1f(8, 50);
+    glUniform3f(10, eye[0],eye[1],eye[2]);
+    glUniform1f(11, 0.2);
+
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     double zNear = 0.1, zFar = 500, aspect = 800 / (double)800, fovy = 105;
