@@ -18,7 +18,9 @@ private:
 class mytex {
 public:
 	mytex(unsigned int programID);
-	texture* red, *robot_blue_main,* robot_blue_sub, *black, *white,*robot_blue_eye, *robot_pink_eye, * robot_gray, *robot_gray_dark;
+	texture* red, *robot_blue_main,* robot_blue_sub, *black, *white,*robot_blue_eye, *robot_pink_eye, * robot_gray, *robot_gray_dark, * magic_wand_wood;
+	//vector<texture> eevee;
+	texture* eevee[56];
 private:
 };
 

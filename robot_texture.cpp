@@ -176,7 +176,6 @@ float  global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 /*----------------------------------------------------------*/
 
 /*-----textures 參數-----*/
-bool isTextureOpen = 0;
 unsigned int   textName[100];                   /* declare many texture maps*/
 unsigned char  checkboard[TSIZE0][TSIZE0][4];   /* checkboard textures */
 unsigned char  dot[TSIZE1][TSIZE1][4];        /* brick wall textures */
@@ -4370,59 +4369,8 @@ void keybaord_fun(unsigned char key, int x, int y) {
         fogOpacity = min((fogOpacity + 0.01), 0.1);
         glFogf(GL_FOG_DENSITY, fogOpacity);
     }
-    //開發用 不支援!!
-    //if (key == 'u') glutTimerFunc(100, timerFunc, GRASSLAND_ANIMATION);
-    //if (key == 'o' || key == 'O') {
-    //    cout << ++myRobot.magic_wand_carry->angle_x << "\n";
-    //}
-    //if (key == 'c') {
-    //    myRobot.right_h->fingerAng_y+=3;
-    //    if (myRobot.right_h->fingerAng_y > 360) myRobot.right_h->fingerAng_y -= 360;
-    //    cout << myRobot.right_h->fingerAng_y << "\n";
-    //}
-    //if (key == 'v') {
-    //    myRobot.right_h->shoulderAng_x += 3;
-    //    if (myRobot.right_h->shoulderAng_x > 360) myRobot.right_h->shoulderAng_x -= 360;
-    //    cout << myRobot.right_h->shoulderAng_x << "\n";
-    //}
-    //if (key == 'b') {
-    //    myRobot.right_h->fingerAng_y += 3;
-    //    if (myRobot.right_h->fingerAng_y > 360) myRobot.right_h->fingerAng_y -= 360;
-    //    cout << myRobot.right_h->fingerAng_y << "\n";
-    //}
-    //if (key == '3') {
-    //    myRobot.right_h->shoulderAng_z+= 3;
-    //    if (myRobot.right_h->shoulderAng_z > 360) myRobot.right_h->shoulderAng_z -= 360;
-    //    cout << myRobot.right_h->shoulderAng_z << "\n";
-    //}
-    //if (key == '3') {
-    //    myRobot.left_f->kneeAng_x += 3;
-    //    if (myRobot.left_f->kneeAng_x > 360)  myRobot.left_f->kneeAng_x -= 360;
-    //    cout << myRobot.left_f->kneeAng_x << "\n";
-    //}
-    //else if (key == '4') {
-    //    myRobot.left_f->hipJointAng_x++;
-    //    if (myRobot.right_f->hipJointAng_x > 360)  myRobot.left_f->hipJointAng_x -= 360;
-    //    cout << myRobot.left_f->hipJointAng_x << "\n";
-    //}
-    //else if (key == '3') {
-    //    myRobot.right_f->ankle_x++;
-    //    if (myRobot.right_f->ankle_x > 360)  myRobot.right_f->ankle_x -= 360;
-    //    cout << myRobot.right_f->ankle_x << "\n";
-    //}
-    //else if (key == '4') {
-    //    myRobot.angle_x += 5;
-    //    if (myRobot.angle_x > 360)  myRobot.angle_x -= 360;
-    //    cout << myRobot.angle_x << "\n";
-    //}
     display();
 }
-void motion_func(int  x, int y) {};
-void passive_motion_func(int x, int y) {};
-void mouse_func(int button, int state, int x, int y) {
-
-};
-void idle_func(void) {};
 int main(int argc, char** argv)
 {
     srand(time(NULL));
@@ -4443,10 +4391,6 @@ int main(int argc, char** argv)
     glutReshapeFunc(my_reshape);
     glutKeyboardFunc(keybaord_fun);
 
-    glutIdleFunc(idle_func);
-    glutMouseFunc(mouse_func);  /* Mouse Button Callback func */
-    glutMotionFunc(motion_func);/* Mouse motion event callback func */
-    glutPassiveMotionFunc(passive_motion_func);
     glutSpecialFunc(special_func);
     glutKeyboardUpFunc(keyboardUp_func);
 

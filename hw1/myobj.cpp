@@ -23,7 +23,7 @@ mesh* myobj::getMesh(string fname, unsigned int programID)
     float x, y, z;
     vector<vertex> v(1), vt(1), vn(1);
     while (cin >> s) {
-        cout << fname << "\n";
+        //cout << fname << "\n";
         if (s == "v") {
             cin >> x >> y >> z;
             v.push_back(vertex(x, y, z));

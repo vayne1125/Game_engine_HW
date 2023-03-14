@@ -4,6 +4,12 @@
 #include"glad\glad.h"
 #include"myobj.h"
 #include "mytex.h"
+#include "magicwand.h"
+//移動方式
+#define ROBOT_WALK 0
+#define ROBOT_RUN  1
+#define ROBOT_TURN 2   //轉
+#define ROBOT_FLY  3   //飛行
 using namespace std;
 class foot {
 public:
@@ -26,18 +32,32 @@ private:
 class robot {
 public:
 	robot(unsigned int programID);
+    void change_moveMode(int mode);
 	void sit();
 	void draw(unsigned int programID);
     void stand();
-private:
-    int moveMode = 0; //移動模式 0->walk  1->run  2->turn  3->fly
+    void move();
+    void jump_ready();
+    bool jump();
+    bool jumpOnWand();
+    bool jumpToFloor();
+    bool isSitOnChair;
     float angle_x = 0.0, angle_y = 0.0;                         //旋轉角度
     bool carry_mw = 0;                                          //目前有拿魔法棒嗎
     bool isMagician = 0;                                        //是不是魔法師
     bool isJump_ready = 0;                                      //準備跳的姿勢嗎
+    bool isOnWand = 0;                                          //是否坐在法杖上
+    void setOffset(float walk, float run, float fly);
+    int getMoveMode();
+    float moveOffset = 0;
+private:
     float x = 0, y = 0, z = 0;                                  //控制機器人座標
     hand* right_h;
     hand* left_h;
     foot* left_f;
     foot* right_f;
+    int moveMode = ROBOT_WALK; //移動模式 0->walk  1->run  2->turn  3->fly
+    float runOffset = 0;
+    float flyOffset = 0;
+    float walkOffset = 0;
 };
