@@ -1,10 +1,9 @@
 #include "magicwand.h"
-myobj* mgObj;
-mytex* mgTex;
+extern myobj* myObj;
+extern mytex* myTex;
 magicwand::magicwand(unsigned int programID)
 {
-    mgObj = new myobj(programID);
-    mgTex = new mytex(programID);
+
 }
 void magicwand::draw(int programID)
 {
@@ -17,8 +16,8 @@ void magicwand::draw(int programID)
     glScalef(0.8, 6, 0.8);                              
     glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
     glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-    mgTex->magic_wand_wood->use(programID);
-    mgObj->cylinder->draw(programID);
+    myTex->magic_wand_wood->use(programID);
+    myObj->cylinder->draw(programID);
     glPopMatrix();
     //draw_cylinder(0.5, 0.8, 14);             //長度為14 寬為0.8
 

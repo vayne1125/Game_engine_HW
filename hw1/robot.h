@@ -17,8 +17,10 @@ public:
     float hipJointAng_x = 180, hipJointAng_y = 0, hipJointAng_z = 0;   //髖關節
     float kneeAng_x = 0, kneeAng_y = 0, kneeAng_z = 0;
     float ankle_x = 0, ankle_y = 0, ankle_z = 0;
-    int subColor = 0;
+    void setColor(texture* m, texture* s);
 private:
+    texture* main;
+    texture* sub;
 };
 class hand {
 public:
@@ -26,8 +28,10 @@ public:
     float shoulderAng_x = 180, shoulderAng_y = 0, shoulderAng_z = 35;    //肩膀
     float elbowAng_x = 0, elbowAng_y = 0, elbowAng_z = 0;                //手肘
     float fingerAng_x = 0, fingerAng_y = 0, fingerAng_z = 0;             //手指
-    int subColor = 0;
+    void setColor(texture* m, texture* s);
 private:
+    texture* main;
+    texture* sub;
 };
 class robot {
 public:
@@ -50,6 +54,7 @@ public:
     void setOffset(float walk, float run, float fly);
     int getMoveMode();
     float moveOffset = 0;
+    void setColor(texture* m,texture* s);
 private:
     float x = 0, y = 0, z = 0;                                  //控制機器人座標
     hand* right_h;
@@ -60,4 +65,6 @@ private:
     float runOffset = 0;
     float flyOffset = 0;
     float walkOffset = 0;
+    texture* main;
+    texture* sub;
 };

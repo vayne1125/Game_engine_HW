@@ -18,9 +18,13 @@ private:
 class mytex {
 public:
 	mytex(unsigned int programID);
-	texture* red, *robot_blue_main,* robot_blue_sub, *black, *white,*robot_blue_eye, *robot_pink_eye, * robot_gray, *robot_gray_dark, * magic_wand_wood;
+	texture* red, *robot_blue_main,* robot_blue_sub, *black, *white,*robot_blue_eye, *robot_pink_eye, * robot_gray, *robot_gray_dark, * magic_wand_wood, *blacksmith;
 	//vector<texture> eevee;
-	texture* eevee[56];
+	texture* grass_dark, * flower, * grass_light,* coffee_dark,* coffee_light;
+	texture* eevee[56],*a,* fountain_base,* fountain_water,* elf_red;
+	texture* yellow_light, * yellow_dark, * orange_dark, * orange_light,*red_dark,*orgred_dark,*orgred_light, *stone_floor;
+	texture* wood2, *wood3, *wood4, * wood5, *tablecloth, *tent, *pear, *bread, *cheese, *red_apple, *green_apple, *lemon;
 private:
 };
+
 

@@ -1,10 +1,5 @@
 //Vertex shader for per-vertex Phong shading
-/*
-varying vec3 N; //normal vector
-varying vec3 L; //light direction vector
-varying vec3 E; //V vector for specular.
-*/
-#version 430
+#version 450
 layout(location = 0) in vec3 vertexCor; //index
 layout(location = 1) in vec2 textureCor; //index
 layout(location = 2) in vec3 normalCor; //index
@@ -18,19 +13,9 @@ out vec3 NORMAL;
 out vec3 GLOBAL;
 void main()
 {
-   
-   /*
-   vec4 eyePosition = gl_ModelViewMatrix*gl_Vertex;
-   
-   vec4 eyeLightPos = gl_ModelViewMatrix*gl_LightSource[0].position;
-
-  //Compute the key vector parameters for the vertex.
-   N =  normalize(gl_NormalMatrix*gl_Normal);
-   L = eyeLightPos.xyz - eyePosition.xyz ;
-   E = -eyePosition.xyz;
-   */
    GLOBAL = (model*vec4(vertexCor,1)).xyz;
    ST = textureCor;
-   NORMAL = normalCor;
+   NORMAL = normalize((model*vec4(normalize(normalCor),0)).xyz);
+
    gl_Position = projection*view*model*vec4(vertexCor,1);
 }
