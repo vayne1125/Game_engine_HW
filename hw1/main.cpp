@@ -59,6 +59,8 @@ int eevee_ani = 0;
 int dirLightStr = 2.3;
 bool isDirLightOpen = 1;
 int floorX = 232, floorY = 203;
+float fountainPos[3] = { 116,0,124 };
+bool detectCollision(int x, int y, int z,int tar);
 void draw_billboard(float x, float z, float w, float h, texture* tex)
 {   
     float  a[3], b[3];
@@ -151,16 +153,38 @@ void timerFunc(int nTimerID) {
         //glutPostRedisplay();
         break;
     case LIGHT_ELF:
-        if (elfPos[0] > 400) {
-            elfPosFlag ^= 1;
+        float tpPos[3];
+        for (int i = 0; i < 3; i++) tpPos[i] = elfPos[i];
+        if (spotLightElf->dir == 2) { //前
+            tpPos[2]--;
         }
-        else if (elfPos[0] <= 0) {
-            elfPosFlag ^= 1;
+        else if (spotLightElf->dir == 3) { //左
+            tpPos[0]--;
+        }else if (spotLightElf->dir == 0) { //後
+            tpPos[2]++;
         }
-        if (elfPosFlag) elfPos[0]++;
-        else elfPos[0]--;
+        else if (spotLightElf->dir == 1) { //右
+            tpPos[0]++;
+        }
+        if (detectCollision(tpPos[0], tpPos[1], tpPos[2],1)) {
+            spotLightElf->dir = (spotLightElf->dir + 1) % 4;
+            spotLightElf->angleY = 90 * (spotLightElf->dir);
+        }
+        else {
+            for (int i = 0; i < 3; i++) elfPos[i] = tpPos[i];
+        }
+
         glutTimerFunc(100, timerFunc, LIGHT_ELF);
     }
+}
+void reset_camera() {
+    eyeDis = 30;
+    fovy = 100;
+    eye[0] = 0;
+    eye[1] = 20;
+    eye[2] = eyeDis;
+    eyeAngy = 90;
+    myRobot->angle_y = 0;
 }
 void keyboardUp_func(unsigned char key, int x, int y) {
     //if (isLock == LOCK) return;
@@ -277,17 +301,20 @@ void my_move_order(unsigned char key) {        //跟移動相關的判斷
             myRobot->move();    //在地板才要動腳
         }
     }
-    //if (detectCollision(tpPos[0], tpPos[1], tpPos[2])) return;
+    if (detectCollision(tpPos[0], tpPos[1], tpPos[2],0)) return;
     //cout << tpPos[0];
     for (int i = 0; i < 3; i++) pos[i] = tpPos[i];
     //cout << myRobot->moveOffset << "   jj\n";
     //cout << pos[0];
 }
+float getDis(float x1, float y1, float x2, float y2) {           //算距離
+    return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+}
 void keybaord_fun(unsigned char key, int X, int Y) {
     my_move_order(key);
     if (key == '0') {
         isDirLightOpen ^= 1;
-        if(isDirLightOpen) dirLightStr = 1.7;
+        if(isDirLightOpen) dirLightStr = 2.3;
         else dirLightStr = 0;
     }
     //float  x[3], y[3], z[3];
@@ -359,6 +386,11 @@ void keybaord_fun(unsigned char key, int X, int Y) {
     //        u[1][i] = y[i];
     //    }
     //}
+    //else 
+        
+    if (key == 127) { //ctrl + backspace
+        reset_camera();
+    }
     
 }
 void myInit() {
@@ -373,7 +405,9 @@ void myInit() {
     glutTimerFunc(100, timerFunc, LIGHT_ELF);
     uiui = new magicwand(programID);
 
+    elfPos[0] = 0;
     elfPos[1] = 40;
+    elfPos[2] = 203;
 
     eyeDis = 30;
     fovy = 100;
@@ -387,6 +421,18 @@ void myInit() {
     }
    // bussiness[0]->setColor(myTex->yellow_light, myTex->yellow_dark);
 
+}
+bool detectCollision(int x, int y, int z,int tar) {
+    if (z <= 48 + 6) return 1;   //第一行攤販
+    if ((z <= 95 && (x <= 48 + 6 || x >= 187)) || (z <= 95 && (x <= 48 - 6 || x >= 187 - 7))) return 1;     //第二條攤販
+    if (x < 0 || x > 232 || z < 0 || z > 203) return 1; //邊界
+    if (tar == 0) {
+        if (getDis(x, z, fountainPos[0], fountainPos[2]) <= 29) return 1;   //噴水池
+    }
+    else if (tar == 1) {
+        if (getDis(x, z, fountainPos[0], fountainPos[2]) <= 5) return 1;   //噴水池
+    }
+    return 0;
 }
 void myDisplay(void)
 {
@@ -488,7 +534,7 @@ void myDisplay(void)
 
     {   //噴水池
         glPushMatrix();
-        glTranslatef(116, 0, 124);
+        glTranslatef(fountainPos[0], fountainPos[1], fountainPos[2]);
         glScalef(0.3, 0.3, 0.3);
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
@@ -565,7 +611,7 @@ void myDisplay(void)
         glPopMatrix();
         glPopMatrix();
         
-        {
+        {   //雲
             glPushMatrix();
             glTranslatef(100, 50, 70);
             glScalef(3, 3, 3);
@@ -669,7 +715,7 @@ void myDisplay(void)
 //            glPopMatrix();
 //        }
 //    }
-    {    
+    {   //tree
         glPushMatrix();
         glTranslatef(15,0,15);
         glScalef(7, 7, 7);

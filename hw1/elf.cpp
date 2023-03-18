@@ -9,6 +9,7 @@ void elf::draw(unsigned programID)
 {
     float objMtx[16] = { 0 };
     glPushMatrix();
+    glRotatef(angleY,0,1,0);
     {   //ÀY
         glPushMatrix();           
         glScalef(2, 2, 2);
