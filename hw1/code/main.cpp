@@ -1,16 +1,20 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include<iostream>
-#include<vector>
-#include<set>
-#include<functional>
-#include<fstream>
-#include<string>
-#include<GL\freeglut.h>
-#include<ctime>
-#include"glad\glad.h"
-#include"mesh.h"
-#include"myobj.h"
-#include"robot.h"
+#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <set>
+#include <functional>
+#include <fstream>
+#include <string>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+#include <GL/glut.h>
+#include <ctime>
+#include <cmath>
+#include "glad/glad.h"
+#include "mesh.h"
+#include "myobj.h"
+#include "robot.h"
 #include "elf.h"
 #define   PI   3.1415927
 //location
@@ -26,11 +30,11 @@
 #define SPOT_LIGHT_COLOR 15
 #define SPOT_LIGHT_EXPO 16
 #define SPOT_LIGHT_STR 17
-//®É¶¡¼Ò¦¡
-#define RUNTIMER 50             //§PÂ_¬O§_¶]¶]¶]
-#define JUMPTIMER 51            //¤@¯ë¸õ
-#define JUMPONWANDTIMER 52      //¸õ¤Wªk§ú
-#define JUMPTOFLOORTIMER 53     //¸õ¦^¦aªO
+//æ™‚é–“æ¨¡å¼
+#define RUNTIMER 50             //åˆ¤æ–·æ˜¯å¦è·‘è·‘è·‘
+#define JUMPTIMER 51            //ä¸€èˆ¬è·³
+#define JUMPONWANDTIMER 52      //è·³ä¸Šæ³•æ–
+#define JUMPTOFLOORTIMER 53     //è·³å›åœ°æ¿
 #define ANIMATION        54
 #define LIGHT_ELF        55
 //object
@@ -51,7 +55,7 @@ double zNear = 0.1, zFar = 2000, aspect = 800 / (double)800, fovy;
 float   cv = cos(5.0 * PI / 180.0), sv = sin(5.0 * PI / 180.0); /* cos(5.0) and sin(5.0) */
 //float   pos[3] = { 110,0,65 };
 float   pos[3] = { 116,0,165 };
-int     preKey = 0;
+int     preKey = -1;
 float   eyeMtx[16] = {0};
 float   elfPos[3] = { 0 };
 bool elfPosFlag = 0;
@@ -104,12 +108,12 @@ void draw_billboard(float x, float z, float w, float h, texture* tex)
 }
 void timerFunc(int nTimerID) {
     switch (nTimerID) {
-    case RUNTIMER:                //°»´ú¶]
+    case RUNTIMER:                //åµæ¸¬è·‘
         preKey = -1;
         break;
-    case JUMPTIMER:               //¸õÅD
+    case JUMPTIMER:               //è·³èº
         if (!myRobot->jump()) {
-            //isLock = LOCK;        //¸õ®É¤£¥i¥H«ö
+            //isLock = LOCK;        //è·³æ™‚ä¸å¯ä»¥æŒ‰
             glutTimerFunc(100, timerFunc, JUMPTIMER);
         }
         else {
@@ -120,7 +124,7 @@ void timerFunc(int nTimerID) {
         }
         glutPostRedisplay();
         break;
-    case JUMPONWANDTIMER:           //¸õ¤Wªk§ú
+    case JUMPONWANDTIMER:           //è·³ä¸Šæ³•æ–
         if (!myRobot->jumpOnWand()) {
             //isLock = LOCK;
             glutTimerFunc(100, timerFunc, JUMPONWANDTIMER);
@@ -130,7 +134,7 @@ void timerFunc(int nTimerID) {
         }
         glutPostRedisplay();
         break;
-    case JUMPTOFLOORTIMER:          //¸õ¦^¦a­±
+    case JUMPTOFLOORTIMER:          //è·³å›åœ°é¢
         if (!myRobot->jumpToFloor()) {
             //isLock = LOCK;
             glutTimerFunc(100, timerFunc, JUMPTOFLOORTIMER);
@@ -143,7 +147,7 @@ void timerFunc(int nTimerID) {
         }
         glutPostRedisplay();
         break;
-    case ANIMATION:                //·n´ÈÂ\Â\Â\
+    case ANIMATION:                //æ–æ¤…æ“ºæ“ºæ“º
         //myBig_chair.move();
         //poolAng++;
         eevee_ani++;
@@ -156,15 +160,15 @@ void timerFunc(int nTimerID) {
     case LIGHT_ELF:
         float tpPos[3];
         for (int i = 0; i < 3; i++) tpPos[i] = elfPos[i];
-        if (spotLightElf->dir == 2) { //«e
+        if (spotLightElf->dir == 2) { //å‰
             tpPos[2]--;
         }
-        else if (spotLightElf->dir == 3) { //¥ª
+        else if (spotLightElf->dir == 3) { //å·¦
             tpPos[0]--;
-        }else if (spotLightElf->dir == 0) { //«á
+        }else if (spotLightElf->dir == 0) { //å¾Œ
             tpPos[2]++;
         }
-        else if (spotLightElf->dir == 1) { //¥k
+        else if (spotLightElf->dir == 1) { //å³
             tpPos[0]++;
         }
         if (detectCollision(tpPos[0], tpPos[1], tpPos[2],1)) {
@@ -192,6 +196,7 @@ void reset_camera() {
 }
 void keyboardUp_func(unsigned char key, int x, int y) {
     //if (isLock == LOCK) return;
+    cout << "inin\n";
     glutTimerFunc(200, timerFunc, RUNTIMER);
     if (myRobot->getMoveMode() != ROBOT_FLY && preKey != key)  myRobot->change_moveMode(ROBOT_WALK);
     preKey = key;
@@ -201,7 +206,7 @@ void keyboardUp_func(unsigned char key, int x, int y) {
         myRobot->stand();
     }
     //cout << "kokoko\n";
-    if (key == ' ') {                   //¸õ
+    if (key == ' ') {                   //è·³
         if (myRobot->isMagician) {
             if (myRobot->isOnWand) {
                 glutTimerFunc(100, timerFunc, JUMPTOFLOORTIMER);
@@ -221,9 +226,12 @@ void keyboardUp_func(unsigned char key, int x, int y) {
         }
     }
 }
-void my_move_order(unsigned char key) {        //¸ò²¾°Ê¬ÛÃöªº§PÂ_
+void my_move_order(unsigned char key) {        //è·Ÿç§»å‹•ç›¸é—œçš„åˆ¤æ–·
+//cout << key << "\n";
+//cout << "inininin\n";
     //cout << (eye[0] - pos[0]) * (eye[0] - pos[0]) + (eye[2] - pos[2]) * (eye[2] - pos[2]) << "\n";
-    if (myRobot-> isSitOnChair) return;        //¦pªG§¤¦b´È¤l¤W´N¤£¯à°Ê
+    if (myRobot-> isSitOnChair) return;        //å¦‚æœååœ¨æ¤…å­ä¸Šå°±ä¸èƒ½å‹•
+    cout << myRobot->getMoveMode() << "\n";
     float tpPos[3] = { pos[0], pos[1], pos[2] };
     float w[3] = { pos[0] - eye[0] ,pos[1] - eye[1], pos[2] - eye[2] };
     float s[3] = { -pos[0] + eye[0] , -pos[1] + eye[1], -pos[2] + eye[2] };
@@ -244,20 +252,23 @@ void my_move_order(unsigned char key) {        //¸ò²¾°Ê¬ÛÃöªº§PÂ_
     a[0] = a[0] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     a[1] = a[1] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     a[2] = a[2] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
-    if (myRobot->getMoveMode() == ROBOT_WALK && preKey == key && (key == 'W' || key == 'w' || key == 'A' || key == 'a' || key == 'S' || key == 's' || key == 'D' || key == 'd'))
-        myRobot->change_moveMode(ROBOT_RUN);                       //0.3¬í¤º³sÄò«ö ´NÅÜ¦¨¶]¶]
-
+    if (myRobot->getMoveMode() == ROBOT_WALK && preKey == key && (key == 'W' || key == 'w' || key == 'A' || key == 'a' || key == 'S' || key == 's' || key == 'D' || key == 'd')){
+        myRobot->change_moveMode(ROBOT_RUN);                       //0.3ç§’å…§é€£çºŒæŒ‰ å°±è®Šæˆè·‘è·‘
+        cout << "pppppp\n";
+    }
+cout << "HERE2" << "\n";
     if (key == 'S' || key == 's') {
-        if (myRobot->isOnWand) {        //­¸¦æ¼Ò¦¡
+        if (myRobot->isOnWand) {        //é£›è¡Œæ¨¡å¼
             myRobot->angle_y = 90;
         }
-        else {                         //¤@¯ë¨«¸ô¼Ò¦¡
+        else {                         //ä¸€èˆ¬èµ°è·¯æ¨¡å¼
             //myRobot->angle_y = 0;
             myRobot->angle_y = (90 - eyeAngy);
             myRobot->move();
         }
         tpPos[0] += myRobot->moveOffset * s[0];
         tpPos[2] += myRobot->moveOffset * s[2];
+        cout << "here\n";
         //tpPos[2] += myRobot->moveOffset;
     }
     else if (key == 'W' || key == 'w') {
@@ -298,11 +309,11 @@ void my_move_order(unsigned char key) {        //¸ò²¾°Ê¬ÛÃöªº§PÂ_
         tpPos[0] += myRobot->moveOffset * d[0];
         tpPos[2] += myRobot->moveOffset * d[2];
     }
-    else if (key == 'r' || key == 'R') {            //Âà°é°é
+    else if (key == 'r' || key == 'R') {            //è½‰åœˆåœˆ
         myRobot->angle_y += 5;
         if (!myRobot->isOnWand) {
             myRobot->change_moveMode(ROBOT_TURN);
-            myRobot->move();    //¦b¦aªO¤~­n°Ê¸}
+            myRobot->move();    //åœ¨åœ°æ¿æ‰è¦å‹•è…³
         }
     }
     if (detectCollision(tpPos[0], tpPos[1], tpPos[2],0)) return;
@@ -311,7 +322,7 @@ void my_move_order(unsigned char key) {        //¸ò²¾°Ê¬ÛÃöªº§PÂ_
     //cout << myRobot->moveOffset << "   jj\n";
     //cout << pos[0];
 }
-float getDis(float x1, float y1, float x2, float y2) {           //ºâ¶ZÂ÷
+float getDis(float x1, float y1, float x2, float y2) {           //ç®—è·é›¢
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 void keybaord_fun(unsigned char key, int X, int Y) {
@@ -323,22 +334,22 @@ void keybaord_fun(unsigned char key, int X, int Y) {
     }
     //float  x[3], y[3], z[3];
     //int i;
-    //if (key == 19) {       //¤W ctrl + w
+    //if (key == 19) {       //ä¸Š ctrl + w
     //    for (int i = 0; i < 3; i++) eye[i] -= 1 * u[1][i];
     //}
-    //else if (key == 23) {   //¤U ctrl + s    
+    //else if (key == 23) {   //ä¸‹ ctrl + s    
     //    for (int i = 0; i < 3; i++) eye[i] += 1 * u[1][i];
     //}
-    //else if (key == 4) {   //¥k ctrl + d     
+    //else if (key == 4) {   //å³ ctrl + d     
     //    for (int i = 0; i < 3; i++) eye[i] += 1 * u[0][i];
     //}
-    //else if (key == 1) {   //¥ª ctrl + a   
+    //else if (key == 1) {   //å·¦ ctrl + a   
     //    for (int i = 0; i < 3; i++) eye[i] -= 1 * u[0][i];
     //}
-    //if (key == 17) {       //©¹«e ctrl + q
+    //if (key == 17) {       //å¾€å‰ ctrl + q
     //    for (i = 0; i < 3; i++) eye[i] -= 1 * u[2][i];
     //}
-    //else if (key == 5) {   //©¹«á ctrl + e
+    //else if (key == 5) {   //å¾€å¾Œ ctrl + e
     //    for (i = 0; i < 3; i++) eye[i] += 1 * u[2][i];
     //}
     //else if (key == 24) {             //ctrl + x pitching 
@@ -427,14 +438,14 @@ void myInit() {
 
 }
 bool detectCollision(int x, int y, int z,int tar) {
-    if (z <= 48 + 6) return 1;   //²Ä¤@¦æÅu³c
-    if ((z <= 95 && (x <= 48 + 6 || x >= 187)) || (z <= 95 && (x <= 48 - 6 || x >= 187 - 7))) return 1;     //²Ä¤G±øÅu³c
-    if (x < 0 || x > 232 || z < 0 || z > 203) return 1; //Ãä¬É
+    if (z <= 48 + 6) return 1;   //ç¬¬ä¸€è¡Œæ”¤è²©
+    if ((z <= 95 && (x <= 48 + 6 || x >= 187)) || (z <= 95 && (x <= 48 - 6 || x >= 187 - 7))) return 1;     //ç¬¬äºŒæ¢æ”¤è²©
+    if (x < 0 || x > 232 || z < 0 || z > 203) return 1; //é‚Šç•Œ
     if (tar == 0) {
-        if (getDis(x, z, fountainPos[0], fountainPos[2]) <= 29) return 1;   //¼Q¤ô¦À
+        if (getDis(x, z, fountainPos[0], fountainPos[2]) <= 29) return 1;   //å™´æ°´æ± 
     }
     else if (tar == 1) {
-        if (getDis(x, z, fountainPos[0], fountainPos[2]) <= 5) return 1;   //¼Q¤ô¦À
+        if (getDis(x, z, fountainPos[0], fountainPos[2]) <= 5) return 1;   //å™´æ°´æ± 
         for (int i = 0; i < cloud.size(); i++) {
             if (getDis(x, z, cloud[i][0], cloud[i][2]) <= 5) return 1;
         }
@@ -457,7 +468,7 @@ void myDisplay(void)
         glUniform1f(DIR_LIGHT_EXPO, 1);
         glUniform1f(DIR_LIGHT_STR, dirLightStr); //1.7
 
-        glUniform4f(SPOT_LIGHT_POS, elfPos[0], elfPos[1], elfPos[2], 1);  // 0 ¥­¦æ
+        glUniform4f(SPOT_LIGHT_POS, elfPos[0], elfPos[1], elfPos[2], 1);  // 0 å¹³è¡Œ
         glUniform3f(SPOT_LIGHT_DIR, 0, -1, 0);
         glUniform3f(SPOT_LIGHT_COLOR, 1, 1, 1);
         glUniform1f(SPOT_LIGHT_EXPO, 1);                                  // 0 point
@@ -499,7 +510,7 @@ void myDisplay(void)
     float objMtx[16];
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    {   //¦a¶ô
+    {   //åœ°å¡Š
         glPushMatrix();
         glTranslatef(0, -10.5, 0);
         glScalef(floorX, 10, floorY);
@@ -511,7 +522,7 @@ void myDisplay(void)
         myObj->cube->draw(programID);
         glPopMatrix();
         glPopMatrix();
-        //¥ÛÀY
+        //çŸ³é ­
         glPushMatrix();
         for (float i = 7.25; i < 232; i += 14.5) {
             for (float j = 7.25; j < 203; j += 14.5) {
@@ -532,11 +543,11 @@ void myDisplay(void)
     myRobot->draw(programID);
     glPopMatrix();
     
-    {   //¥ì¥¬
+    {   //ä¼Šå¸ƒ
         draw_billboard(65, 70, 28.125, 15, myTex->eevee[eevee_ani]);
     }
 
-    {   //¼Q¤ô¦À
+    {   //å™´æ°´æ± 
         glPushMatrix();
         glTranslatef(fountainPos[0], fountainPos[1], fountainPos[2]);
         glScalef(0.3, 0.3, 0.3);
@@ -615,7 +626,7 @@ void myDisplay(void)
         glPopMatrix();
         glPopMatrix();
         {
-            //Äx¤l
+            //ç±ƒå­
             for (int i = 0; i < 5; i++) {
                 glPushMatrix();
                 glTranslatef(100 + 8 * i, 16, 43);
@@ -652,9 +663,9 @@ void myDisplay(void)
                 }
                 glPopMatrix();
             }
-            //ÄÑ¥]Åu
+            //éºµåŒ…æ”¤
             {
-                //°_¥q½L¤l
+                //èµ·å¸ç›¤å­
                 glPushMatrix();
                 glTranslatef(155, 16, 44);
                 glPushMatrix();
@@ -664,7 +675,7 @@ void myDisplay(void)
                 myTex->wood5->use(programID);
                 myObj->plate->draw(programID);
                 glPopMatrix();
-                glPushMatrix();         //°_¥q
+                glPushMatrix();         //èµ·å¸
                 glTranslatef(-1, 0.2, 1);
                 glScalef(23, 23, 23);
                 glRotatef(100, 0, 1, 0);
@@ -676,7 +687,7 @@ void myDisplay(void)
                 glPopMatrix();
 
 
-                //ÄÑ¥]½L¤l
+                //éºµåŒ…ç›¤å­
                 glPushMatrix();
                 glTranslatef(174, 16, 44);
                 glPushMatrix();
@@ -687,7 +698,7 @@ void myDisplay(void)
                 myTex->wood5->use(programID);
                 myObj->plate->draw(programID);
                 glPopMatrix();
-                //ÄÑ¥]
+                //éºµåŒ…
                 glPushMatrix();
                 glTranslatef(-2, 0.2, 2.5);
                 glScalef(2.7, 2.7, 2.7);
@@ -754,7 +765,7 @@ void myDisplay(void)
         myObj->tree_round_btn->draw(programID);
         glPopMatrix();
     }
-    {   //¶³
+    {   //é›²
         for (int i = 0; i < 3; i++) {
             glPushMatrix();
             glTranslatef(cloud[i][0], cloud[i][1], cloud[i][2]);
@@ -775,7 +786,8 @@ void myDisplay(void)
     }
     glutSwapBuffers();
     glutPostRedisplay();
-    Sleep(1);
+    usleep(1000); //micro sleep
+    
 }
 int mouseX = 0, mouseY = 0,mouseBtn = 0;
 void motion_func(int  x, int y) {
@@ -837,15 +849,15 @@ int main(int argc, char** argv) {
         glGetString(GL_SHADING_LANGUAGE_VERSION));
     //Setup the shaders and create my program object
     //Program objects and shaders must be created after glad has been initiated!!!
-    
-    programID = glCreateProgram(); //¦¹µ{¦¡ªºid(gpu)
+    glewInit();
+    programID = glCreateProgram(); //æ­¤ç¨‹å¼çš„id(gpu)
     GLuint vertID = glCreateShader(GL_VERTEX_SHADER);
     GLuint fragID = glCreateShader(GL_FRAGMENT_SHADER);
     
-    //¶}ÀÉÅªÄÒ
-    fstream file("Phong.frag",std::fstream::in | std::fstream::ate); //ate -> ²¾¨ì³Ì«á­±
-    int ffsz = file.tellg();  //¦^¶Ç·í«e«ü°w¦ì¸m( ate¦b§À¤Ú -> ÀÉ®×¤j¤p )
-    file.seekg(0); //²¾¨ìÀY
+    //é–‹æª”è®€é»¨
+    fstream file("Phong.frag",std::fstream::in | std::fstream::ate); //ate -> ç§»åˆ°æœ€å¾Œé¢
+    int ffsz = file.tellg();  //å›å‚³ç•¶å‰æŒ‡é‡ä½ç½®( ateåœ¨å°¾å·´ -> æª”æ¡ˆå¤§å° )
+    file.seekg(0); //ç§»åˆ°é ­
     string fragS;
     fragS.resize(ffsz);
     file.read((char*)fragS.data(), ffsz);
@@ -853,7 +865,7 @@ int main(int argc, char** argv) {
 
     file = fstream("Phong.vert", std::fstream::in | std::fstream::ate);
     int vfsz = file.tellg();
-    file.seekg(0); //²¾¨ìÀY
+    file.seekg(0); //ç§»åˆ°é ­
     string vertS;
     vertS.resize(vfsz);
     file.read((char*)vertS.data(), vfsz);

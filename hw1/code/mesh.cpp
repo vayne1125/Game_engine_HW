@@ -6,10 +6,10 @@ mesh::mesh(int programID, const vector<float>& vec)
     { //VAO VBO
         unsigned int VBOID;
         glGenVertexArrays(1, &VAOID); // VAO
-        glBindVertexArray(VAOID);     // ²{¦b¨Ï¥ÎªºVAO¬O½Ö
+        glBindVertexArray(VAOID);     // ç¾åœ¨ä½¿ç”¨çš„VAOæ˜¯èª°
 
         glGenBuffers(1, &VBOID);      // VBO
-        glBindBuffer(GL_ARRAY_BUFFER, VBOID);     // ²{¦b¨Ï¥ÎªºVBO¬O½Ö
+        glBindBuffer(GL_ARRAY_BUFFER, VBOID);     // ç¾åœ¨ä½¿ç”¨çš„VBOæ˜¯èª°
 
         glBufferData(GL_ARRAY_BUFFER, 8 * vertex_count * sizeof(float), vec.data(), GL_STATIC_DRAW);
 

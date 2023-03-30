@@ -2,10 +2,10 @@
 extern myobj* myObj;
 extern mytex* myTex;
 magicwand* magic_wand_carry;
-struct node {   //©w¸q·¥®y¼ÐªºÂI
+struct node {   //å®šç¾©æ¥µåº§æ¨™çš„é»ž
     double x = 0, y = 0, z = 0;
 };
-node ball_cor(double r, int A, int B) {          //·¥®y¼ÐÂà´«
+node ball_cor(double r, int A, int B) {          //æ¥µåº§æ¨™è½‰æ›
     node rt;
     rt.x = r * sin(A * 0.01745) * cos(B * 0.01745);
     rt.y = r * sin(A * 0.01745) * sin(B * 0.01745);
@@ -15,18 +15,18 @@ node ball_cor(double r, int A, int B) {          //·¥®y¼ÐÂà´«
 void hand::draw(int programID){
 
     float objMtx[16];
-    glRotatef(shoulderAng_z, 0, 0, 1);             //-35©ñ¦b¨­Åé®ÇÃä ¹ïzÂà±±¨î¥ª¥k
+    glRotatef(shoulderAng_z, 0, 0, 1);             //-35æ”¾åœ¨èº«é«”æ—é‚Š å°zè½‰æŽ§åˆ¶å·¦å³
     glRotatef(shoulderAng_x, 1, 0, 0);
 
-    {   //¥b®|¬° 0.5 ªºªÓ»H
+    {   //åŠå¾‘ç‚º 0.5 çš„è‚©è†€
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         sub->use(programID);
         myObj->solidsphere->draw(programID);
     }
     //forarms
-    glTranslatef(0, 0.75, 0);              //¨«¨ì ªÓ»H¤W¤è0.25 + ¶ê¤¤¤ß0.75(µe1.5ªº¤âÁu) - 0.25­«Å|
-    {   //ª½®|¬°1.5ªº¤âÁu
+    glTranslatef(0, 0.75, 0);              //èµ°åˆ° è‚©è†€ä¸Šæ–¹0.25 + åœ“ä¸­å¿ƒ0.75(ç•«1.5çš„æ‰‹è‡‚) - 0.25é‡ç–Š
+    {   //ç›´å¾‘ç‚º1.5çš„æ‰‹è‡‚
         glPushMatrix();
         glScalef(0.7, 1.5, 0.7);           
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
@@ -35,13 +35,13 @@ void hand::draw(int programID){
         myObj->solidsphere->draw(programID);
         glPopMatrix();
     }
-    glTranslatef(0, 0.75, 0);                 //¤âÁu«eºÝ¤¤¤ß
+    glTranslatef(0, 0.75, 0);                 //æ‰‹è‡‚å‰ç«¯ä¸­å¿ƒ
     
-    glRotatef(elbowAng_x, 1, 0, 0);           //±ÛÂà¤â¨y
+    glRotatef(elbowAng_x, 1, 0, 0);           //æ—‹è½‰æ‰‹è‚˜
     glRotatef(elbowAng_y, 0, 1, 0);
     glRotatef(elbowAng_z, 0, 0, 1);
 
-    {   //ª½®|¬° 0.5 ªº¤â¨y      0.25­«Å|
+    {   //ç›´å¾‘ç‚º 0.5 çš„æ‰‹è‚˜      0.25é‡ç–Š
         glPushMatrix();
         glScalef(0.5, 0.5, 0.5);
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
@@ -51,10 +51,10 @@ void hand::draw(int programID){
         glPopMatrix();
     }
     
-    glTranslatef(0, 0.75, 0);                //¨«¨ì ¤â¶b«eºÝ0.25 + ¶ê¤¤¤ß0.75(µe1.5ªº¤â«eÁu) - 0.25­«Å|
+    glTranslatef(0, 0.75, 0);                //èµ°åˆ° æ‰‹è»¸å‰ç«¯0.25 + åœ“ä¸­å¿ƒ0.75(ç•«1.5çš„æ‰‹å‰è‡‚) - 0.25é‡ç–Š
     
-    //¤â«eÁu
-    {   //ª½®|¬°1.5ªº¤â«eÁu
+    //æ‰‹å‰è‡‚
+    {   //ç›´å¾‘ç‚º1.5çš„æ‰‹å‰è‡‚
         glPushMatrix();
         glScalef(0.55, 1.5, 0.55);
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
@@ -64,27 +64,27 @@ void hand::draw(int programID){
         glPopMatrix();
     }
 
-    glTranslatef(0, 0.75, 0);               //¤â«eÁu«eºÝ 
+    glTranslatef(0, 0.75, 0);               //æ‰‹å‰è‡‚å‰ç«¯ 
 
-    //´«¤â«ü¤è¦VÀ³¸Ó¦b³oÂà
+    //æ›æ‰‹æŒ‡æ–¹å‘æ‡‰è©²åœ¨é€™è½‰
     glRotatef(fingerAng_y, 0, 1, 0);
 
-    {   //¥ª¤â«üÀY
+    {   //å·¦æ‰‹æŒ‡é ­
         glPushMatrix();
         glTranslatef(-0.25, 0.2, 0);
-        glRotatef(15, 0, 0, 1);               //±i¶}¨¤«×
-        glScalef(0.3, 0.7, 0.3);              //¤â«üªø: 0.7
+        glRotatef(15, 0, 0, 1);               //å¼µé–‹è§’åº¦
+        glScalef(0.3, 0.7, 0.3);              //æ‰‹æŒ‡é•·: 0.7
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         sub->use(programID);
         myObj->solidsphere->draw(programID);
         glPopMatrix();
     }
-    {   //¥k¤â«üÀY
+    {   //å³æ‰‹æŒ‡é ­
         glPushMatrix();
         glTranslatef(0.25, 0.2, 0);
-        glRotatef(-15, 0, 0, 1);              //±i¶}¨¤«×
-        glScalef(0.3, 0.7, 0.3);              //¤â«üªø: 0.7
+        glRotatef(-15, 0, 0, 1);              //å¼µé–‹è§’åº¦
+        glScalef(0.3, 0.7, 0.3);              //æ‰‹æŒ‡é•·: 0.7
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         sub->use(programID);
@@ -92,7 +92,7 @@ void hand::draw(int programID){
         glPopMatrix();
     }
 
-    glRotatef(-shoulderAng_z, 0, 0, 1);   //ÅÜ¦^¥¿±`ªº®y¼Ð¨t²Î
+    glRotatef(-shoulderAng_z, 0, 0, 1);   //è®Šå›žæ­£å¸¸çš„åº§æ¨™ç³»çµ±
 }
 void hand::setColor(texture* m, texture* s)
 {
@@ -107,27 +107,27 @@ void robot::draw(unsigned int programID)
 
     glPushMatrix();
     glScalef(2.5, 2.5, 2.5);
-    glTranslatef(x, y, z);                      //¾ã°¦ªº®y¼Ð
+    glTranslatef(x, y, z);                      //æ•´éš»çš„åº§æ¨™
 
     glRotatef(angle_y, 0, 1, 0);
     glRotatef(angle_x, 1, 0, 0);
 
-    glTranslatef(0, 4.75, 0);                   //²¾¨ì¨{¤l
+    glTranslatef(0, 4.75, 0);                   //ç§»åˆ°è‚šå­
     {
         glPushMatrix();
         glScalef(4, 4, 4);
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         main->use(programID);
-        myObj->solidsphere->draw(programID);                //µe¨{¤l ª½®|4
+        myObj->solidsphere->draw(programID);                //ç•«è‚šå­ ç›´å¾‘4
         glPopMatrix();
     }                
     //return;
     //setMaterial(0.4, 0.4, 0.4, 0, 0, 0, 120);
-    {   //µe¥Lªº¥k¤â
+    {   //ç•«ä»–çš„å³æ‰‹
         node tp = ball_cor(2, 90, 30);
         glPushMatrix();
-        glTranslatef(tp.x, tp.y, tp.z);             //¨«¨ì¥kªÓ»H
+        glTranslatef(tp.x, tp.y, tp.z);             //èµ°åˆ°å³è‚©è†€
         right_h->draw(programID);
         
         glPushMatrix();                             //push3
@@ -140,46 +140,46 @@ void robot::draw(unsigned int programID)
         glPopMatrix();
     }
     
-    ////ªk§ú¦³§ï§÷½è ­n­«·s½Õ
-    {   //¥ªªÓ»H
+    ////æ³•æ–æœ‰æ”¹æè³ª è¦é‡æ–°èª¿
+    {   //å·¦è‚©è†€
         node tp = ball_cor(2, 270, 330);
         glPushMatrix();
-        glTranslatef(tp.x, tp.y, tp.z);       //¨«¨ì¥ªªÓ»H
+        glTranslatef(tp.x, tp.y, tp.z);       //èµ°åˆ°å·¦è‚©è†€
         left_h->draw(programID);
         glPopMatrix();
     }
     
 
-    //glPushMatrix();                       //§¤¦bªk§ú¤W 
+    //glPushMatrix();                       //ååœ¨æ³•æ–ä¸Š 
     //glTranslatef(0, -2, 0);
     //if (isOnWand) magic_wand_sit->draw();
     //glPopMatrix();
     //
-    ////ªk§ú¦³§ï§÷½è ­n­«·s½Õ
+    ////æ³•æ–æœ‰æ”¹æè³ª è¦é‡æ–°èª¿
     //setMaterial(0.4, 0.4, 0.4, 0, 0, 0, 120);
     
-    {   //¥ª¤j»L¤W­±ªºÃö¸`  ®I¦b¨­Åé¸Ì
+    {   //å·¦å¤§è…¿ä¸Šé¢çš„é—œç¯€  åŸ‹åœ¨èº«é«”è£¡
         glPushMatrix();
         glTranslatef(-0.4, -1.75, 0);
         left_f->draw(programID);
         glPopMatrix();
     }
 
-    {   //¥k¤j»L¤W­±ªºÃö¸`
+    {   //å³å¤§è…¿ä¸Šé¢çš„é—œç¯€
         glPushMatrix();
         glTranslatef(0.4, -1.75, 0);
         right_f->draw(programID);
         glPopMatrix();
     }
-    //ÀY
+    //é ­
     //if (isLighting)setMaterial(0, 0, 0, 0.0f, 0.0f, 0.0f, 194 / 255.0, 223 / 255.0, 1.0, 1, 1, 1, 12.8f);
     //else change_color(mainColor);
 
-    glTranslatef(0, 3, 0);               //¦b¨«¨ìÀY  ©M¨­Åé­«Å|0.5
+    glTranslatef(0, 3, 0);               //åœ¨èµ°åˆ°é ­  å’Œèº«é«”é‡ç–Š0.5
     glPushMatrix();
     {
         glPushMatrix();
-        glScalef(3, 3, 3);                    //ª½®|3
+        glScalef(3, 3, 3);                    //ç›´å¾‘3
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         main->use(programID);
@@ -187,16 +187,16 @@ void robot::draw(unsigned int programID)
         glPopMatrix();  
     }
 
-    //²´·ú
-    {   //¾÷¾¹¤H¥ª²´
-        glPushMatrix();                          //²´·ú  push3
+    //çœ¼ç›
+    {   //æ©Ÿå™¨äººå·¦çœ¼
+        glPushMatrix();                          //çœ¼ç›  push3
         glTranslatef(0.6, 0, 1.3);
         glScalef(0.4, 0.8, 0.4);
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         if(isMagician) myTex->robot_blue_eye->use(programID);
         else myTex->black->use(programID);
-        myObj->solidsphere->draw(programID);        //²´¥Õ
+        myObj->solidsphere->draw(programID);        //çœ¼ç™½
         glTranslatef(0, 0.15, 0.15);
         glScalef(0.66, 0.66, 0.66);
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
@@ -206,7 +206,7 @@ void robot::draw(unsigned int programID)
         //glutSolidSphere(0.33, 10, 10);
         glPopMatrix();                           //pop3
     }
-    {   //¾÷¾¹¤H¥k²´
+    {   //æ©Ÿå™¨äººå³çœ¼
         glPushMatrix();                          //push3
         glTranslatef(-0.6, 0, 1.3);
         glScalef(0.4, 0.8, 0.4);
@@ -215,7 +215,7 @@ void robot::draw(unsigned int programID)
         if (isMagician) myTex->robot_pink_eye->use(programID);
         else myTex->black->use(programID);
         myObj->solidsphere->draw(programID);       
-        glTranslatef(0, 0.15, 0.15);         //²´¥Õ
+        glTranslatef(0, 0.15, 0.15);         //çœ¼ç™½
         glScalef(0.66, 0.66, 0.66);
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
@@ -226,7 +226,7 @@ void robot::draw(unsigned int programID)
     //glColor3f(1, 0, 0);
     {
         //glPushMatrix();                           //push3
-        //glTranslatef(0, -0.6, 1.5);              //¼L¤Ú
+        //glTranslatef(0, -0.6, 1.5);              //å˜´å·´
         //glLineWidth(1);
         //glBegin(GL_LINES);
         //glVertex3f(-0.2, 0, 0);
@@ -234,12 +234,12 @@ void robot::draw(unsigned int programID)
         //glEnd();
         //glPopMatrix();                          //pop3
     }
-    //glTranslatef(0, 0.5, 0);                //´U¤l§¤¼Ð¨t
+    //glTranslatef(0, 0.5, 0);                //å¸½å­åæ¨™ç³»
     //if (isMagician) draw_hat();
 
-    glPopMatrix();                       //Â÷¶}ÀY 
+    glPopMatrix();                       //é›¢é–‹é ­ 
     
-    glPopMatrix();                       //Â÷¶}¨{¤l§¤¼Ð¨t 
+    glPopMatrix();                       //é›¢é–‹è‚šå­åæ¨™ç³» 
 
 }
 void robot::stand()
@@ -275,14 +275,15 @@ robot::robot(unsigned int programID)
     flyOffset = 3;
     walkOffset = 0.5;
     moveOffset = 0.5;
+    //moveMode = 0;
     stand();
 }
 void foot::draw(int programID)
 {
     float objMtx[16];
-    glRotatef(hipJointAng_x, 1, 0, 0);          //²¾°ÊÃö¸`¨¤«× 180©ñ¤U
+    glRotatef(hipJointAng_x, 1, 0, 0);          //ç§»å‹•é—œç¯€è§’åº¦ 180æ”¾ä¸‹
     
-    {   //¤j»L¤WªºÃö¸` 0.5ª½®|
+    {   //å¤§è…¿ä¸Šçš„é—œç¯€ 0.5ç›´å¾‘
         glPushMatrix();
         glScalef(0.5,0.5,0.5);
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
@@ -292,11 +293,11 @@ void foot::draw(int programID)
         glPopMatrix();
     }
 
-    glTranslatef(0, 0.625, 0);           //¨«¨ì ½¥»\0.125 + ¶ê¤¤¤ß0.5(µe1ªº¶ê)
+    glTranslatef(0, 0.625, 0);           //èµ°åˆ° è†è“‹0.125 + åœ“ä¸­å¿ƒ0.5(ç•«1çš„åœ“)
     
-    {   //¤j»L
+    {   //å¤§è…¿
         glPushMatrix();
-        glScalef(0.7, 1, 0.7);               //¤j»Lªø1
+        glScalef(0.7, 1, 0.7);               //å¤§è…¿é•·1
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->robot_gray->use(programID);
@@ -304,10 +305,10 @@ void foot::draw(int programID)
         glPopMatrix();
     }
     
-    glTranslatef(0, 0.5, 0);             //»L«eºÝ¤¤¤ß  ©M½¥»\­«Å|0.25
-    glRotatef(kneeAng_x, 1, 0, 0);       //½¥»\¨¤«×
+    glTranslatef(0, 0.5, 0);             //è…¿å‰ç«¯ä¸­å¿ƒ  å’Œè†è“‹é‡ç–Š0.25
+    glRotatef(kneeAng_x, 1, 0, 0);       //è†è“‹è§’åº¦
     
-    {   //½¥»\
+    {   //è†è“‹
         glPushMatrix();
         glScalef(0.5, 0.5, 0.5);
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
@@ -317,11 +318,11 @@ void foot::draw(int programID)
         glPopMatrix();    
     }
 
-    glTranslatef(0, 0.5, 0);             //½¥»\«eºÝ 0.25 + »L¤¤¶¡0.5(»Lªø1) - 0.25(­«Å|¦a¤è)
+    glTranslatef(0, 0.5, 0);             //è†è“‹å‰ç«¯ 0.25 + è…¿ä¸­é–“0.5(è…¿é•·1) - 0.25(é‡ç–Šåœ°æ–¹)
     
     {
         glPushMatrix();
-        glScalef(0.5, 1, 0.5);               //¤p»Lªø1
+        glScalef(0.5, 1, 0.5);               //å°è…¿é•·1
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->robot_gray->use(programID);
@@ -329,9 +330,9 @@ void foot::draw(int programID)
         glPopMatrix();
     }
 
-    glTranslatef(0, 0.5, 0);             //¤p»L«eºÝ¤¤¤ß 0.5 ©M»L­«Å|0.25
+    glTranslatef(0, 0.5, 0);             //å°è…¿å‰ç«¯ä¸­å¿ƒ 0.5 å’Œè…¿é‡ç–Š0.25
     
-    {   //¸} ª½®|1
+    {   //è…³ ç›´å¾‘1
         glPushMatrix();
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
@@ -345,7 +346,6 @@ void foot::setColor(texture* m, texture* s)
     main = m;
     sub = s;
 }
-bool flag = 0, flag2 = 0;
 void robot::change_moveMode(int mode) {
     moveMode = mode;
     if (moveMode == ROBOT_RUN) moveOffset = runOffset;
@@ -371,12 +371,12 @@ void robot::setColor(texture* m, texture* s)
     right_f->setColor(main, sub);
 }
 void robot::move() {
-    //(½¥»\,ÆbÃö¸`)
-    //¸}«á(0,180) ~ (35,200)     35 +7   20 +4
-    //¸}©¹«e(0,180) ~ (35,130)   35 +7   50 -10
-    //(ªÓ»H)
-    //¤â©¹«e(180) ~ (200)        20 +4   100 +20
-    //¤â©¹«á(180) ~ (170)        20 -4
+    //(è†è“‹,é«–é—œç¯€)
+    //è…³å¾Œ(0,180) ~ (35,200)     35 +7   20 +4
+    //è…³å¾€å‰(0,180) ~ (35,130)   35 +7   50 -10
+    //(è‚©è†€)
+    //æ‰‹å¾€å‰(180) ~ (200)        20 +4   100 +20
+    //æ‰‹å¾€å¾Œ(180) ~ (170)        20 -4
     //moveMode = walk
     int hipJointXLimit = 130;
     int hipJointFrontOffset = -10;
@@ -400,18 +400,21 @@ void robot::move() {
         hipJointXLimit = 160;
     }
     if (flag == 0) {
-        if (flag2 == 0) {  //¥k¸}©¹«e¡A¥ª¸}©¹«á             
-            right_f->hipJointAng_x += hipJointFrontOffset / 2.0;          //¥k¸}©¹«e¦ù
+        cout << "flag == 0\n";
+        if (flag2 == 0) {  //å³è…³å¾€å‰ï¼Œå·¦è…³å¾€å¾Œ 
+        cout << "flcdag2 == 0\n";            
+            right_f->hipJointAng_x += hipJointFrontOffset / 2.0;          //å³è…³å¾€å‰ä¼¸
             right_f->kneeAng_x += kneeFrontOffset / 2.0;
-            left_f->hipJointAng_x += hipJointBackOffset / 2.0;            //¥ª¸}©¹«á
+            left_f->hipJointAng_x += hipJointBackOffset / 2.0;            //å·¦è…³å¾€å¾Œ
             left_f->kneeAng_x += kneeBackOffset / 2.0;
-            left_h->shoulderAng_x += shoulderOffset / 2.0;                //¥ª¤â©¹«e
-            right_h->shoulderAng_x -= shoulderOffset / 2.0;               //¥k¤â©¹«á
-            if (right_f->hipJointAng_x <= hipJointXLimit) {               //Ãä¬É±ø¥ó
+            left_h->shoulderAng_x += shoulderOffset / 2.0;                //å·¦æ‰‹å¾€å‰
+            right_h->shoulderAng_x -= shoulderOffset / 2.0;               //å³æ‰‹å¾€å¾Œ
+            if (right_f->hipJointAng_x <= hipJointXLimit) {               //é‚Šç•Œæ¢ä»¶
                 flag2 = 1;
+                cout << "flag2 = 1\n";
             }
         }
-        else { //¥k¸}©¹«á¨ì­ìÂI¡A¥ª¸}©¹«e¨ì­ìÂI
+        else { //å³è…³å¾€å¾Œåˆ°åŽŸé»žï¼Œå·¦è…³å¾€å‰åˆ°åŽŸé»ž
             right_f->hipJointAng_x -= hipJointFrontOffset / 2.0;
             right_f->kneeAng_x -= kneeFrontOffset / 2.0;
             left_f->hipJointAng_x -= hipJointBackOffset / 2.0;
@@ -421,10 +424,11 @@ void robot::move() {
             if (right_f->hipJointAng_x >= 180) {
                 flag2 = 0;
                 flag = 1;
+                cout << "flag2 = 0\n";
             }
         }
     }
-    else {   //¥ª¸}©¹«e¡A¥k¸}©¹«á 
+    else {   //å·¦è…³å¾€å‰ï¼Œå³è…³å¾€å¾Œ 
         if (flag2 == 0) {
             left_f->hipJointAng_x += hipJointFrontOffset / 2.0;
             left_f->kneeAng_x += kneeFrontOffset / 2.0;
@@ -436,7 +440,7 @@ void robot::move() {
                 flag2 = 1;
             }
         }
-        else { //¥ª¸}©¹«á¨ì­ìÂI¡A¥k¸}©¹«e¨ì­ìÂI
+        else { //å·¦è…³å¾€å¾Œåˆ°åŽŸé»žï¼Œå³è…³å¾€å‰åˆ°åŽŸé»ž
             left_f->hipJointAng_x -= hipJointFrontOffset / 2.0;
             left_f->kneeAng_x -= kneeFrontOffset / 2.0;
             right_f->hipJointAng_x -= hipJointBackOffset / 2.0;
@@ -450,7 +454,7 @@ void robot::move() {
         }
     }
 }
-void robot::jump_ready() {               //¸õªº¹w³Æ°Ê§@
+void robot::jump_ready() {               //è·³çš„é å‚™å‹•ä½œ
     left_f->kneeAng_x = 45;
     right_f->kneeAng_x = 45;
 
@@ -466,7 +470,7 @@ bool robot::jump() {
     left_h->elbowAng_x = -15;
     right_h->elbowAng_x = -15;
     switch (jump_cmd) {
-    case 0:              //©¹¤W¸õ  Ãö¸`ÅÜ¥¿±` ¤â©¹«e
+    case 0:              //å¾€ä¸Šè·³  é—œç¯€è®Šæ­£å¸¸ æ‰‹å¾€å‰
         y += 0.5;
         left_f->kneeAng_x -= 45 / 4.0;
         right_f->kneeAng_x -= 45 / 4.0;
@@ -476,7 +480,7 @@ bool robot::jump() {
         right_h->shoulderAng_x -= 40 / 4.0;   //160
         if (y == 2) jump_cmd++;
         break;
-    case 1:              //¨ì¦aªO Ås¦±
+    case 1:              //åˆ°åœ°æ¿ å½Žæ›²
         y -= 1;
         left_f->kneeAng_x += 60 / 2.0;
         right_f->kneeAng_x += 60 / 2.0;
@@ -523,14 +527,14 @@ bool robot::jump() {
     }
     return 0;
 }
-bool isOnWand = 0;             //¬O§_§¤¦bªk§ú¤W
-bool robot::jumpOnWand() {            //¸õ¤Wªk§ú
+bool isOnWand = 0;             //æ˜¯å¦ååœ¨æ³•æ–ä¸Š
+bool robot::jumpOnWand() {            //è·³ä¸Šæ³•æ–
     carry_mw = 0;
     isOnWand = 1;
     left_h->elbowAng_x = -15;
     right_h->elbowAng_x = -15;
     switch (jump_cmd) {
-    case 0:              //©¹¤W¸õ  Ãö¸`ÅÜ¥¿±` ¤â©¹«e
+    case 0:              //å¾€ä¸Šè·³  é—œç¯€è®Šæ­£å¸¸ æ‰‹å¾€å‰
         y += 0.5;
         left_f->kneeAng_x -= 45 / 4.0;
         right_f->kneeAng_x -= 45 / 4.0;
@@ -552,12 +556,12 @@ bool robot::jumpOnWand() {            //¸õ¤Wªk§ú
     }
     return 0;
 }
-bool robot::jumpToFloor() {           //¸õ¨ì¦aªO
+bool robot::jumpToFloor() {           //è·³åˆ°åœ°æ¿
     //80 80 100 100 180 180
     left_h->elbowAng_x = -15;
     right_h->elbowAng_x = -15;
     switch (jump_cmd) {
-    case 0:                 //¨ì¦aªO Ås¦±
+    case 0:                 //åˆ°åœ°æ¿ å½Žæ›²
         y -= 1;
         left_f->kneeAng_x += 60 / 2.0;
         right_f->kneeAng_x += 60 / 2.0;

@@ -1,7 +1,8 @@
 #pragma once
 #include <vector>
-#include<GL\freeglut.h>
-#include"glad\glad.h"
+#include<GL/glew.h>
+#include<GL/glut.h>
+#include"glad/glad.h"
 using namespace std;
 class mesh {
 public:
@@ -10,6 +11,4 @@ public:
 private:
 	unsigned int VAOID;
 	int vertex_count = 0;
-	
-
 };

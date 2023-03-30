@@ -1,8 +1,4 @@
 #include "elf.h"
-#include<GL\freeglut.h>
-#include"glad\glad.h"
-#include"myobj.h"
-#include "mytex.h"
 extern myobj* myObj;
 extern mytex* myTex;
 void elf::draw(unsigned programID)
@@ -10,7 +6,7 @@ void elf::draw(unsigned programID)
     float objMtx[16] = { 0 };
     glPushMatrix();
     glRotatef(angleY,0,1,0);
-    {   //ÀY
+    {   //ï¿½Y
         glPushMatrix();           
         glScalef(2, 2, 2);
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
@@ -20,7 +16,7 @@ void elf::draw(unsigned programID)
         glPopMatrix();
     }
 
-    {   //¥~¥k¦Õ
+    {   //ï¿½~ï¿½kï¿½ï¿½
         glPushMatrix();
         glTranslatef(0.5, 0.6, -0.2);
         glRotatef(20, 0, 0, 1);
@@ -34,7 +30,7 @@ void elf::draw(unsigned programID)
             myObj->cube->draw(programID);
             glPopMatrix();
         }
-        //¤º¦Õ         
+        //ï¿½ï¿½ï¿½ï¿½         
         glPushMatrix();
         glTranslatef(0.2, 0.2, 0.7);
         glScalef(0.6, 0.6, 0.4);
@@ -50,7 +46,7 @@ void elf::draw(unsigned programID)
         glPopMatrix();
     }
 
-    {   //¥~¥ª¦Õ
+    {   //ï¿½~ï¿½ï¿½ï¿½ï¿½
         glPushMatrix();
         glTranslatef(-0.5, 0.6, 0.2);
         glRotatef(-20, 0, 0, 1);
@@ -65,7 +61,7 @@ void elf::draw(unsigned programID)
             myObj->cube->draw(programID);
             glPopMatrix();
         }
-        //¤º¦Õ         
+        //ï¿½ï¿½ï¿½ï¿½         
         glPushMatrix();
         glTranslatef(0.2, 0.2, -0.1);
         glScalef(0.6, 0.6, 0.4);
@@ -80,7 +76,7 @@ void elf::draw(unsigned programID)
         }
         glPopMatrix();
     }
-    {  //²´·ú
+    {  //ï¿½ï¿½ï¿½ï¿½
         glPushMatrix();
         glTranslatef(0.4, 0.15, 1);
         glScalef(0.2, 0.4, 0.2);
@@ -101,7 +97,7 @@ void elf::draw(unsigned programID)
 
     }
 
-    //¸|¬õ
+    //ï¿½|ï¿½ï¿½
     {
         glPushMatrix();
         glTranslatef(0.7, -0.2, 0.8);

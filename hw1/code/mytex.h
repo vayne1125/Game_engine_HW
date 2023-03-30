@@ -1,10 +1,12 @@
 #pragma once
-#include<iostream>
+#include <bits/stdc++.h>
+#include <iostream>
 #include <vector>
 #include <string>
-#include <GL\freeglut.h>
-#include"glad\glad.h"
-#include"mesh.h"
+#include <GL/glew.h>
+#include <GL/glut.h>
+#include "glad/glad.h"
+#include "mesh.h"
 using namespace std;
 class texture{
 public:

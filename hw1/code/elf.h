@@ -1,9 +1,13 @@
 #pragma once
-
+#include<GL/glew.h>
+#include<GL/glut.h>
+#include"glad/glad.h"
+#include"myobj.h"
+#include"mytex.h"
 class elf {
 public:
 	void draw(unsigned programID);
-	int dir = 0; //0«á  1¥k  2«e  3¥ª
+	int dir = 0; //0å¾Œ  1å³  2å‰  3å·¦
 	float angleY = 0;
 private:
 };

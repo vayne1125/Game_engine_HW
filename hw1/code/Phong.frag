@@ -6,7 +6,7 @@ in  vec3 NORMAL;
 in  vec3 GLOBAL; 
 
 layout(location = 3) uniform sampler2D tex;
-layout(location = 4) uniform vec4  dirLightPos;      //0: ¥­¦æ¥ú
+layout(location = 4) uniform vec4  dirLightPos;      //0: å¹³è¡Œå…‰
 layout(location = 5) uniform vec3  dirLightDir; 
 layout(location = 6) uniform vec3  dirLightColor; 
 layout(location = 7) uniform float  dirLightExpo;   //should up than 1 ,point should be 0

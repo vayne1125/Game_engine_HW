@@ -1,10 +1,11 @@
 #pragma once
-#include<iostream>
+#include <iostream>
 #include <vector>
 #include <string>
-#include <GL\freeglut.h>
-#include"glad\glad.h"
-#include"mesh.h"
+#include <GL/glew.h>
+#include <GL/glut.h>
+#include "glad/glad.h"
+#include "mesh.h"
 using namespace std;
 class myobj {
 public:

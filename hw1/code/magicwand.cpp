@@ -19,6 +19,6 @@ void magicwand::draw(int programID)
     myTex->magic_wand_wood->use(programID);
     myObj->cylinder->draw(programID);
     glPopMatrix();
-    //draw_cylinder(0.5, 0.8, 14);             //ªø«×¬°14 ¼e¬°0.8
+    //draw_cylinder(0.5, 0.8, 14);             //é•·åº¦ç‚º14 å¯¬ç‚º0.8
 
 }
