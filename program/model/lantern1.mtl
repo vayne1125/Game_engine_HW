@@ -1,0 +1,17 @@
+# Blender MTL File: 'uploads_files_2873722_LanternA.blend'
+# Material Count: 1
+
+newmtl lambert1
+Ns 199.999995
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump C:\\Users\\WANG\\Downloads\\lantern_A\\tex\\obj_lanternA_Normal.png
+map_Kd C:\\Users\\WANG\\Downloads\\lantern_A\\tex\\obj_lanternA_BaseColor.png
+map_Ns C:\\Users\\WANG\\Downloads\\lantern_A\\tex\\obj_lanternA_Roughness.png
+map_d C:\\Users\\WANG\\Downloads\\lantern_A\\tex\\obj_lanternA_Opacity.png
+refl C:\\Users\\WANG\\Downloads\\lantern_A\\tex\\obj_lanternA_Metallic.png
