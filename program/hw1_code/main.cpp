@@ -604,7 +604,7 @@ void myDisplay(void)
         myObj->vendor_col->draw(programID);
         myTex->tent->use(programID);
         myObj->vendor_roof->draw(programID);
-        myTex->tablecloth->use(programID);
+        myTex->green_fabric->use(programID);
         myObj->vendor_desk->draw(programID);
         glPopMatrix();
         glPopMatrix();
@@ -621,7 +621,7 @@ void myDisplay(void)
         myObj->vendor_col->draw(programID);
         myTex->tent->use(programID);
         myObj->vendor_roof->draw(programID);
-        myTex->tablecloth->use(programID);
+        myTex->blue_fabric->use(programID);
         myObj->vendor_desk->draw(programID);
         glPopMatrix();
         glPopMatrix();
