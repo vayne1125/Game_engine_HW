@@ -50,7 +50,7 @@ texture::texture(int r, int g, int b, int a, unsigned int programID)
 
 mytex::mytex(unsigned int programID)
 {
-    //red = new texture(".\\texture\\a.png", programID);
+    //red = new texture("../texture/a.png", programID);
     red = new texture(255,0,0,255, programID);
     //red = new texture(255,0,0,255, programID);
     black = new texture(0, 0, 0, 255, programID);
@@ -63,7 +63,7 @@ mytex::mytex(unsigned int programID)
     robot_gray_dark = new texture(127, 127, 127, 255, programID);
     elf_red = new texture(255,168,212,255, programID);
     for (int i = 0; i <= 55; i++) {
-        string fname = ".\\texture\\eevee_ani_", s2 = "";
+        string fname = "../texture/eevee_ani_", s2 = "";
         int tp = i;
         while (tp) {
             s2 += (tp % 10) + '0';
@@ -76,39 +76,39 @@ mytex::mytex(unsigned int programID)
         eevee[i] = new texture(fname.c_str(), programID);
     }
     magic_wand_wood = new texture(158, 79, 0, 255, programID);
-    fountain_base = new texture(".\\texture\\fountain_base.jpg", programID);
-    fountain_water = new texture(".\\texture\\fountain_water.jpg", programID);
+    fountain_base = new texture("../texture/fountain_base.jpg", programID);
+    fountain_water = new texture("../texture/fountain_water.jpg", programID);
     grass_dark = new texture(1, 152, 89,255, programID);
     grass_light = new texture(204, 255, 204,255, programID);
     coffee_dark = new texture(141,84,28,255, programID);
     coffee_light = new texture(162, 92, 21, 255, programID);
-    flower = new texture(".\\texture\\flower.png", programID);
+    flower = new texture("../texture/flower.png", programID);
     yellow_light = new texture(255, 255, 204, 255, programID);
     yellow_dark = new texture(173, 142, 0, 255, programID);
     red_dark = new texture(117, 0, 0, 255, programID);
-    stone_floor = new texture(".\\texture\\stone_floor.jpg", programID);
-    wood = new texture(".\\texture\\wood.jpg", programID);
-    wood2 = new texture(".\\texture\\wood2.jpg", programID);
-    wood3 = new texture(".\\texture\\wood3.jpg", programID);
-    wood4 = new texture(".\\texture\\wood4.jpg", programID);
-    wood5 = new texture(".\\texture\\wood5.jpg", programID);
-    tablecloth = new texture(".\\texture\\tablecloth.jpg", programID);
-    tent = new texture(".\\texture\\tent.jpg", programID);
+    stone_floor = new texture("../texture/stone_floor.jpg", programID);
+    wood = new texture("../texture/wood.jpg", programID);
+    wood2 = new texture("../texture/wood2.jpg", programID);
+    wood3 = new texture("../texture/wood3.jpg", programID);
+    wood4 = new texture("../texture/wood4.jpg", programID);
+    wood5 = new texture("../texture/wood5.jpg", programID);
+    tablecloth = new texture("../texture/tablecloth.jpg", programID);
+    tent = new texture("../texture/tent.jpg", programID);
     orange_dark = new texture(255, 165, 0, 255, programID);
-    bread = new texture(".\\texture\\bread.jpg", programID);
-    cheese = new texture(".\\texture\\cheese.jpg", programID);
-    red_apple = new texture(".\\texture\\red_apple.jpg", programID);
-    green_apple = new texture(".\\texture\\green_apple.jpg", programID);
-    pear = new texture(".\\texture\\pear.jpg", programID);
-    lemon = new texture(".\\texture\\lemon.jpg", programID);
-    silver = new texture(".\\texture\\sliver.jpg", programID);
-    blue_fabric = new texture(".\\texture\\blue_fabric.jpg", programID);
-    green_fabric = new texture(".\\texture\\green_fabric.jpg", programID);
-    red_lantern = new texture(".\\texture\\red_lantern.jpg", programID);
-    red_lantern2 = new texture(".\\texture\\red_lantern2.jpg", programID);
+    bread = new texture("../texture/bread.jpg", programID);
+    cheese = new texture("../texture/cheese.jpg", programID);
+    red_apple = new texture("../texture/red_apple.jpg", programID);
+    green_apple = new texture("../texture/green_apple.jpg", programID);
+    pear = new texture("../texture/pear.jpg", programID);
+    lemon = new texture("../texture/lemon.jpg", programID);
+    silver = new texture("../texture/sliver.jpg", programID);
+    blue_fabric = new texture("../texture/blue_fabric.jpg", programID);
+    green_fabric = new texture("../texture/green_fabric.jpg", programID);
+    red_lantern = new texture("../texture/red_lantern.jpg", programID);
+    red_lantern2 = new texture("../texture/red_lantern2.jpg", programID);
 
     //orange_dark, * orange_light, * dark_red, * orgred_dark, * orgred_light;
-    //blacksmith = new texture(".\\texture\\black_smith.png", programID);
-    //a = new texture(".\\texture\\pool.jpg", programID);
+    //blacksmith = new texture("../texture/black_smith.png", programID);
+    //a = new texture("../texture/pool.jpg", programID);
 }
     
