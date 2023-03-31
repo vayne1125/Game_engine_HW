@@ -64,7 +64,7 @@ private:
     hand* left_h;
     foot* left_f;
     foot* right_f;
-    int moveMode = ROBOT_WALK; //move model: 0->walk  1->run  2->turn  3->fly
+    int moveMode = ROBOT_RUN; //move model: 0->walk  1->run  2->turn  3->fly
     float runOffset = 0;
     float flyOffset = 0;
     float walkOffset = 0;

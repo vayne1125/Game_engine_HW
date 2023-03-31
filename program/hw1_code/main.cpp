@@ -172,7 +172,7 @@ void timerFunc(int nTimerID) {
             tpPos[0]++;
         }
         if (detectCollision(tpPos[0], tpPos[1], tpPos[2],1)) {
-            cout << tpPos[0] << " " << tpPos[2] << "\n";
+            //cout << tpPos[0] << " " << tpPos[2] << "\n";
             int tp = 1 + rand() % 4;
             //tp += 2;
             spotLightElf->dir = (spotLightElf->dir + tp) % 4;
@@ -196,15 +196,15 @@ void reset_camera() {
 }
 void keyboardUp_func(unsigned char key, int x, int y) {
     //if (isLock == LOCK) return;
-    cout << "inin\n";
-    glutTimerFunc(200, timerFunc, RUNTIMER);
-    if (myRobot->getMoveMode() != ROBOT_FLY && preKey != key)  myRobot->change_moveMode(ROBOT_WALK);
-    preKey = key;
-    if (myRobot->getMoveMode() != ROBOT_FLY && (key == 'W' || key == 'w' || key == 'A' || key == 'a' || key == 'S' || key == 's' || key == 'D' || key == 'd' || key == 'r' || key == 'R')) {
+    //cout << "inin\n";
+    //glutTimerFunc(200, timerFunc, RUNTIMER);
+    //if (myRobot->getMoveMode() != ROBOT_FLY && preKey != key)  myRobot->change_moveMode(ROBOT_WALK);
+    //preKey = key;
+    //if (myRobot->getMoveMode() != ROBOT_FLY && (key == 'W' || key == 'w' || key == 'A' || key == 'a' || key == 'S' || key == 's' || key == 'D' || key == 'd' || key == 'r' || key == 'R')) {
         //if (isLitspotOpen)  myRobot.carryLight();
         //else 
-        myRobot->stand();
-    }
+        //myRobot->stand();
+    //}
     //cout << "kokoko\n";
     if (key == ' ') {                   //跳
         if (myRobot->isMagician) {
@@ -231,7 +231,7 @@ void my_move_order(unsigned char key) {        //跟移動相關的判斷
 //cout << "inininin\n";
     //cout << (eye[0] - pos[0]) * (eye[0] - pos[0]) + (eye[2] - pos[2]) * (eye[2] - pos[2]) << "\n";
     if (myRobot-> isSitOnChair) return;        //如果坐在椅子上就不能動
-    cout << myRobot->getMoveMode() << "\n";
+    //cout << myRobot->getMoveMode() << "\n";
     float tpPos[3] = { pos[0], pos[1], pos[2] };
     float w[3] = { pos[0] - eye[0] ,pos[1] - eye[1], pos[2] - eye[2] };
     float s[3] = { -pos[0] + eye[0] , -pos[1] + eye[1], -pos[2] + eye[2] };
@@ -252,11 +252,9 @@ void my_move_order(unsigned char key) {        //跟移動相關的判斷
     a[0] = a[0] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     a[1] = a[1] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     a[2] = a[2] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
-    if (myRobot->getMoveMode() == ROBOT_WALK && preKey == key && (key == 'W' || key == 'w' || key == 'A' || key == 'a' || key == 'S' || key == 's' || key == 'D' || key == 'd')){
-        myRobot->change_moveMode(ROBOT_RUN);                       //0.3秒內連續按 就變成跑跑
-        cout << "pppppp\n";
-    }
-cout << "HERE2" << "\n";
+    //if (myRobot->getMoveMode() == ROBOT_WALK && preKey == key && (key == 'W' || key == 'w' || key == 'A' || key == 'a' || key == 'S' || key == 's' || key == 'D' || key == 'd')){
+    //    myRobot->change_moveMode(ROBOT_RUN);                       //0.3秒內連續按 就變成跑跑
+    //}
     if (key == 'S' || key == 's') {
         if (myRobot->isOnWand) {        //飛行模式
             myRobot->angle_y = 90;
@@ -268,7 +266,7 @@ cout << "HERE2" << "\n";
         }
         tpPos[0] += myRobot->moveOffset * s[0];
         tpPos[2] += myRobot->moveOffset * s[2];
-        cout << "here\n";
+        //cout << "here\n";
         //tpPos[2] += myRobot->moveOffset;
     }
     else if (key == 'W' || key == 'w') {
@@ -415,7 +413,8 @@ void myInit() {
     //myRobot->angle_y = 270;
     myRobot->setColor(myTex->robot_blue_main, myTex->robot_blue_sub);
     spotLightElf = new elf();
-    myRobot->setOffset(0.5,2,3); 
+    myRobot->setOffset(0.5,1.5,3); 
+    myRobot->change_moveMode(ROBOT_RUN);
     glutTimerFunc(100, timerFunc, ANIMATION);
     glutTimerFunc(100, timerFunc, LIGHT_ELF);
     uiui = new magicwand(programID);
@@ -869,8 +868,8 @@ int mouseX = 0, mouseY = 0,mouseBtn = 0;
 void motion_func(int  x, int y) {
     //cout << x << " " << y << "\n";
     if (mouseBtn == GLUT_RIGHT_BUTTON) {
-        if (x > mouseX) eyeAngy += 1.5;
-        else eyeAngy -= 1.5;
+        if (x > mouseX) eyeAngy += 0.5;
+        else eyeAngy -= 0.5;
 
         if (eyeAngy >= 360) eyeAngy -= 360;
         if (eyeAngy <= 0) eyeAngy += 360;
@@ -882,20 +881,28 @@ void motion_func(int  x, int y) {
         //cout << "oo\n";
     
     }
+
     mouseX = x;
     mouseY = y;
 };
 void mouseWheel_fun(int button, int dir, int x, int y) {
+    //cout << "kkk\n";
     if (dir > 0) fovy = fmax(fovy - 2, 70);
     else fovy = fmin(fovy + 2, 150);
 
 }
 void mouseClick_fun(int btn, int state, int x, int y) {
     if (state == GLUT_DOWN) {
+        //cout << btn << "\n";
         if (btn == GLUT_RIGHT_BUTTON) {
             mouseBtn = GLUT_RIGHT_BUTTON;
         }
-        else {
+        else if(btn == 3){
+            fovy = fmax(fovy - 2, 70);
+            //cout << "pos: " << pos[0] << " " << pos[2] << "\n";
+        }else if(btn == 4){
+            fovy = fmin(fovy + 2, 150);
+        }else if(btn == 0){
             cout << "pos: " << pos[0] << " " << pos[2] << "\n";
         }
     }

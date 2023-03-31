@@ -400,9 +400,9 @@ void robot::move() {
         hipJointXLimit = 160;
     }
     if (flag == 0) {
-        cout << "flag == 0\n";
+        //cout << "flag == 0\n";
         if (flag2 == 0) {  //右腳往前，左腳往後 
-        cout << "flcdag2 == 0\n";            
+        //cout << "flcdag2 == 0\n";            
             right_f->hipJointAng_x += hipJointFrontOffset / 2.0;          //右腳往前伸
             right_f->kneeAng_x += kneeFrontOffset / 2.0;
             left_f->hipJointAng_x += hipJointBackOffset / 2.0;            //左腳往後
@@ -411,7 +411,7 @@ void robot::move() {
             right_h->shoulderAng_x -= shoulderOffset / 2.0;               //右手往後
             if (right_f->hipJointAng_x <= hipJointXLimit) {               //邊界條件
                 flag2 = 1;
-                cout << "flag2 = 1\n";
+                //cout << "flag2 = 1\n";
             }
         }
         else { //右腳往後到原點，左腳往前到原點
@@ -424,7 +424,7 @@ void robot::move() {
             if (right_f->hipJointAng_x >= 180) {
                 flag2 = 0;
                 flag = 1;
-                cout << "flag2 = 0\n";
+                //cout << "flag2 = 0\n";
             }
         }
     }
