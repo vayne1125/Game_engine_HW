@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include "myobj.h"
 struct vertex {
     float a, b, c;
@@ -10,6 +9,7 @@ struct vertex {
 };
 myobj::myobj(unsigned int programID)
 {
+    
     solidsphere = getMesh("../model/solidsphere.obj", programID);
     cube = getMesh("../model/cube.obj", programID);
     cylinder = getMesh("../model/cylinder.obj", programID);
@@ -36,11 +36,55 @@ myobj::myobj(unsigned int programID)
     bow = getMesh("../model/bow.obj", programID);
     lantern1 = getMesh("../model/lantern1.obj", programID);
     //lantern2 = getMesh("../model/lantern2.obj", programID);
-    lantern3 = getMesh("../model/lantern3.obj", programID);
-
+    lantern3 = getMesh("../model/lantern3.obj", programID); 
+    
 }
 mesh* myobj::getMesh(string fname, unsigned int programID)
 {
+    
+    fstream file(fname.c_str(),std::fstream::in | std::fstream::ate); //ate -> 移到最後面
+    int sz = file.tellg();  //回傳當前指針位置( ate在尾巴 -> 檔案大小 )
+    file.seekg(0); //移到頭
+    //string data;
+    //data.resize(sz);
+    //file.read((char*)data.data(), sz);
+    //file.close();
+    vector<float>tp;
+    string s;
+    float x, y, z;
+    vector<vertex> v(1), vt(1), vn(1);
+    while (file >> s) {
+        //cout << fname << "\n";
+        if (s == "v") {
+            file >> x >> y >> z;
+            v.push_back(vertex(x, y, z));
+        }
+        else if (s == "vt") {
+            file >> x >> y;
+            vt.push_back(vertex(x, y));
+        }
+        else if (s == "vn") {
+            file >> x >> y >> z;
+            vn.push_back(vertex(x, y, z));
+        }
+        else if (s == "f") {
+            char x;
+            int a, b, c;
+            for (int i = 0; i < 3; i++) {
+                file >> a >> x >> b >> x >> c;
+                if (a > v.size()) {
+                    cout << fname << "\n";
+                    cout << a << "\n";
+                    
+                }
+                tp.push_back(v[a].a); tp.push_back(v[a].b); tp.push_back(v[a].c);
+                tp.push_back(vt[b].a); tp.push_back(vt[b].b);
+                tp.push_back(vn[c].a); tp.push_back(vn[c].b); tp.push_back(vn[c].c);
+            }
+        }
+    }
+file.close();
+/*
     freopen(fname.c_str(), "r", stdin);
     vector<float>tp;
     string s;
@@ -78,7 +122,10 @@ mesh* myobj::getMesh(string fname, unsigned int programID)
     }
     fclose(stdin);
     cin.clear();
+    */
     mesh* m = new mesh(programID, tp);
-    cout << tp.size() << "\n";
+    cout <<fname << " " <<tp.size() << "\n";
+    
     return m;
 }
+

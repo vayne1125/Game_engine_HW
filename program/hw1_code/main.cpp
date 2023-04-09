@@ -407,17 +407,19 @@ void keybaord_fun(unsigned char key, int X, int Y) {
     
 }
 void myInit() {
+    
     myTex = new mytex(programID);
     myObj = new myobj(programID);
+    
     myRobot = new robot(programID);
-    //myRobot->angle_y = 270;
+
     myRobot->setColor(myTex->robot_blue_main, myTex->robot_blue_sub);
     spotLightElf = new elf();
     myRobot->setOffset(0.5,1.5,3); 
     myRobot->change_moveMode(ROBOT_RUN);
     glutTimerFunc(100, timerFunc, ANIMATION);
     glutTimerFunc(100, timerFunc, LIGHT_ELF);
-    uiui = new magicwand(programID);
+    //uiui = new magicwand(programID);
 
     elfPos[0] = 0;
     elfPos[1] = 40;
@@ -429,10 +431,12 @@ void myInit() {
     eye[1] = 20;
     eye[2] = eyeDis;
 
+/*
     for (int i = 0; i < 6; i++) {
         bussiness[i] = new robot(programID);
         bussiness[i]->setColor(myTex->yellow_light, myTex->yellow_dark);
     }
+*/
    // bussiness[0]->setColor(myTex->yellow_light, myTex->yellow_dark);
 
 }
@@ -453,13 +457,17 @@ bool detectCollision(int x, int y, int z,int tar) {
 }
 void myDisplay(void)
 {
+
     eye[0] = pos[0] + eyeDis * cos(eyeAngy * PI / 180.0);
     eye[2] = pos[2] + eyeDis * sin(eyeAngy * PI / 180.0);
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.70, 0.70, 0.70, 1.0);  //Dark grey background
     //glClearColor(0.10, 0.10, 0.10, 1.0);  //Dark grey background
     //glClearColor(0.10, 0.10, 0.10, 1.0);  //Dark grey background
+
+    //glClearColor(1, 1, 1, 1.0);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    
     {
         glUniform4f(DIR_LIGHT_POS, -100, 50, 0, 0);
         glUniform3f(DIR_LIGHT_DIR, -1, -1, -1);
@@ -859,8 +867,12 @@ void myDisplay(void)
         spotLightElf->draw(programID);
         glPopMatrix();
     }
+    //cout << "hi\n";
+    //glFlush();
     glutSwapBuffers();
+    //cout << "swap\n";
     glutPostRedisplay();
+    
     usleep(1000); //micro sleep
     
 }
@@ -916,6 +928,7 @@ int main(int argc, char** argv) {
     std::cout << "Hello World!\n";
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
+    //glutInitWindowPosition(100, 100);
     glutInitWindowSize(800, 800);
     glutCreateWindow("Shader Sample Program"); //Window title bar
     glutDisplayFunc(myDisplay); //Display callback function
