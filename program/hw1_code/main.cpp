@@ -14,6 +14,7 @@
 #include"../glad/glad.h"
 #include "mesh.h"
 #include "myobj.h"
+#include "mytex.h"
 #include "robot.h"
 #include "elf.h"
 #define   PI   3.1415927
