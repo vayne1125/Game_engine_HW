@@ -20,6 +20,7 @@
 #include "mytex.h"
 #include "Robot.h"
 #include "SceneVendor.h"
+#include "ScenePhysicalExpFiled.h"
 #include "Billboard.h"
 #define   PI   3.1415927
 //location
@@ -46,6 +47,7 @@
 using namespace std;
 GLuint programID;
 SceneVendor* sceneVendor;
+ScenePhysicalExpFiled* scenePhysicalExpFiled;
 Robot* myRobot, * bussiness[6], * walker[10];
 myobj* myObj;
 mytex* myTex;
@@ -53,18 +55,18 @@ Billboard* billboard;
 magicwand* uiui;
 
 float   eyeAngx = 0.0, eyeAngy = 90.0, eyeAngz = 0.0;
+float   seeAngx = 0.0, seeAngy = 90.0, seeAngz = 0.0;
 float   u[3][3] = { {1.0,0.0,0.0}, {0.0,1.0,0.0}, {0.0,0.0,1.0} };
-float   eye[3] = { 0 };
+float   eye[3] = { 0 },seePoint[3] = {0,0,0};
 float   eyeDis = 0;
+float   seeDis = 0;
 double zNear = 0.1, zFar = 2000, aspect = 800 / (double)800, fovy;
 
 float   cv = cos(5.0 * PI / 180.0), sv = sin(5.0 * PI / 180.0); /* cos(5.0) and sin(5.0) */
 
-float   pos[3] = { 116,0,165 };
 int     preKey = -1;
 float   eyeMtx[16] = {0};
 
-int eevee_ani = 0;
 int dirLightStr = 2.3;
 bool isDirLightOpen = 1;
 
@@ -158,17 +160,6 @@ void reset_camera() {
     myRobot->angle_y = 0;
 }
 void keyboardUp_func(unsigned char key, int x, int y) {
-    //if (isLock == LOCK) return;
-    //cout << "inin\n";
-    //glutTimerFunc(200, timerFunc, RUNTIMER);
-    //if (myRobot->getMoveMode() != ROBOT_FLY && preKey != key)  myRobot->change_moveMode(ROBOT_WALK);
-    //preKey = key;
-    //if (myRobot->getMoveMode() != ROBOT_FLY && (key == 'W' || key == 'w' || key == 'A' || key == 'a' || key == 'S' || key == 's' || key == 'D' || key == 'd' || key == 'r' || key == 'R')) {
-        //if (isLitspotOpen)  myRobot.carryLight();
-        //else 
-        //myRobot->stand();
-    //}
-    //cout << "kokoko\n";
     if (key == ' ') {                   //跳
         if (myRobot->isMagician) {
             if (myRobot->isOnWand) {
@@ -190,14 +181,10 @@ void keyboardUp_func(unsigned char key, int x, int y) {
     }
 }
 void my_move_order(unsigned char key) {        //跟移動相關的判斷
-//cout << key << "\n";
-//cout << "inininin\n";
-    //cout << (eye[0] - pos[0]) * (eye[0] - pos[0]) + (eye[2] - pos[2]) * (eye[2] - pos[2]) << "\n";
-    if (myRobot-> isSitOnChair) return;        //如果坐在椅子上就不能動
-    //cout << myRobot->getMoveMode() << "\n";
-    float tpPos[3] = { pos[0], pos[1], pos[2] };
-    float w[3] = { pos[0] - eye[0] ,pos[1] - eye[1], pos[2] - eye[2] };
-    float s[3] = { -pos[0] + eye[0] , -pos[1] + eye[1], -pos[2] + eye[2] };
+
+    float tpPos[3] = { myRobot->pos[0], myRobot->pos[1], myRobot->pos[2] };
+    float w[3] = { myRobot->pos[0] - eye[0] ,myRobot->pos[1] - eye[1], myRobot->pos[2] - eye[2] };
+    float s[3] = { -myRobot->pos[0] + eye[0] , -myRobot->pos[1] + eye[1], -myRobot->pos[2] + eye[2] };
     float d[3] = { -w[2] , 0 , w[0] };
     float a[3] = { w[2] , 0 , -w[0] };
     w[0] = w[0] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
@@ -279,7 +266,7 @@ void my_move_order(unsigned char key) {        //跟移動相關的判斷
     }
     if (detectCollision(tpPos[0], tpPos[1], tpPos[2],0)) return;
     //cout << tpPos[0];
-    for (int i = 0; i < 3; i++) pos[i] = tpPos[i];
+    for (int i = 0; i < 3; i++) myRobot->pos[i] = tpPos[i];
     //cout << myRobot->moveOffset << "   jj\n";
     //cout << pos[0];
 }
@@ -292,112 +279,34 @@ void keybaord_fun(unsigned char key, int X, int Y) {
         isDirLightOpen ^= 1;
         if(isDirLightOpen) dirLightStr = 2.3;
         else dirLightStr = 0;
-    }
-    //float  x[3], y[3], z[3];
-    //int i;
-    //if (key == 19) {       //上 ctrl + w
-    //    for (int i = 0; i < 3; i++) eye[i] -= 1 * u[1][i];
-    //}
-    //else if (key == 23) {   //下 ctrl + s    
-    //    for (int i = 0; i < 3; i++) eye[i] += 1 * u[1][i];
-    //}
-    //else if (key == 4) {   //右 ctrl + d     
-    //    for (int i = 0; i < 3; i++) eye[i] += 1 * u[0][i];
-    //}
-    //else if (key == 1) {   //左 ctrl + a   
-    //    for (int i = 0; i < 3; i++) eye[i] -= 1 * u[0][i];
-    //}
-    //if (key == 17) {       //往前 ctrl + q
-    //    for (i = 0; i < 3; i++) eye[i] -= 1 * u[2][i];
-    //}
-    //else if (key == 5) {   //往後 ctrl + e
-    //    for (i = 0; i < 3; i++) eye[i] += 1 * u[2][i];
-    //}
-    //else if (key == 24) {             //ctrl + x pitching 
-    //    eyeAngx += 5.0;
-    //    if (eyeAngx > 360.0) eyeAngx -= 360.0;
-    //    for (i = 0; i < 3; i++) {
-    //        z[i] = cv * u[2][i] - sv * u[1][i];
-    //        y[i] = sv * u[2][i] + cv * u[1][i];
-    //    }
-    //    /*
-    //    y[0] = u[1][0] * cv - u[2][0] * sv;
-    //    y[1] = u[1][1] * cv - u[2][1] * sv;
-    //    y[2] = u[1][2] * cv - u[2][2] * sv;
-    //
-    //    z[0] = u[2][0] * cv + u[1][0] * sv;
-    //    z[1] = u[2][1] * cv + u[1][1] * sv;
-    //    z[2] = u[2][2] * cv + u[1][2] * sv;
-    //    */
-    //    for (i = 0; i < 3; i++) {
-    //        u[1][i] = y[i];
-    //        u[2][i] = z[i];
-    //    }
-    //}
-    //else if (key == 25) {            // heading ctrl + y
-    //    eyeAngy += 1.0;
-    //    if (eyeAngy > 360.0) eyeAngy -= 360.0;
-    //    
-    //    //eye[0] = pos[0] +  100 * cos(eyeAngy * PI / 180.0);
-    //    //eye[2] = pos[2] + 100 * sin(eyeAngy * PI / 180.0);
-    //    for (i = 0; i < 3; i++) {
-    //
-    //        x[i] = cv * u[0][i] - sv * u[2][i];
-    //        z[i] = sv * u[0][i] + cv * u[2][i];
-    //    }
-    //    for (i = 0; i < 3; i++) {
-    //        u[0][i] = x[i];
-    //        u[2][i] = z[i];
-    //    }
-    //}
-    //else if (key == 26) {            //ctrl + z rolling
-    //    eyeAngz += 5.0;
-    //    if (eyeAngz > 360.0) eyeAngz -= 360.0;
-    //    for (i = 0; i < 3; i++) {
-    //        x[i] = cv * u[0][i] - sv * u[1][i];
-    //        y[i] = sv * u[0][i] + cv * u[1][i];
-    //    }
-    //    for (i = 0; i < 3; i++) {
-    //        u[0][i] = x[i];
-    //        u[1][i] = y[i];
-    //    }
-    //}
-    //else 
-        
+    }   
     if (key == 127) { //ctrl + backspace
         reset_camera();
     }
-    
 }
 void myInit() {
     
     myTex = new mytex(programID);
     myObj = new myobj(programID);
     
-    myRobot = new Robot(programID);
+    myRobot = new Robot(programID,116,0,165);
 
     myRobot->setColor(myTex->robot_blue_main, myTex->robot_blue_sub);
 
     myRobot->setOffset(0.5,1.5,3); 
     myRobot->change_moveMode(ROBOT_RUN);
+
     glutTimerFunc(100, timerFunc, ANIMATION);
     glutTimerFunc(100, timerFunc, LIGHT_ELF);
     //uiui = new magicwand(programID);
 
     sceneVendor = new SceneVendor();
+    scenePhysicalExpFiled = new ScenePhysicalExpFiled();
     eyeDis = 30;
     fovy = 100;
     eye[0] = 0;
     eye[1] = 20;
     eye[2] = eyeDis;
-
-/*
-    for (int i = 0; i < 6; i++) {
-        bussiness[i] = new robot(programID);
-        bussiness[i]->setColor(myTex->yellow_light, myTex->yellow_dark);
-    }
-*/
-   // bussiness[0]->setColor(myTex->yellow_light, myTex->yellow_dark);
 
 }
 bool detectCollision(int x, int y, int z,int tar) {
@@ -418,14 +327,10 @@ bool detectCollision(int x, int y, int z,int tar) {
 void myDisplay(void)
 {
 
-    eye[0] = pos[0] + eyeDis * cos(eyeAngy * PI / 180.0);
-    eye[2] = pos[2] + eyeDis * sin(eyeAngy * PI / 180.0);
+    eye[0] = myRobot->pos[0] + eyeDis * cos(eyeAngy * PI / 180.0);
+    eye[2] = myRobot->pos[2] + eyeDis * sin(eyeAngy * PI / 180.0);
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.70, 0.70, 0.70, 1.0);  //Dark grey background
-    //glClearColor(0.10, 0.10, 0.10, 1.0);  //Dark grey background
-    //glClearColor(0.10, 0.10, 0.10, 1.0);  //Dark grey background
-
-    //glClearColor(1, 1, 1, 1.0);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     
     {
@@ -458,7 +363,8 @@ void myDisplay(void)
     {   //lookat
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        gluLookAt(eye[0], eye[1] , eye[2], pos[0], pos[1] + 20, pos[2], u[1][0], u[1][1], u[1][2]);
+        gluLookAt(eye[0], eye[1] , eye[2], myRobot->pos[0], myRobot->pos[1] + 20, myRobot->pos[2], 0,1,0);
+        //gluLookAt(myRobot->pos[0], myRobot->pos[1] + 20, myRobot->pos[2] + 20,eye[0], eye[1] , eye[2], 0, 1,0);
         //gluLookAt(eye[0], eye[1], eye[2], eye[0] - u[2][0], eye[1] - u[2][1], eye[2] - u[2][2], u[1][0], u[1][1], u[1][2]);
         glGetFloatv(GL_MODELVIEW_MATRIX, eyeMtx);
         glUniformMatrix4fv(0, 1, GL_FALSE, eyeMtx);
@@ -468,15 +374,17 @@ void myDisplay(void)
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glPushMatrix();
-        glTranslatef(pos[0], pos[1], pos[2]);
+        glTranslatef(myRobot->pos[0], myRobot->pos[1], myRobot->pos[2]);
         //glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         //glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myRobot->draw(programID);
         glPopMatrix();
-    
+        cout << myRobot->pos[0] << " " << myRobot->pos[1] << " "<< myRobot->pos[2] <<"\n";
     }
+
     {
         sceneVendor -> draw(eyeMtx,programID);
+        scenePhysicalExpFiled->draw(eyeMtx,programID);
     }
     glutSwapBuffers();
     glutPostRedisplay();
@@ -487,8 +395,8 @@ int mouseX = 0, mouseY = 0,mouseBtn = 0;
 void motion_func(int  x, int y) {
     //cout << x << " " << y << "\n";
     if (mouseBtn == GLUT_RIGHT_BUTTON) {
-        if (x > mouseX) eyeAngy += 0.5;
-        else eyeAngy -= 0.5;
+        if (x > mouseX) eyeAngy += 1;
+        else eyeAngy -= 1;
 
         if (eyeAngy >= 360) eyeAngy -= 360;
         if (eyeAngy <= 0) eyeAngy += 360;
@@ -518,17 +426,15 @@ void mouseClick_fun(int btn, int state, int x, int y) {
         }
         else if(btn == 3){
             fovy = fmax(fovy - 2, 70);
-            //cout << "pos: " << pos[0] << " " << pos[2] << "\n";
         }else if(btn == 4){
             fovy = fmin(fovy + 2, 150);
         }else if(btn == 0){
-            cout << "pos: " << pos[0] << " " << pos[2] << "\n";
+            cout << "pos: " << myRobot->pos[0] << " " << myRobot->pos[2] << "\n";
         }
     }
     else if (state == GLUT_UP) {
         mouseBtn = -1;
     }
-    //cout << GLUT_LEFT_BUTTON << "\n";
 }
 int main(int argc, char** argv) {
     srand(time(NULL));

@@ -106,6 +106,7 @@ void Robot::draw(unsigned int programID)
     //glLoadIdentity();
 
     glPushMatrix();
+    //
     glScalef(2.5, 2.5, 2.5);
     glTranslatef(x, y, z);                      //整隻的座標
 
@@ -240,13 +241,11 @@ void Robot::draw(unsigned int programID)
     glPopMatrix();                       //離開頭 
     
     glPopMatrix();                       //離開肚子坐標系 
-
+    
 }
 void Robot::stand()
 {
-    y = 0;
-    x = 0;
-    y = 0;
+    x = y =z =0;
     angle_x = 0;
     right_f->hipJointAng_x = 180;
     right_f->kneeAng_x = 0;
@@ -263,8 +262,11 @@ void Robot::stand()
     left_h->shoulderAng_z = -35;
     right_h->shoulderAng_z = 35;
 }
-Robot::Robot(unsigned int programID)
+Robot::Robot(unsigned int programID,float pos_x,float pos_y,float pos_z)
 {
+    pos[0] = pos_x;
+    pos[1] = pos_y;
+    pos[2] = pos_z;
     isMagician = 0;
     right_h = new Hand;
     left_h = new Hand;

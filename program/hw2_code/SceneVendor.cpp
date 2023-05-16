@@ -10,9 +10,11 @@ SceneVendor::SceneVendor()
 
 void SceneVendor::draw(float* eyeMtx,int programID)
 {
+
     float objMtx[16];
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    
     {   //地塊
         glPushMatrix();
         glTranslatef(0, -10.5, 0);

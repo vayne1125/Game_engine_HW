@@ -1,5 +1,4 @@
 #include "mesh.h"
-mesh::mesh(){};
 mesh::mesh(int programID, const vector<float>& vec)
 {
     vertex_count = vec.size() / 8;

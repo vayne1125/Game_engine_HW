@@ -9,5 +9,5 @@ public:
 	void draw(float x, float z, float w, float h, texture* tex,float* eyeMtx,unsigned int programID);
     //mesh* meshForBillboard;
 private:
-    mesh* meshForBillboard = new mesh;
+    //mesh* meshForBillboard;
 };

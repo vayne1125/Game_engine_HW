@@ -37,7 +37,7 @@ private:
 };
 class Robot {
 public:
-	Robot(unsigned int programID);
+	Robot(unsigned int programID,float pos_x,float pos_y,float pos_z);
     void change_moveMode(int mode);
 	void sit();
 	void draw(unsigned int programID);
@@ -58,8 +58,11 @@ public:
     int getMoveMode();
     float moveOffset = 0;
     void setColor(texture* m,texture* s);
+                        
+    float pos[3] = {0,0,0};        //控制機器人在世界座標系的座標
+        
 private:
-    float x = 0, y = 0, z = 0;                                  //控制機器人座標
+    float x = 0, y = 0, z = 0;       //控制機器人座標                            
     Hand* right_h;
     Hand* left_h;
     Foot* left_f;
