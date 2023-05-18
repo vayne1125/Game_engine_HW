@@ -8,11 +8,11 @@
 #include"../glad/glad.h"
 #include "mesh.h"
 using namespace std;
-class myobj {
+class GraphicObj {
 public:
 	mesh* cube, * solidsphere, * cylinder, * solidtorus_5_025, *fountain, *blacksmith, * fountain_base , * fountain_water,* vendor_base, * vendor_col,* vendor_roof;
 	mesh* square, *vendor_desk, *tree_round_up, *tree_round_btn,* tree_conical_btn,* tree_conical_up, *cloud1, *vendor_crate, * apple, * cheese, *bread2, *plate, *sword, *bow, *lantern1, * lantern2, * lantern3;
-	myobj(unsigned int programID);																						  
+	GraphicObj(unsigned int programID);																						  
 private:																												  
 	mesh* getMesh(string fname,unsigned int programID);
 };

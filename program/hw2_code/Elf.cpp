@@ -1,5 +1,5 @@
 #include "Elf.h"
-extern myobj* myObj;
+extern GraphicObj* graphicObj;
 extern mytex* myTex;
 Elf::Elf(float x, float y, float z)
 {
@@ -16,7 +16,7 @@ void Elf::draw(unsigned programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->robot_blue_main->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();
     }
 
@@ -31,7 +31,7 @@ void Elf::draw(unsigned programID)
             glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
             glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
             myTex->robot_blue_sub->use(programID);
-            myObj->cube->draw(programID);
+            graphicObj->cube->draw(programID);
             glPopMatrix();
         }
         //內耳         
@@ -44,7 +44,7 @@ void Elf::draw(unsigned programID)
             glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
             glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
             myTex->robot_gray->use(programID);
-            myObj->cube->draw(programID);
+            graphicObj->cube->draw(programID);
             glPopMatrix();
         }
         glPopMatrix();
@@ -62,7 +62,7 @@ void Elf::draw(unsigned programID)
             glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
             glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
             myTex->robot_blue_sub->use(programID);
-            myObj->cube->draw(programID);
+            graphicObj->cube->draw(programID);
             glPopMatrix();
         }
         //內耳         
@@ -75,7 +75,7 @@ void Elf::draw(unsigned programID)
             glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
             glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
             myTex->robot_gray->use(programID);
-            myObj->cube->draw(programID);
+            graphicObj->cube->draw(programID);
             glPopMatrix();
         }
         glPopMatrix();
@@ -87,7 +87,7 @@ void Elf::draw(unsigned programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->black->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();
 
         glPushMatrix();
@@ -96,7 +96,7 @@ void Elf::draw(unsigned programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->black->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();
 
     }
@@ -109,7 +109,7 @@ void Elf::draw(unsigned programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->elf_red->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();
                 
         glPushMatrix();
@@ -118,7 +118,7 @@ void Elf::draw(unsigned programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->elf_red->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();
     }
     glPopMatrix();

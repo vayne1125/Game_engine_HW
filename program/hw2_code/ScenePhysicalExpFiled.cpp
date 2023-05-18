@@ -1,5 +1,5 @@
 #include"ScenePhysicalExpFiled.h"
-extern myobj* myObj;
+extern GraphicObj* graphicObj;
 extern mytex* myTex;
 void ScenePhysicalExpFiled::draw(float *eyeMtx, int programID)
 {
@@ -16,7 +16,7 @@ void ScenePhysicalExpFiled::draw(float *eyeMtx, int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->robot_gray ->use(programID);
-        myObj->cube->draw(programID);
+        graphicObj->cube->draw(programID);
         glPopMatrix();
         glPopMatrix();
         //石頭
@@ -29,7 +29,7 @@ void ScenePhysicalExpFiled::draw(float *eyeMtx, int programID)
                 glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
                 glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
                 myTex->stone_floor->use(programID);
-                myObj->square->draw(programID);
+                graphicObj->square->draw(programID);
                 glPopMatrix();
             }
         }

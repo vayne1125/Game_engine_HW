@@ -5,7 +5,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/vec3.hpp>
 #include <glm/mat3x3.hpp>
-#include"myobj.h"
+#include"GraphicObj.h"
 #include"mytex.h"
 class Elf {
 public:

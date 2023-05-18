@@ -1,27 +1,20 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
-#include <iostream>
-#include <vector>
-#include <set>
-#include <functional>
-#include <fstream>
-#include <string>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <GL/glut.h>
-#include <ctime>
-#include <cmath>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/vec3.hpp>
 #include <glm/mat3x3.hpp>
 #include"../glad/glad.h"
 #include "mesh.h"
-#include "myobj.h"
+#include "GraphicObj.h"
 #include "mytex.h"
 #include "Robot.h"
 #include "SceneVendor.h"
 #include "ScenePhysicalExpFiled.h"
 #include "Billboard.h"
+#include "Phyobj.h"
 #define   PI   3.1415927
 //location
 #define DIR_LIGHT_POS    4
@@ -49,10 +42,12 @@ GLuint programID;
 SceneVendor* sceneVendor;
 ScenePhysicalExpFiled* scenePhysicalExpFiled;
 Robot* myRobot, * bussiness[6], * walker[10];
-myobj* myObj;
+GraphicObj* graphicObj;
 mytex* myTex;
 Billboard* billboard;
 magicwand* uiui;
+Cube* cube;
+Sphere* sphere; 
 
 float   eyeAngx = 0.0, eyeAngy = 90.0, eyeAngz = 0.0;
 float   seeAngx = 0.0, seeAngy = 90.0, seeAngz = 0.0;
@@ -69,6 +64,7 @@ float   eyeMtx[16] = {0};
 
 int dirLightStr = 2.3;
 bool isDirLightOpen = 1;
+int pretime = 0;
 
 bool detectCollision(int x, int y, int z,int tar);
 void timerFunc(int nTimerID) {
@@ -283,11 +279,25 @@ void keybaord_fun(unsigned char key, int X, int Y) {
     if (key == 127) { //ctrl + backspace
         reset_camera();
     }
+    if (key == 'p' || key == 'P')
+    {
+        //flag = 1;
+
+        glm::vec3 F{0, 600, 0};
+        glm::vec3 impactPoint{0.001, -1, 0};
+        glm::vec3 J = cross(impactPoint, F);
+
+        cube->applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
+        cube->applyRotJ(J);
+        sphere->applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
+        sphere->applyRotJ(J);
+        cout << key << "\n";
+    }
 }
 void myInit() {
     
     myTex = new mytex(programID);
-    myObj = new myobj(programID);
+    graphicObj = new GraphicObj(programID);
     
     myRobot = new Robot(programID,116,0,165);
 
@@ -308,6 +318,12 @@ void myInit() {
     eye[1] = 20;
     eye[2] = eyeDis;
 
+    pretime = clock();
+    cube = new Cube({1, 2, 0.5}, 1, 0.2);
+    sphere = new Sphere(10, 1, 0.01);
+    cube->pos = {100,10,250};
+    sphere->pos = {200,10,250};
+
 }
 bool detectCollision(int x, int y, int z,int tar) {
     if (z <= 48 + 6) return 1;   //第一行攤販
@@ -324,6 +340,7 @@ bool detectCollision(int x, int y, int z,int tar) {
     }
     return 0;
 }
+glm::mat4 tp;
 void myDisplay(void)
 {
 
@@ -375,8 +392,6 @@ void myDisplay(void)
         glLoadIdentity();
         glPushMatrix();
         glTranslatef(myRobot->pos[0], myRobot->pos[1], myRobot->pos[2]);
-        //glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-        //glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myRobot->draw(programID);
         glPopMatrix();
         cout << myRobot->pos[0] << " " << myRobot->pos[1] << " "<< myRobot->pos[2] <<"\n";
@@ -386,6 +401,34 @@ void myDisplay(void)
         sceneVendor -> draw(eyeMtx,programID);
         scenePhysicalExpFiled->draw(eyeMtx,programID);
     }
+    int pt = clock();
+    float dt = std::min((pt - pretime) / 1000.f, 0.01f);
+    pretime = pt;
+    
+    cube -> update(dt);
+    sphere -> update(dt);
+
+    tp = glm::translate(glm::mat4(1), cube->pos) * glm::toMat4(cube->rot) * glm::scale(glm::mat4(1), {10, 20, 5});
+    glUniformMatrix4fv(2, 1, GL_FALSE, &tp[0][0]);
+
+    myTex->cheese->use(programID);
+    graphicObj->cube->draw(programID);
+
+    tp = glm::translate(glm::mat4(1),sphere -> pos)*glm::toMat4(sphere -> rot) * glm::scale(glm::mat4(1), {20, 20, 20});
+    glUniformMatrix4fv(2, 1, GL_FALSE, &tp[0][0]);
+
+    //cout << sphere -> pos[0] << " " << sphere -> pos[1]+ sphere->rad << " " << sphere -> pos[2] << "\n";
+
+    myTex->cheese->use(programID);
+    graphicObj->solidsphere->draw(programID);
+
+    // all a  = 0
+    cube -> lin_a = {0, 0, 0};
+    cube -> rot_a = {0, 0, 0};
+
+    sphere -> lin_a = {0, 0, 0};
+    sphere -> rot_a = {0, 0, 0};
+
     glutSwapBuffers();
     glutPostRedisplay();
     usleep(1000); //micro sleep

@@ -228,7 +228,7 @@ void keybaord_fun(unsigned char key, int X, int Y)
         flag = 1;
 
         vec3 F{0, 60, 0};
-        vec3 impactPoint{-1, -1, 0};
+        vec3 impactPoint{0.001, -1, 0};
         vec3 J = cross(impactPoint, F);
 
 

@@ -1,5 +1,5 @@
 #include "SceneVendor.h"
-extern myobj* myObj;
+extern GraphicObj* graphicObj;
 extern mytex* myTex;
 extern Billboard* billboard;
 
@@ -24,7 +24,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->robot_gray ->use(programID);
-        myObj->cube->draw(programID);
+        graphicObj->cube->draw(programID);
         glPopMatrix();
         glPopMatrix();
         //石頭
@@ -37,7 +37,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
                 glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
                 glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
                 myTex->stone_floor->use(programID);
-                myObj->square->draw(programID);
+                graphicObj->square->draw(programID);
                 glPopMatrix();
             }
         }
@@ -56,9 +56,9 @@ void SceneVendor::draw(float* eyeMtx,int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->fountain_base->use(programID);
-        myObj->fountain_base->draw(programID);
+        graphicObj->fountain_base->draw(programID);
         myTex->fountain_water->use(programID);
-        myObj->fountain_water->draw(programID);
+        graphicObj->fountain_water->draw(programID);
         glPopMatrix();
     }
     //glPushMatrix();
@@ -68,7 +68,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
     //glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
     //glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
     //myTex->blacksmith->use(programID);
-    //myObj->blacksmith->draw(programID);
+    //graphicObj->blacksmith->draw(programID);
     //glPopMatrix();
     {   //vendor
         glPushMatrix();
@@ -82,13 +82,13 @@ void SceneVendor::draw(float* eyeMtx,int programID)
             glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
             glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
             myTex->wood3->use(programID);
-            myObj->vendor_base->draw(programID);
+            graphicObj->vendor_base->draw(programID);
             myTex->wood4->use(programID);
-            myObj->vendor_col->draw(programID);
+            graphicObj->vendor_col->draw(programID);
             myTex->tent->use(programID);
-            myObj->vendor_roof->draw(programID);
+            graphicObj->vendor_roof->draw(programID);
             myTex->tablecloth->use(programID);
-            myObj->vendor_desk->draw(programID);
+            graphicObj->vendor_desk->draw(programID);
             glPopMatrix();
         }
         glPopMatrix();
@@ -101,13 +101,13 @@ void SceneVendor::draw(float* eyeMtx,int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->wood3->use(programID);
-        myObj->vendor_base->draw(programID);
+        graphicObj->vendor_base->draw(programID);
         myTex->wood4->use(programID);
-        myObj->vendor_col->draw(programID);
+        graphicObj->vendor_col->draw(programID);
         myTex->tent->use(programID);
-        myObj->vendor_roof->draw(programID);
+        graphicObj->vendor_roof->draw(programID);
         myTex->green_fabric->use(programID);
-        myObj->vendor_desk->draw(programID);
+        graphicObj->vendor_desk->draw(programID);
         glPopMatrix();
         glPopMatrix();
 
@@ -118,13 +118,13 @@ void SceneVendor::draw(float* eyeMtx,int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->wood3->use(programID);
-        myObj->vendor_base->draw(programID);
+        graphicObj->vendor_base->draw(programID);
         myTex->wood4->use(programID);
-        myObj->vendor_col->draw(programID);
+        graphicObj->vendor_col->draw(programID);
         myTex->tent->use(programID);
-        myObj->vendor_roof->draw(programID);
+        graphicObj->vendor_roof->draw(programID);
         myTex->blue_fabric->use(programID);
-        myObj->vendor_desk->draw(programID);
+        graphicObj->vendor_desk->draw(programID);
         glPopMatrix();
         glPopMatrix();
         {
@@ -139,7 +139,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
                 glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
                 glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
                 myTex->wood2->use(programID);
-                myObj->vendor_crate->draw(programID);
+                graphicObj->vendor_crate->draw(programID);
                 glPopMatrix();
 
                 for (int j = -1; j <= 1; j++) {
@@ -159,7 +159,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
                             myTex->green_apple->use(programID);
                         else
                             myTex->lemon->use(programID);
-                        myObj->apple->draw(programID);
+                        graphicObj->apple->draw(programID);
                         glPopMatrix();
                     }
                 }
@@ -175,7 +175,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
                 glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
                 glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
                 myTex->wood5->use(programID);
-                myObj->plate->draw(programID);
+                graphicObj->plate->draw(programID);
                 glPopMatrix();
                 glPushMatrix();         //起司
                 glTranslatef(-1, 0.2, 1);
@@ -184,7 +184,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
                 glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
                 glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
                 myTex->cheese->use(programID);
-                myObj->cheese->draw(programID);
+                graphicObj->cheese->draw(programID);
                 glPopMatrix();
                 glPopMatrix();
 
@@ -198,7 +198,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
                 glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
                 glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
                 myTex->wood5->use(programID);
-                myObj->plate->draw(programID);
+                graphicObj->plate->draw(programID);
                 glPopMatrix();
                 //麵包
                 glPushMatrix();
@@ -208,7 +208,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
                 glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
                 glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
                 myTex->bread->use(programID);
-                myObj->bread2->draw(programID);
+                graphicObj->bread2->draw(programID);
                 glPopMatrix();
                 glPopMatrix();
             }
@@ -223,7 +223,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
                 glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
                 glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
                 myTex->silver->use(programID,0.508273f, 0.508273f, 0.508273f,51.25f);
-                myObj->sword->draw(programID);
+                graphicObj->sword->draw(programID);
                 glPopMatrix();
                 glPopMatrix();
 
@@ -237,7 +237,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
                 glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
                 glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
                 myTex->wood->use(programID, 0.508273f, 0.508273f, 0.508273f, 51.25f);
-                myObj->bow->draw(programID);
+                graphicObj->bow->draw(programID);
                 glPopMatrix();
                 glPopMatrix();
                 //弓箭
@@ -250,7 +250,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
                 glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
                 glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
                 myTex->wood->use(programID, 0.508273f, 0.508273f, 0.508273f, 51.25f);
-                myObj->bow->draw(programID);
+                graphicObj->bow->draw(programID);
                 glPopMatrix();
                 glPopMatrix();
             }
@@ -269,7 +269,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
                         myTex->red_lantern2->use(programID, 0.508273f, 0.508273f, 0.508273f, 51.25f);
                     else
                         myTex->red_lantern->use(programID, 0.508273f, 0.508273f, 0.508273f, 51.25f);
-                    myObj->lantern3->draw(programID);
+                    graphicObj->lantern3->draw(programID);
                     glPopMatrix();
                     glPopMatrix();
                 }
@@ -283,7 +283,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
                     glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
                     glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
                     myTex->red_lantern->use(programID, 0.508273f, 0.508273f, 0.508273f, 51.25f);
-                    myObj->lantern1->draw(programID);
+                    graphicObj->lantern1->draw(programID);
                     glPopMatrix();
                     glPopMatrix();
                 }
@@ -297,9 +297,9 @@ void SceneVendor::draw(float* eyeMtx,int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->grass_dark->use(programID);
-        myObj->tree_round_up->draw(programID);
+        graphicObj->tree_round_up->draw(programID);
         myTex->coffee_dark->use(programID);
-        myObj->tree_round_btn->draw(programID);
+        graphicObj->tree_round_btn->draw(programID);
         glPopMatrix();
 
         glPushMatrix();
@@ -308,9 +308,9 @@ void SceneVendor::draw(float* eyeMtx,int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->grass_light->use(programID);
-        myObj->tree_round_up->draw(programID);
+        graphicObj->tree_round_up->draw(programID);
         myTex->coffee_dark->use(programID);
-        myObj->tree_round_btn->draw(programID);
+        graphicObj->tree_round_btn->draw(programID);
         glPopMatrix();
 
         glPushMatrix();
@@ -319,9 +319,9 @@ void SceneVendor::draw(float* eyeMtx,int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->grass_dark->use(programID);
-        myObj->tree_conical_up ->draw(programID);
+        graphicObj->tree_conical_up ->draw(programID);
         myTex->coffee_dark->use(programID);
-        myObj->tree_conical_btn->draw(programID);
+        graphicObj->tree_conical_btn->draw(programID);
         glPopMatrix();
 
         glPushMatrix();
@@ -330,9 +330,9 @@ void SceneVendor::draw(float* eyeMtx,int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->grass_light->use(programID);
-        myObj->tree_round_up->draw(programID);
+        graphicObj->tree_round_up->draw(programID);
         myTex->coffee_dark->use(programID);
-        myObj->tree_round_btn->draw(programID);
+        graphicObj->tree_round_btn->draw(programID);
         glPopMatrix();
     }
     {   //雲
@@ -343,7 +343,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
             glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
             glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
             myTex->white->use(programID);
-            myObj->cloud1->draw(programID);
+            graphicObj->cloud1->draw(programID);
             glPopMatrix();
         }
     }

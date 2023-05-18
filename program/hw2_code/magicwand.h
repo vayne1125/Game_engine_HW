@@ -5,7 +5,7 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include"../glad/glad.h"
-#include"myobj.h"
+#include"GraphicObj.h"
 #include "mytex.h"
 class magicwand {
 public:

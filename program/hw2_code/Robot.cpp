@@ -1,5 +1,5 @@
 #include "Robot.h"
-extern myobj* myObj;
+extern GraphicObj* graphicObj;
 extern mytex* myTex;
 magicwand* magic_wand_carry;
 struct node {   //定義極座標的點
@@ -22,7 +22,7 @@ void Hand::draw(int programID){
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         sub->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
     }
     //forarms
     glTranslatef(0, 0.75, 0);              //走到 肩膀上方0.25 + 圓中心0.75(畫1.5的手臂) - 0.25重疊
@@ -32,7 +32,7 @@ void Hand::draw(int programID){
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->robot_gray->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();
     }
     glTranslatef(0, 0.75, 0);                 //手臂前端中心
@@ -47,7 +47,7 @@ void Hand::draw(int programID){
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         sub->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();
     }
     
@@ -60,7 +60,7 @@ void Hand::draw(int programID){
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->robot_gray->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();
     }
 
@@ -77,7 +77,7 @@ void Hand::draw(int programID){
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         sub->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();
     }
     {   //右手指頭
@@ -88,7 +88,7 @@ void Hand::draw(int programID){
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         sub->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();
     }
 
@@ -120,7 +120,7 @@ void Robot::draw(unsigned int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         main->use(programID);
-        myObj->solidsphere->draw(programID);                //畫肚子 直徑4
+        graphicObj->solidsphere->draw(programID);                //畫肚子 直徑4
         glPopMatrix();
     }                
     //return;
@@ -184,7 +184,7 @@ void Robot::draw(unsigned int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         main->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();  
     }
 
@@ -197,13 +197,13 @@ void Robot::draw(unsigned int programID)
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         if(isMagician) myTex->robot_blue_eye->use(programID);
         else myTex->black->use(programID);
-        myObj->solidsphere->draw(programID);        //眼白
+        graphicObj->solidsphere->draw(programID);        //眼白
         glTranslatef(0, 0.15, 0.15);
         glScalef(0.66, 0.66, 0.66);
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->white->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         //glutSolidSphere(0.33, 10, 10);
         glPopMatrix();                           //pop3
     }
@@ -215,13 +215,13 @@ void Robot::draw(unsigned int programID)
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         if (isMagician) myTex->robot_pink_eye->use(programID);
         else myTex->black->use(programID);
-        myObj->solidsphere->draw(programID);       
+        graphicObj->solidsphere->draw(programID);       
         glTranslatef(0, 0.15, 0.15);         //眼白
         glScalef(0.66, 0.66, 0.66);
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->white->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();                          
     }
     //glColor3f(1, 0, 0);
@@ -291,7 +291,7 @@ void Foot::draw(int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         sub->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();
     }
 
@@ -303,7 +303,7 @@ void Foot::draw(int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->robot_gray->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();
     }
     
@@ -316,7 +316,7 @@ void Foot::draw(int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         sub->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();    
     }
 
@@ -328,7 +328,7 @@ void Foot::draw(int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->robot_gray->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();
     }
 
@@ -339,7 +339,7 @@ void Foot::draw(int programID)
         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
         myTex->robot_gray_dark->use(programID);
-        myObj->solidsphere->draw(programID);
+        graphicObj->solidsphere->draw(programID);
         glPopMatrix();
     }       
 }
