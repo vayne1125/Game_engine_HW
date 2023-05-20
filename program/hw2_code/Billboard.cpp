@@ -28,9 +28,9 @@ void Billboard::draw(float x, float z, float w, float h, texture *tex, float* ey
     v1[0] = x + (w / 2) * a[0]; v1[1] = 0.0; v1[2] = z + (w / 2) * a[2];
     v2[0] = x + (w / 2) * a[0]; v2[1] = h; v2[2] = z + (w / 2) * a[2];
     v3[0] = x - (w / 2) * a[0]; v3[1] = h; v3[2] = z - (w / 2) * a[2];
-    
-    mesh* meshForBillboard = new mesh(programID, { v0[0],v0[1],v0[2],0,1,0,0,1,v1[0],v1[1],v1[2],1,1,0,0,1,v2[0],v2[1],v2[2],1,0,0,0,1,
-        v2[0],v2[1],v2[2],1,0,0,0,1,v3[0],v3[1],v3[2],0,0,0,0,1,v0[0],v0[1],v0[2],0,1,0,0,1});
+    vector<float> vec  { v0[0],v0[1],v0[2],0,1,0,0,1,v1[0],v1[1],v1[2],1,1,0,0,1,v2[0],v2[1],v2[2],1,0,0,0,1,
+        v2[0],v2[1],v2[2],1,0,0,0,1,v3[0],v3[1],v3[2],0,0,0,0,1,v0[0],v0[1],v0[2],0,1,0,0,1};
+    mesh* meshForBillboard = new mesh(programID,vec,false);
 
     glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
     glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);

@@ -10,36 +10,52 @@ struct vertex {
 GraphicObj::GraphicObj(unsigned int programID)
 {
     
-    solidsphere = getMesh("../model/solidsphere.obj", programID);
-    cube = getMesh("../model/cube.obj", programID);
-    cylinder = getMesh("../model/cylinder.obj", programID);
-    solidtorus_5_025 = getMesh("../model/solidtorus_0.5_0.025.obj", programID);
-    fountain_base = getMesh("../model/fountain_base.obj", programID);
-    fountain_water = getMesh("../model/fountain_water.obj", programID);
-    blacksmith = getMesh("../model/Blacksmith.obj", programID);
-    square = getMesh("../model/square.obj", programID);
-    vendor_base = getMesh("../model/vendor_base.obj", programID);
-    vendor_col = getMesh("../model/vendor_col.obj", programID);
-    vendor_roof = getMesh("../model/vendor_roof.obj", programID);
-    vendor_desk = getMesh("../model/vendor_desk.obj", programID);
-    tree_round_up = getMesh("../model/tree_round_up.obj", programID);
-    tree_round_btn = getMesh("../model/tree_round_btn.obj", programID);
-    tree_conical_up = getMesh("../model/tree_conical_up.obj", programID);
-    tree_conical_btn = getMesh("../model/tree_conical_btn.obj", programID);
-    cloud1 = getMesh("../model/cloud1.obj", programID);
-    vendor_crate = getMesh("../model/vendor_crate.obj", programID);
-    apple = getMesh("../model/apple.obj", programID);
-    cheese = getMesh("../model/cheese.obj", programID);
-    bread2 = getMesh("../model/bread2.obj", programID);
-    plate = getMesh("../model/plate.obj", programID);
-    sword = getMesh("../model/sword.obj", programID);
-    bow = getMesh("../model/bow.obj", programID);
-    lantern1 = getMesh("../model/lantern1.obj", programID);
-    //lantern2 = getMesh("../model/lantern2.obj", programID);
-    lantern3 = getMesh("../model/lantern3.obj", programID); 
+    solidsphere = getMesh("../model/solidsphere.obj", programID,0);
+    cube = getMesh("../model/cube.obj", programID,0);
+    cylinder = getMesh("../model/cylinder.obj", programID,0);
+    solidtorus_5_025 = getMesh("../model/solidtorus_0.5_0.025.obj", programID,0);
+    fountain_base = getMesh("../model/fountain_base.obj", programID,0);
+    fountain_water = getMesh("../model/fountain_water.obj", programID,0);
+    blacksmith = getMesh("../model/Blacksmith.obj", programID,0);
+    square = getMesh("../model/square.obj", programID,0);
+    vendor_base = getMesh("../model/vendor_base.obj", programID,0);
+    vendor_col = getMesh("../model/vendor_col.obj", programID,0);
+    vendor_roof = getMesh("../model/vendor_roof.obj", programID,0);
+    vendor_desk = getMesh("../model/vendor_desk.obj", programID,0);
+    tree_round_up = getMesh("../model/tree_round_up.obj", programID,0);
+    tree_round_btn = getMesh("../model/tree_round_btn.obj", programID,0);
+    tree_conical_up = getMesh("../model/tree_conical_up.obj", programID,0);
+    tree_conical_btn = getMesh("../model/tree_conical_btn.obj", programID,0);
+    cloud1 = getMesh("../model/cloud1.obj", programID,0);
+    vendor_crate = getMesh("../model/vendor_crate.obj", programID,0);
+    apple = getMesh("../model/apple.obj", programID,0);
+    cheese = getMesh("../model/cheese.obj", programID,0);
+    bread2 = getMesh("../model/bread2.obj", programID,0);
+    plate = getMesh("../model/plate.obj", programID,0);
+    sword = getMesh("../model/sword.obj", programID,0);
+    bow = getMesh("../model/bow.obj", programID,0);
+    lantern1 = getMesh("../model/lantern1.obj", programID,0);
+    //lantern2 = getMesh("../model/lantern2.obj", programID,0);
+    lantern3 = getMesh("../model/lantern3.obj", programID,0); 
     
+
+    //---------------------phy---------------------------------//
+    phy_sphere = getMesh("../model/solidsphere.obj", programID,1);
+    phy_cube = getMesh("../model/cube.obj", programID,1);
 }
-mesh* GraphicObj::getMesh(string fname, unsigned int programID)
+void GraphicObj::drawByID(int graID, unsigned int programID)
+{
+    switch(graID){
+        case YU_GRAPHICS_SPHERE:
+            phy_sphere->draw(programID );
+            break;
+        case YU_GRAPHICS_CUBE:
+            phy_cube->draw(programID );
+        default:
+            break;
+    }
+}
+mesh *GraphicObj::getMesh(string fname, unsigned int programID,bool isphy)
 {
     
     fstream file(fname.c_str(),std::fstream::in | std::fstream::ate); //ate -> 移到最後面
@@ -84,7 +100,7 @@ mesh* GraphicObj::getMesh(string fname, unsigned int programID)
         }
     }
     file.close();
-    mesh* m = new mesh(programID, tp);
+    mesh* m = new mesh(programID, tp,isphy);
     cout <<fname << " " <<tp.size() << "\n";
     
     return m;

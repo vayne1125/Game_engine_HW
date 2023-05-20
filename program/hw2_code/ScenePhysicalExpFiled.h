@@ -15,6 +15,6 @@ private:
 	float floorX = 232;
 	float floorY = 10;
 	float floorZ = 203;
-    float pos[3] = {0,0,233};    //左下角座標
+    float pos[3] = {0,0,213};    //左下角座標
 };
 

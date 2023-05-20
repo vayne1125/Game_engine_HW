@@ -112,3 +112,15 @@ mytex::mytex(unsigned int programID)
     //a = new texture("../texture/pool.jpg", programID);
 }
     
+void mytex::useByID(int texID, unsigned int programID)
+{
+    switch (texID){
+        case YU_RED:
+            red -> use(programID);
+            break;
+        case YU_CHEESE:
+            cheese -> use(programID);
+        default:
+            break;
+    }
+}

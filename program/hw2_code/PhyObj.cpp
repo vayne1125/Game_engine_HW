@@ -1,14 +1,15 @@
-#include "Phyobj.h"
-Phyobj::Phyobj(float _m, float _k): m(_m), k(_k){
+#include "PhyObj.h"
+PhyObj::PhyObj(float _m, float _k): m(_m), k(_k){
 }
-Phyobj::Phyobj(float _m): m(_m), k(0.5){
+PhyObj::PhyObj(float _m): m(_m), k(0.5){
 }
-void Phyobj::applyLinearForce(const glm::vec3 &F)
+void PhyObj::applyLinearForce(const glm::vec3 &F)
 {
+    //std::cout << "in2\n";
     lin_a += F / m;
 }
 
-void Phyobj::applyRotJ(const glm::vec3 &J)
+void PhyObj::applyRotJ(const glm::vec3 &J)
 {
     // J ＝ I x w = r x F
     // 求 I , F
@@ -17,7 +18,7 @@ void Phyobj::applyRotJ(const glm::vec3 &J)
     rot_a += Rot_inv * I_inv * Rot * J;
 }
 
-void Phyobj::update(float dt)
+void PhyObj::update(float dt)
 {
     //給空氣阻力 （平移 ＋ 旋轉）
     glm::vec3 dragforce = -v * k;
@@ -32,26 +33,29 @@ void Phyobj::update(float dt)
         rot = glm::angleAxis(glm::length(w), glm::normalize(w)) * rot;
 
 }
-Sphere::Sphere(float r, float _m, float _k) : rad(r), Phyobj(_m, _k){
+Sphere::Sphere(float r, float _m, float _k) : rad(r), PhyObj(_m, _k){
     I_inv = glm::mat3{1 / (2.0 / 5 * m * rad * rad)};
 }
-Sphere::Sphere(float r, float _m) : rad(r), Phyobj(_m)
+Sphere::Sphere(float r, float _m) : rad(r), PhyObj(_m)
 {
     I_inv = glm::mat3{1 / (2.0 / 5 * m * rad * rad)};
 }
-void Sphere::update(float dt){
+void Sphere::update(float dt)
+{
+    //std::cout << "sphereupdate\n";
+    //給重力
     applyLinearForce({0, -9.8 * m, 0});
     // collision
-    if (pos[1] <= (0 + 0.00001 + 10))
+    if (pos[1]<= (0 + 0.00001) + rad/2.0)
     {
-        v[1] = -v[1] * k;
+        v[1] = -v[1] * 0.6;
         if (fabs(v[1]) < 5)
             v[1] = 0;
-        pos[1] = 10;
+        pos[1] = rad/2.0;
     }
-    Phyobj::update(dt);
+    PhyObj::update(dt);
 }
-Cube :: Cube(const glm::vec3 &_sz, float _m, float _k) : sz(_sz), Phyobj(_m, _k)
+Cube :: Cube(const glm::vec3 &_sz, float _m, float _k) : sz(_sz), PhyObj(_m, _k)
 {
     I_inv = glm::mat3{
         12 / (m * (sz.y * sz.y + sz.z * sz.z)), 0, 0,
@@ -67,7 +71,7 @@ Cube :: Cube(const glm::vec3 &_sz, float _m, float _k) : sz(_sz), Phyobj(_m, _k)
     corner[6] = {sz.x / 2, -sz.y / 2, -sz.z / 2};
     corner[7] = {-sz.x / 2, -sz.y / 2, -sz.z / 2};
 }
-Cube::Cube(const glm::vec3 &_sz, float _m) : sz(_sz), Phyobj(_m)
+Cube::Cube(const glm::vec3 &_sz, float _m) : sz(_sz), PhyObj(_m)
 {
     I_inv = glm::mat3{
         12 / (m * (sz.y * sz.y + sz.z * sz.z)), 0, 0,
@@ -124,7 +128,7 @@ void Cube :: update(float dt){
             // cout << "\nmny: " << mny.x << " " << mny.y << " " << mny.z << "\n";
         }
     }
-    Phyobj::update(dt);
+    PhyObj::update(dt);
     if (flag)
     {
         v.y = fmax(v.y, 0.0);

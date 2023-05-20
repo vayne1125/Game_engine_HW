@@ -4,6 +4,9 @@
 #include <GL/glut.h>
 #include"../glad/glad.h"
 #include "mesh.h"
+#define YU_RED    0
+#define YU_CHEESE 1
+
 using namespace std;
 class texture{
 public:
@@ -17,10 +20,12 @@ private:
 class mytex {
 public:
 	mytex(unsigned int programID);
-	texture* red, *robot_blue_main,* robot_blue_sub, *black, *white,*robot_blue_eye, *robot_pink_eye, * robot_gray, *robot_gray_dark, * magic_wand_wood, *blacksmith;
+	void useByID(int texID,unsigned int programID);
+	
+	texture* red, *robot_blue_main,* robot_blue_sub, *black, *white,*robot_blue_eye, *robot_pink_eye, * robot_gray, *robot_gray_dark, * magic_wand_wood;
 	//vector<texture> eevee;
 	texture* grass_dark, * flower, * grass_light,* coffee_dark,* coffee_light;
-	texture* eevee[56],*a,* fountain_base,* fountain_water,* elf_red;
+	texture* eevee[56],* fountain_base,* fountain_water,* elf_red;
 	texture* yellow_light, * yellow_dark, * orange_dark, * orange_light,*red_dark,*orgred_dark,*orgred_light, *stone_floor;
 	texture* wood, * wood2, *wood3, *wood4, * wood5, *tablecloth, *tent, *pear, *bread, *cheese, *red_apple, *green_apple, *lemon, *silver, * blue_fabric, * green_fabric, * red_lantern, * red_lantern2;
 private:

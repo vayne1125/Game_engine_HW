@@ -45,7 +45,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
     }
     
     {   //伊布
-    cout << eyeMtx << "\n";
+        //cout << eyeMtx << "\n";
         billboard->draw(65, 70, 28.125, 15, myTex->eevee[eevee_ani],eyeMtx,programID);
     }
 

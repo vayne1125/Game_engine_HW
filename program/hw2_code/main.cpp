@@ -14,7 +14,8 @@
 #include "SceneVendor.h"
 #include "ScenePhysicalExpFiled.h"
 #include "Billboard.h"
-#include "Phyobj.h"
+#include "PhyObj.h"
+#include "Object.h"
 #define   PI   3.1415927
 //location
 #define DIR_LIGHT_POS    4
@@ -41,13 +42,13 @@ using namespace std;
 GLuint programID;
 SceneVendor* sceneVendor;
 ScenePhysicalExpFiled* scenePhysicalExpFiled;
-Robot* myRobot, * bussiness[6], * walker[10];
+Robot* myRobot;
 GraphicObj* graphicObj;
 mytex* myTex;
 Billboard* billboard;
 magicwand* uiui;
-Cube* cube;
-Sphere* sphere; 
+Object* cube;
+Object* sphere;
 
 float   eyeAngx = 0.0, eyeAngy = 90.0, eyeAngz = 0.0;
 float   seeAngx = 0.0, seeAngy = 90.0, seeAngz = 0.0;
@@ -74,36 +75,24 @@ void timerFunc(int nTimerID) {
         break;
     case JUMPTIMER:               //跳躍
         if (!myRobot->jump()) {
-            //isLock = LOCK;        //跳時不可以按
             glutTimerFunc(100, timerFunc, JUMPTIMER);
         }
         else {
-            //if (isLitspotOpen)  myRobot.carryLight();
-            //else 
             myRobot->stand();
-            //isLock = UNLOCK;
         }
         glutPostRedisplay();
         break;
     case JUMPONWANDTIMER:           //跳上法杖
         if (!myRobot->jumpOnWand()) {
-            //isLock = LOCK;
             glutTimerFunc(100, timerFunc, JUMPONWANDTIMER);
-        }
-        else {
-            //isLock = UNLOCK;
         }
         glutPostRedisplay();
         break;
     case JUMPTOFLOORTIMER:          //跳回地面
         if (!myRobot->jumpToFloor()) {
-            //isLock = LOCK;
             glutTimerFunc(100, timerFunc, JUMPTOFLOORTIMER);
         }
         else {
-            //isLock = UNLOCK;
-            //if (isLitspotOpen)  myRobot.carryLight();
-            //else 
             myRobot->stand();
         }
         glutPostRedisplay();
@@ -260,11 +249,8 @@ void my_move_order(unsigned char key) {        //跟移動相關的判斷
             myRobot->move();    //在地板才要動腳
         }
     }
-    if (detectCollision(tpPos[0], tpPos[1], tpPos[2],0)) return;
-    //cout << tpPos[0];
+    //if (detectCollision(tpPos[0], tpPos[1], tpPos[2],0)) return;
     for (int i = 0; i < 3; i++) myRobot->pos[i] = tpPos[i];
-    //cout << myRobot->moveOffset << "   jj\n";
-    //cout << pos[0];
 }
 float getDis(float x1, float y1, float x2, float y2) {           //算距離
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
@@ -283,15 +269,17 @@ void keybaord_fun(unsigned char key, int X, int Y) {
     {
         //flag = 1;
 
-        glm::vec3 F{0, 600, 0};
+        glm::vec3 F{0, 60, 0};
         glm::vec3 impactPoint{0.001, -1, 0};
         glm::vec3 J = cross(impactPoint, F);
 
-        cube->applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
-        cube->applyRotJ(J);
-        sphere->applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
-        sphere->applyRotJ(J);
-        cout << key << "\n";
+      //  cube->applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
+      //  cube->applyRotJ(J);
+        cube -> phyObj -> applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
+        cube -> phyObj -> applyRotJ(J);
+        sphere -> phyObj -> applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
+        sphere -> phyObj -> applyRotJ(J);
+        //cout << key << "\n";
     }
 }
 void myInit() {
@@ -308,10 +296,10 @@ void myInit() {
 
     glutTimerFunc(100, timerFunc, ANIMATION);
     glutTimerFunc(100, timerFunc, LIGHT_ELF);
-    //uiui = new magicwand(programID);
 
     sceneVendor = new SceneVendor();
     scenePhysicalExpFiled = new ScenePhysicalExpFiled();
+    
     eyeDis = 30;
     fovy = 100;
     eye[0] = 0;
@@ -319,11 +307,12 @@ void myInit() {
     eye[2] = eyeDis;
 
     pretime = clock();
-    cube = new Cube({1, 2, 0.5}, 1, 0.2);
-    sphere = new Sphere(10, 1, 0.01);
-    cube->pos = {100,10,250};
-    sphere->pos = {200,10,250};
-
+    
+    cube = new Object(YU_GRAPHICS_CUBE,YU_PHYSICS_CUBE,YU_CHEESE,{10, 5, 10}, 1, 0.2);
+    cube->setPos(100,10,250);
+    
+    sphere = new Object(YU_GRAPHICS_SPHERE,YU_PHYSICS_SPHERE,YU_RED,20,1,0.01f);
+    sphere -> setPos(200,100,250);
 }
 bool detectCollision(int x, int y, int z,int tar) {
     if (z <= 48 + 6) return 1;   //第一行攤販
@@ -340,7 +329,6 @@ bool detectCollision(int x, int y, int z,int tar) {
     }
     return 0;
 }
-glm::mat4 tp;
 void myDisplay(void)
 {
 
@@ -386,19 +374,17 @@ void myDisplay(void)
         glGetFloatv(GL_MODELVIEW_MATRIX, eyeMtx);
         glUniformMatrix4fv(0, 1, GL_FALSE, eyeMtx);
     }
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
     //robot
     {
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
         glPushMatrix();
         glTranslatef(myRobot->pos[0], myRobot->pos[1], myRobot->pos[2]);
         myRobot->draw(programID);
         glPopMatrix();
-        cout << myRobot->pos[0] << " " << myRobot->pos[1] << " "<< myRobot->pos[2] <<"\n";
     }
-
     {
-        sceneVendor -> draw(eyeMtx,programID);
+        //sceneVendor -> draw(eyeMtx,programID);
         scenePhysicalExpFiled->draw(eyeMtx,programID);
     }
     int pt = clock();
@@ -407,27 +393,8 @@ void myDisplay(void)
     
     cube -> update(dt);
     sphere -> update(dt);
-
-    tp = glm::translate(glm::mat4(1), cube->pos) * glm::toMat4(cube->rot) * glm::scale(glm::mat4(1), {10, 20, 5});
-    glUniformMatrix4fv(2, 1, GL_FALSE, &tp[0][0]);
-
-    myTex->cheese->use(programID);
-    graphicObj->cube->draw(programID);
-
-    tp = glm::translate(glm::mat4(1),sphere -> pos)*glm::toMat4(sphere -> rot) * glm::scale(glm::mat4(1), {20, 20, 20});
-    glUniformMatrix4fv(2, 1, GL_FALSE, &tp[0][0]);
-
-    //cout << sphere -> pos[0] << " " << sphere -> pos[1]+ sphere->rad << " " << sphere -> pos[2] << "\n";
-
-    myTex->cheese->use(programID);
-    graphicObj->solidsphere->draw(programID);
-
-    // all a  = 0
-    cube -> lin_a = {0, 0, 0};
-    cube -> rot_a = {0, 0, 0};
-
-    sphere -> lin_a = {0, 0, 0};
-    sphere -> rot_a = {0, 0, 0};
+    cube -> draw(programID);
+    sphere -> draw(programID);
 
     glutSwapBuffers();
     glutPostRedisplay();

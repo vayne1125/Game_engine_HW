@@ -3,7 +3,9 @@
 #include <glm/vec3.hpp>
 #include <glm/mat3x3.hpp>
 #include <bits/stdc++.h>
-class Phyobj
+#define YU_PHYSICS_SPHERE    0
+#define YU_PHYSICS_CUBE      1
+class PhyObj
 {
 public:
     glm::mat3 I_inv;
@@ -14,13 +16,13 @@ public:
     glm::vec3 lin_a;
     glm::vec3 rot_a;
     float m, k;
-    Phyobj(float _m, float _k);
-    Phyobj(float _m);
+    PhyObj(float _m, float _k);
+    PhyObj(float _m);
     void applyLinearForce(const glm::vec3 &F);
     void applyRotJ(const glm::vec3 &J);
     virtual void update(float dt);
 };
-class Sphere : public Phyobj
+class Sphere : public PhyObj
 {
 public:
     float rad;
@@ -31,7 +33,7 @@ public:
 private:
 } ;
 //sphere(2, 1, 0.4);
-class Cube : public Phyobj
+class Cube : public PhyObj
 {
 public:
     glm::vec3 sz;
