@@ -16,10 +16,13 @@ public:
     void setPos(float x,float y,float z);
     void init();
     void update(float dt);
+    void applyForce(const glm::vec3 &F,const glm::vec3 &impactPoint);
+    void shoot(float F_,glm::vec3 start,glm::vec3 dir);
     Object(int GraphicObjID, int PhyObjID, int textureID,float r,float m);
     Object(int GraphicObjID, int PhyObjID, int textureID,const glm::vec3& sz,float m,float k);
     Object(int GraphicObjID, int PhyObjID, int textureID,const glm::vec3& sz,float m);
+    Object(int GraphicObjID, int PhyObjID, int textureID,float m);
 private:
-    glm::vec3 sz;
+    glm::vec3 sz = {1,1,1};
     int GraphicObjID,PhyObjID,textureID;
 };

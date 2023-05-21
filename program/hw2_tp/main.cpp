@@ -237,6 +237,7 @@ void keybaord_fun(unsigned char key, int X, int Y)
 {
     if (key == 'p' || key == 'P')
     {
+        
         //因為是正交矩陣，所以 inverse = transpose
         {
             mat4 tp = glm::translate(mat4(1),sphere.pos)*glm::toMat4(sphere.rot)*glm::scale(glm::mat4(1),glm::vec3{sphere.rad});

@@ -5,6 +5,7 @@
 #include <bits/stdc++.h>
 #define YU_PHYSICS_SPHERE    0
 #define YU_PHYSICS_CUBE      1
+#define YU_PHYSICS_IRREGULAR 2
 class PhyObj
 {
 public:
@@ -13,8 +14,8 @@ public:
     glm::vec3 v{0, 0, 0};
     glm::vec3 w{0, 0, 0};
     glm::vec3 pos;
-    glm::vec3 lin_a;
-    glm::vec3 rot_a;
+    glm::vec3 lin_a{0,0,0};
+    glm::vec3 rot_a{0,0,0};
     float m, k;
     PhyObj(float _m, float _k);
     PhyObj(float _m);

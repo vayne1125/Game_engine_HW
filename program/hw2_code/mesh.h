@@ -13,6 +13,7 @@ mesh();
 	mesh(unsigned int programID,vector<float>& vec,bool phy);
 	void draw(int programID);
 	const glm::mat3 &getI(){return I;}
+	const vector<glm::vec3> &getVertices();
 private:
 	unsigned int VAOID;
 	int vertex_count = 0;

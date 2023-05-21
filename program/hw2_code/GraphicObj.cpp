@@ -42,7 +42,8 @@ GraphicObj::GraphicObj(unsigned int programID)
     //---------------------phy---------------------------------//
     phy_sphere = getMesh("../model/solidsphere.obj", programID,1);
     phy_cube = getMesh("../model/cube.obj", programID,1);
-}
+    phy_cloud = getMesh("../model/cloud1.obj", programID,1); 
+}   
 void GraphicObj::drawByID(int graID, unsigned int programID)
 {
     switch(graID){
@@ -50,12 +51,45 @@ void GraphicObj::drawByID(int graID, unsigned int programID)
             phy_sphere->draw(programID );
             break;
         case YU_GRAPHICS_CUBE:
-            phy_cube->draw(programID );
+            phy_cube->draw(programID);
+            break;
+        case YU_GRAPHICS_CLOUD:
+            //cout << "draw cloud\n";
+            phy_cloud -> draw(programID);
+            break;
         default:
+            cout << "GraphicObj::drawByID(int graID, unsigned int programID) has wrong!!!\n"; 
             break;
     }
 }
-mesh *GraphicObj::getMesh(string fname, unsigned int programID,bool isphy)
+const glm::mat3 &GraphicObj::getIByID(int graID)
+{
+    switch(graID){
+        case YU_GRAPHICS_CLOUD:
+            return phy_cloud->getI();
+            break;
+        default:
+            cout << "GraphicObj::getIByID has wrong!!! in GraphicObj.cpp\n";
+            break;
+    }    
+    return glm::mat3();
+}
+const vector<glm::vec3> &GraphicObj::getVerticesByID(int graID)
+{
+    switch(graID){
+        case YU_GRAPHICS_CUBE:
+            return phy_cube->getVertices();
+        case YU_GRAPHICS_SPHERE:
+            return phy_sphere->getVertices();
+        case YU_GRAPHICS_CLOUD:
+            return phy_cloud->getVertices();
+        default:
+            cout << "GraphicObj::getVerticesByID has wrong!!! in GraphicObj.cpp\n";
+            break;
+    }    
+    // TODO: insert return statement here
+}
+mesh *GraphicObj::getMesh(string fname, unsigned int programID, bool isphy)
 {
     
     fstream file(fname.c_str(),std::fstream::in | std::fstream::ate); //ate -> 移到最後面

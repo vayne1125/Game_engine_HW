@@ -1,9 +1,11 @@
 #include "mesh.h"
 mesh::mesh(){};
 mesh::mesh(unsigned int programID,vector<float>& vec,bool phy){
-    if(phy == 1){
-        float tot = 0;
-        glm::vec3 tot2 = {0,0,0};
+    vertex_count = vec.size() / 8;
+    if(phy == 1)
+    {
+        float tot = 0;                  //體積
+        glm::vec3 tot2 = {0,0,0};       //類質心
         for(int i=0;i<vertex_count/3;i++){
             glm::vec3  a = {vec[i*24+0],vec[i*24+1],vec[i*24+2]};
             glm::vec3  b = {vec[i*24+8],vec[i*24+9],vec[i*24+10]};
@@ -14,8 +16,6 @@ mesh::mesh(unsigned int programID,vector<float>& vec,bool phy){
             tot2 += glm::cross(A,B)*(A*A/12.0f + A*B/12.0f + A*a/3.0f + B*B/12.0f + B*a/3.0f + a*a/2.0f);
         }
         mc = tot2 / tot;
-        cout << mc.x << " " << mc.y << " " << mc.z << "\n"; 
-
         glm::vec3 xyz = {0,0,0};
         float xy = 0,zy = 0,xz = 0;
         //高斯散度定理
@@ -41,7 +41,8 @@ mesh::mesh(unsigned int programID,vector<float>& vec,bool phy){
             glm::vec3  c = {vec[i*24+16],vec[i*24+17],vec[i*24+18]};
             glm::vec3  A = b-a;
             glm::vec3  B = c-a;
-            
+
+  
             glm::vec3 cross_AB = glm::cross(A,B);
             xyz += 1/3.0f*cross_AB*((A*A*A)/20.0f + (A*A*B)/20.0f + (A*A*a)/4.0f + A*B*B/20.0F + A*B*a/4.0f + (A*a*a)/2.0f + B*B*B/20.0f + B*B*a/4.0f +  B*a*a/2.0f + a*a*a/2.0f);
             
@@ -64,8 +65,10 @@ mesh::mesh(unsigned int programID,vector<float>& vec,bool phy){
         I[0][1] = I[1][0] = -xy;
         I[0][2] = I[2][0] = -xz;
         I[1][2] = I[2][1] = -zy;
+
+        //cout << I[0][0] << "\n";
     }
-    vertex_count = vec.size() / 8;
+
     { //VAO VBO
         unsigned int VBOID;
         glGenVertexArrays(1, &VAOID); // VAO
@@ -88,6 +91,11 @@ mesh::mesh(unsigned int programID,vector<float>& vec,bool phy){
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
         glEnableVertexAttribArray(2);
     }
+}
+
+const vector<glm::vec3> &mesh::getVertices()
+{
+    return vertices;
 }
 
 void mesh::draw(int programID)

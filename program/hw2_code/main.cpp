@@ -37,6 +37,9 @@
 #define JUMPTOFLOORTIMER 53     //跳回地板
 #define ANIMATION        54
 #define LIGHT_ELF        55
+
+#define WINDOW_WIDTH 1920
+#define WINDOW_HEIGHT 990
 //object
 using namespace std;
 GLuint programID;
@@ -47,16 +50,19 @@ GraphicObj* graphicObj;
 mytex* myTex;
 Billboard* billboard;
 magicwand* uiui;
+
 Object* cube;
 Object* sphere;
+Object* cloud;
 
 float   eyeAngx = 0.0, eyeAngy = 90.0, eyeAngz = 0.0;
 float   u[3][3] = { {1.0,0.0,0.0}, {0.0,1.0,0.0}, {0.0,0.0,1.0} };
 float   eye[3] = { 0 };
 float   eyeDis = 0;
-double zNear = 0.1, zFar = 2000, aspect = 800 / (double)800, fovy;
+double zNear = 0.1, zFar = 2000, aspect = WINDOW_WIDTH / (double)WINDOW_HEIGHT, fovy;
 
 float   cv = cos(5.0 * PI / 180.0), sv = sin(5.0 * PI / 180.0); /* cos(5.0) and sin(5.0) */
+
 
 int     preKey = -1;
 float   eyeMtx[16] = {0};
@@ -65,11 +71,12 @@ int dirLightStr = 2.3;
 bool isDirLightOpen = 1;
 int pretime = 0;
 
-float tpfovy = 50;
-float tpeye[3] = {116,30,150}; //攝影機
-float tptar[3] = {116,30,165}; //準心
-float tpeyeAngy = 90;
-void tporder(unsigned int key);
+bool firstClick = 0;
+float firstSightFovy = 40;
+float firstSightEyePos[3] = {116,30,150}; //攝影機
+float firstSightSeePoint[3] = {116,30,155}; //看向的點：準心
+float firstSightEyeAngY = 90;
+void first_sight_move_order(unsigned int key);
 
 bool detectCollision(int x, int y, int z,int tar);
 void timerFunc(int nTimerID) {
@@ -268,7 +275,7 @@ float getDis(float x1, float y1, float x2, float y2) {           //算距離
 void keybaord_fun(unsigned char key, int X, int Y) {
 
     my_move_order(key);
-    tporder(key);
+    first_sight_move_order(key);
     if (key == '0') {
         isDirLightOpen ^= 1;
         if(isDirLightOpen) dirLightStr = 2.3;
@@ -279,23 +286,18 @@ void keybaord_fun(unsigned char key, int X, int Y) {
     }
     if (key == 'p' || key == 'P')
     {
-        //flag = 1;
-
         glm::vec3 F{0, 60, 0};
-        glm::vec3 impactPoint{0.001, -1, 0};
-        glm::vec3 J = cross(impactPoint, F);
+        glm::vec3 impactPoint{0.01, -1, 0};  //在地座標系
 
-        cube -> phyObj -> applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
-        cube -> phyObj -> applyRotJ(J);
-        sphere -> phyObj -> applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
-        sphere -> phyObj -> applyRotJ(J);
-        
+        cube->applyForce(F,impactPoint);
+        sphere->applyForce(F,impactPoint);
+        cloud->applyForce(F,impactPoint);
     }
 }
-void tporder(unsigned int key){
-    float tpPos[3] = { tpeye[0], tpeye[1], tpeye[2] };
-    float w[3] = { tptar[0] - tpeye[0] ,tptar[1] - tpeye[1], tptar[2] - tpeye[2] };
-    float s[3] = { -tptar[0] + tpeye[0] , -tptar[1] + tpeye[1], -tptar[2] + tpeye[2] };
+void first_sight_move_order(unsigned int key){
+    float tpPos[3] = { firstSightEyePos[0], firstSightEyePos[1], firstSightEyePos[2] };
+    float w[3] = { firstSightSeePoint[0] - firstSightEyePos[0] ,firstSightSeePoint[1] - firstSightEyePos[1], firstSightSeePoint[2] - firstSightEyePos[2] };
+    float s[3] = { -firstSightSeePoint[0] + firstSightEyePos[0] , -firstSightSeePoint[1] + firstSightEyePos[1], -firstSightSeePoint[2] + firstSightEyePos[2] };
     float d[3] = { -w[2] , 0 , w[0] };
     float a[3] = { w[2] , 0 , -w[0] };
     w[0] = w[0] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
@@ -314,20 +316,18 @@ void tporder(unsigned int key){
     a[1] = a[1] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     a[2] = a[2] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     if(key == 's' || key == 'S'){
-        tptar[0] += s[0];
-        tptar[2] += s[2];
+        firstSightSeePoint[0] += s[0];
+        firstSightSeePoint[2] += s[2];
     }else if(key == 'w' || key == 'W'){
-        tptar[0] += w[0];
-        tptar[2] += w[2];
+        firstSightSeePoint[0] += w[0];
+        firstSightSeePoint[2] += w[2];
     }else if(key == 'a' || key == 'A'){
-        tptar[0] += a[0];
-        tptar[2] += a[2];
+        firstSightSeePoint[0] += a[0];
+        firstSightSeePoint[2] += a[2];
     }else if(key == 'd' || key == 'D'){
-        tptar[0] += d[0];
-        tptar[2] += d[2];
+        firstSightSeePoint[0] += d[0];
+        firstSightSeePoint[2] += d[2];
     }
-    
-    
 }
 void myInit() {
     
@@ -355,11 +355,14 @@ void myInit() {
 
     pretime = clock();
     
-    cube = new Object(YU_GRAPHICS_CUBE,YU_PHYSICS_CUBE,YU_CHEESE,{10, 5, 10}, 1, 0.2);
+    cube = new Object(YU_GRAPHICS_CUBE,YU_PHYSICS_CUBE,YU_CHEESE,{5, 10, 2.5}, 1, 0.2);
     cube->setPos(100,10,250);
     
-    sphere = new Object(YU_GRAPHICS_SPHERE,YU_PHYSICS_SPHERE,YU_RED,20,1,0.01f);
+    sphere = new Object(YU_GRAPHICS_SPHERE,YU_PHYSICS_SPHERE,YU_RED,10,1,0.01f);
     sphere -> setPos(200,100,250);
+
+    cloud = new Object(YU_GRAPHICS_CLOUD,YU_PHYSICS_IRREGULAR,YU_CHEESE,{4,4,4},1);
+    cloud -> setPos(200,10,250);
 }
 bool detectCollision(int x, int y, int z,int tar) {
     if (z <= 48 + 6) return 1;   //第一行攤販
@@ -381,8 +384,8 @@ void myDisplay(void)
     glUseProgram(programID);
     glEnable(GL_DEPTH_TEST);
 
-    tpeye[0] = tptar[0] - 15 * cos(tpeyeAngy * PI / 180.0);
-    tpeye[2] = tptar[2] - 15 * sin(tpeyeAngy * PI / 180.0);
+    firstSightEyePos[0] = firstSightSeePoint[0] - 15 * cos(firstSightEyeAngY * PI / 180.0);
+    firstSightEyePos[2] = firstSightSeePoint[2] - 15 * sin(firstSightEyeAngY * PI / 180.0);
 
 
     eye[0] = myRobot->pos[0] + eyeDis * cos(eyeAngy * PI / 180.0);
@@ -411,7 +414,7 @@ void myDisplay(void)
         glLoadIdentity();
         //aspect = W/(double)H
         //glOrtho(-60, 60, -60, 60,-1000, 1000);
-        gluPerspective(tpfovy, aspect, zNear, zFar);
+        gluPerspective(firstSightFovy, aspect, zNear, zFar);
         float gluPers[16];
         glGetFloatv(GL_PROJECTION_MATRIX, gluPers);
         glUniformMatrix4fv(1, 1, GL_FALSE, gluPers);
@@ -422,7 +425,7 @@ void myDisplay(void)
         glLoadIdentity();
         //gluLookAt(eye[0], eye[1] , eye[2], myRobot->pos[0], myRobot->pos[1] + 20, myRobot->pos[2], 0,1,0);
         
-        gluLookAt(tpeye[0], tpeye[1] , tpeye[2], tptar[0], tptar[1], tptar[2], 0,1,0);
+        gluLookAt(firstSightEyePos[0], firstSightEyePos[1] , firstSightEyePos[2], firstSightSeePoint[0], firstSightSeePoint[1], firstSightSeePoint[2], 0,1,0);
 
         //gluLookAt(eye[0], eye[1], eye[2], eye[0] - u[2][0], eye[1] - u[2][1], eye[2] - u[2][2], u[1][0], u[1][1], u[1][2]);
         glGetFloatv(GL_MODELVIEW_MATRIX, eyeMtx);
@@ -438,16 +441,6 @@ void myDisplay(void)
         // myRobot->draw(programID);
         // glPopMatrix();
     }
-    //----new code-----
-    // {
-    //     glPushMatrix();
-    //     glTranslatef(tptar[0], tptar[1], tptar[2]);
-    //     glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-    //     glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-    //     myTex->robot_pink_eye->use(programID);
-    //     graphicObj->solidsphere->draw(programID);
-    //     glPopMatrix();
-    // }
 
     {
         sceneVendor -> draw(eyeMtx,programID);
@@ -459,19 +452,59 @@ void myDisplay(void)
     
     cube -> update(dt);
     sphere -> update(dt);
+    cloud -> update(dt);
+
     cube -> draw(programID);
     sphere -> draw(programID);
-
-
+    cloud -> draw(programID);
+    
+    //ui
+    float f = 0.1 / aspect;
+    glColor3f(1,1,1);
     glDisable(GL_DEPTH_TEST);
     glUseProgram(0);
     glLineWidth(2);
     glBegin(GL_LINES);
-    glVertex2f(-0.05,0);
-    glVertex2f(0.05,0);
+    glVertex2f(-f/2.0,0);
+    glVertex2f(f/2.0,0);
     glVertex2f(0,-0.05);
     glVertex2f(0,0.05);
     glEnd();
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4f(208 / 255.0, 159 / 255.0, 159 / 255.0,0.5);
+    glBegin(GL_QUADS);
+    glVertex2f(0.95,-0.3);
+    glVertex2f(0.5,-0.3);
+    glVertex2f(0.5,0.95);
+    glVertex2f(0.95,0.95);
+    glEnd();
+    glDisable(GL_BLEND);
+
+    glColor3f(0,0,0);
+
+    glColor3f(0,0,0);
+    vector<string> vecs = {"--object info--","ID: cube","pos: (1,2,3)","weight: 1 kg",
+    "velocity: (0.1, 0.1, 0.1)m/s","angular velocity:  (0.1, 0.1, 0.1)m/s","drag force (0) press Z to switch",
+    "gravity (0) press X to switch"};
+    vector<string> vecs2 = {"--bullet info--","pos: (1,1,1)","dir: (1,1,1)","force: 100N press +/- to change"}; 
+    string s;
+    for(int i=0;i<vecs.size();i++){
+        s = vecs[i];
+        glRasterPos2f(0.52,0.88 - i*0.1); 
+        for (int j = 0; j < s.size(); j++) {
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
+        }
+    }
+    for(int i=0;i<vecs2.size();i++){
+        s = vecs2[i];
+        glRasterPos2f(0.52,0.04 - i*0.1); 
+        for (int j = 0; j < s.size(); j++) {
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
+        }
+    }
+
     glutSwapBuffers();
     glutPostRedisplay();
     usleep(1000); //micro sleep
@@ -479,15 +512,17 @@ void myDisplay(void)
 }
 int mouseX = 0, mouseY = 0,mouseBtn = 0;
 void passive_motion_func(int x,int y){
+    if(firstClick == 0) return;
     //cout << x << " " << y << "\n";
     //glutWarpPointer(400,400);
-    tpeyeAngy += 0.8*(x-mouseX);
-    if (tpeyeAngy >= 360) tpeyeAngy -= 360;
-    if (tpeyeAngy <= 0) tpeyeAngy += 360;
+    firstSightEyeAngY += 0.8*(x-mouseX);
+    if (firstSightEyeAngY >= 360) firstSightEyeAngY -= 360;
+    if (firstSightEyeAngY <= 0) firstSightEyeAngY += 360;
 
-    if (y < mouseY)  tptar[1] = fmin(tptar[1] - 0.2*(y-mouseY), 50.0);
-    else tptar[1] = fmax(tptar[1] - 0.2*(y-mouseY), 0.0);    
+    if (y < mouseY)  firstSightSeePoint[1] = fmin(firstSightSeePoint[1] - 0.2*(y-mouseY), 50.0);
+    else firstSightSeePoint[1] = fmax(firstSightSeePoint[1] - 0.2*(y-mouseY), 0.0);    
 
+    //cout << "firstSightSeePoint: " << firstSightSeePoint[1] << "\n";
     mouseX = x;
     mouseY = y;
 }
@@ -529,7 +564,11 @@ void mouseClick_fun(int btn, int state, int x, int y) {
         }else if(btn == 4){
             fovy = fmin(fovy + 2, 150);
         }else if(btn == 0){
-            cout << "pos: " << myRobot->pos[0] << " " << myRobot->pos[2] << "\n";
+            firstClick = 1;
+            //cout << "pos: " << myRobot->pos[0] << " " << myRobot->pos[2] << "\n";
+            cube->shoot(50,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
+            cloud->shoot(50,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
+            sphere->shoot(50,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
         }
     }
     else if (state == GLUT_UP) {
@@ -542,7 +581,7 @@ int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
     //glutInitWindowPosition(100, 100);
-    glutInitWindowSize(800, 800);
+    glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutCreateWindow("Shader Sample Program"); //Window title bar
     glutDisplayFunc(myDisplay); //Display callback function
 
