@@ -65,6 +65,14 @@ vector<vector<float>> cloud = {{100, 40, 96}, {180, 40, 150}, {55, 40, 170}};
 bool flag = 0;
 float dt = 0;
 int pretime = 0;
+
+//-------------------------------
+
+vec3 start = {10,-5,0};
+vec3 dir = {0,1,0};
+
+//-------------------------------
+
 class obj
 {
 public:
@@ -91,12 +99,11 @@ public:
         rot_a += Rot_inv * I_inv * Rot * J;
     }
     virtual void update()
-    {
-        // if (pos[1] > 0)
-        //     applyLinearForce({0, -9.8 * m, 0});
+    {   
+        //空氣阻力
         vec3 dragforce = -v * k;
         applyLinearForce(dragforce);
-        w *= 0.995;
+        w *= 0.99;
 
         v += lin_a * dt;
         w += rot_a * dt;
@@ -105,10 +112,7 @@ public:
         if (length(w) != 0)
             rot = angleAxis(length(w), normalize(w)) * rot;
 
-
     }
-
-private:
 };
 class Sphere : public obj
 {
@@ -136,7 +140,7 @@ public:
 
     }
 private:
-} sphere(2, 1, 0.4);
+} sphere(2, 1, 0.8);
 class Cube : public obj
 {
 public:
@@ -201,12 +205,12 @@ public:
             if (mny.y <= 0){
             
             
-            //cout << "\ncf: " << cf.x << " " << cf.y << " " << cf.z << "\n";
+            ////cout << "\ncf: " << cf.x << " " << cf.y << " " << cf.z << "\n";
             vec3 r = mny - pos;
             vec3 J = cross(r, {0, 0.08 * m, 0});
-            //cout << "\nJ: " << J.x << " " << J.y << " " << J.z << "\n";
+            ////cout << "\nJ: " << J.x << " " << J.y << " " << J.z << "\n";
             applyRotJ(J);
-            //cout << "\nmny: " << mny.x << " " << mny.y << " " << mny.z << "\n";
+            ////cout << "\nmny: " << mny.x << " " << mny.y << " " << mny.z << "\n";
             
             }
         }
@@ -215,34 +219,137 @@ public:
         if(flag){
             v.y=fmax(v.y,0.0);
         }
-        cout << "\npos: " << pos.x << " " << pos.y << " " << pos.z << "\n";
-        cout << "\nv: " << v.x << " " << v.y << " " << v.z << "\n";
+        //cout << "\npos: " << pos.x << " " << pos.y << " " << pos.z << "\n";
+        //cout << "\nv: " << v.x << " " << v.y << " " << v.z << "\n";
     }
     private:
 } cube({1, 2, 0.5}, 1, 0.2);
 
+class Irregular : public obj{
+public:    
+    Irregular(float _m) : obj(_m)
+    {
+        I_inv = glm::inverse(myObj->cloud1->I);
+    }    
+};
+Irregular *irr;
 void keybaord_fun(unsigned char key, int X, int Y)
 {
     if (key == 'p' || key == 'P')
     {
+        //因為是正交矩陣，所以 inverse = transpose
+        {
+            mat4 tp = glm::translate(mat4(1),sphere.pos)*glm::toMat4(sphere.rot)*glm::scale(glm::mat4(1),glm::vec3{sphere.rad});
+
+            float min_pnt = 1e9;
+            for(int i = 0; i < myObj -> solidsphere -> vertices.size(); i += 3){
+                vec3 a = tp*vec4{myObj -> solidsphere -> vertices[i],1};
+                vec3 b = tp*vec4{myObj -> solidsphere -> vertices[i+1],1};
+                vec3 c = tp*vec4{myObj -> solidsphere -> vertices[i+2],1};
+                vec3 U = b - a;
+                vec3 V = c - a;
+                float det_mtx = dot(V, cross(U, - dir));
+                float s = dot(start - a, cross(U, -dir)) / det_mtx;
+                float t = dot(V, cross(start - a, -dir)) / det_mtx;
+                float r = dot(V, cross(U, start - a)) / det_mtx;
+
+                if(s >= 0 && t >= 0 && s + t <= 1 && r >= 0){
+                    min_pnt = fmin(min_pnt, r);
+                }
+            }
+            if(min_pnt != 1e9){
+                vec3 impactPoint = (start + dir * min_pnt)- sphere.pos;
+                cout << impactPoint.x  << " " << impactPoint.y << " " << impactPoint.z << "\n";
+                flag = 1;
+
+                vec3 F = dir * 50.0f;
+                
+                vec3 J = cross(impactPoint, F);
+
+                sphere.applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
+                sphere.applyRotJ(J);
+            }
+        }
+        {
+            float min_pnt = 1e9;
+            mat4 tp = glm::translate(mat4(1),cube.pos)*glm::toMat4(cube.rot)*glm::scale(glm::mat4(1),cube.sz);
+
+            for(int i = 0; i < myObj -> cube -> vertices.size(); i += 3){
+
+                vec3 a = tp*vec4{myObj -> cube -> vertices[i],1};
+                vec3 b = tp*vec4{myObj -> cube -> vertices[i+1],1};
+                vec3 c = tp*vec4{myObj -> cube -> vertices[i+2],1};
+                vec3 U = b - a;
+                vec3 V = c - a;
+                float det_mtx = dot(V, cross(U, - dir));
+                float s = dot(start - a, cross(U, -dir)) / det_mtx;
+                float t = dot(V, cross(start - a, -dir)) / det_mtx;
+                float r = dot(V, cross(U, start - a)) / det_mtx;
+
+                if(s >= 0 && t >= 0 && s + t <= 1 && r >= 0){
+                    min_pnt = fmin(min_pnt, r);
+                }
+            }
+            if(min_pnt == 1e9) return;
+            vec3 impactPoint = (start + dir * min_pnt) - cube.pos;
+
+            vec3 s = (start + dir * min_pnt);
+
+            cout << cube.pos[0] << " " << cube.pos[1] << " " <<cube.pos[2] << "\n";
+            cout << s[0] << " " << s[1] << " " <<s[2] << "\n";
+            
+            cout << "CUBE: " << impactPoint.x  << " " << impactPoint.y << " " << impactPoint.z << "\n";
+            flag = 1;
+
+            vec3 F = dir * 50.0f;
+            //因為旋轉太快了 所以/100 感覺合理多了
+            vec3 J = cross(impactPoint, F/100.0f);
+
+            cube.applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
+            cube.applyRotJ(J);
+        }
+        
+
+        
+        //irr->applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
+        //irr->applyRotJ(J);
+    }
+    if(key == 'i' || key == 'I'){
+        cube.pos = {10,0.5,0};
+        cube.v = {0,0,0};
+        cube.w = {0,0,0};
+        cube.rot = {1,0,0,0};
+    } 
+    if (key == 'o' || key == 'O')
+    {
+        vec3 F{0};
+        if(key == 'O') F  = {60, 0, 0};
+        else F = {-60, 0, 0};;
         flag = 1;
 
-        vec3 F{0, 60, 0};
-        vec3 impactPoint{0.001, -1, 0};
+        //vec3 F{0, -60, 0};
+        vec3 impactPoint{1, 0 , 0};
         vec3 J = cross(impactPoint, F);
 
 
         cube.applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
         cube.applyRotJ(J);
+        
         sphere.applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
         sphere.applyRotJ(J);
+        
+        irr->applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
+        irr->applyRotJ(J);
     }
+
+    
 }
 void myInit()
 {
     pretime = clock();
     myTex = new mytex(programID);
     myObj = new myobj(programID);
+
 
     eyeDis = 30;
     fovy = 100;
@@ -252,6 +359,9 @@ void myInit()
 
     cube.pos = {0, 4, 0};
     sphere.pos = {10, 4, 0};
+
+    irr = new Irregular(1);
+    irr->pos = {5,4,0};
 }
 
 void myDisplay(void)
@@ -309,12 +419,13 @@ void myDisplay(void)
     pretime = pt;
     cube.update();
     sphere.update();
+    irr->update();
 
-    mat4 tp = translate(mat4(1), cube.pos) * toMat4(cube.rot) * scale(mat4(1), {1, 2, 0.5});
+    mat4 tp = translate(mat4(1), cube.pos) * toMat4(cube.rot) * scale(mat4(1), cube.sz);
     glUniformMatrix4fv(2, 1, GL_FALSE, &tp[0][0]);
 
     
-    cout << "\ncubepos: " << cube.pos.x << " " << cube.pos.y << " " << cube.pos.z << "\n";
+    ////cout << "\ncubepos: " << cube.pos.x << " " << cube.pos.y << " " << cube.pos.z << "\n";
 
     myTex->cheese->use(programID);
     myObj->cube->draw(programID);
@@ -324,10 +435,16 @@ void myDisplay(void)
     glUniformMatrix4fv(2, 1, GL_FALSE, &tp[0][0]);
 
     
-    cout << "\ncubepos: " << sphere.pos.x << " " << sphere.pos.y << " " << sphere.pos.z << "\n";
+    ////cout << "\ncubepos: " << sphere.pos.x << " " << sphere.pos.y << " " << sphere.pos.z << "\n";
 
     myTex->cheese->use(programID);
     myObj->solidsphere->draw(programID);
+    
+
+    tp = translate(mat4(1), irr->pos) * toMat4(irr->rot);
+    glUniformMatrix4fv(2, 1, GL_FALSE, &tp[0][0]);
+    myTex->white->use(programID);
+    myObj->cloud1->draw(programID);
 
     // all a  = 0
     cube.lin_a = {0, 0, 0};
@@ -336,8 +453,11 @@ void myDisplay(void)
     sphere.lin_a = {0, 0, 0};
     sphere.rot_a = {0, 0, 0};
 
+    irr->lin_a = {0,0,0};
+    irr->rot_a = {0,0,0};
+
     glutSwapBuffers();
-    // cout << "swap\n";
+    // //cout << "swap\n";
     glutPostRedisplay();
 
     usleep(1000); // micro sleep
@@ -345,7 +465,7 @@ void myDisplay(void)
 int mouseX = 0, mouseY = 0, mouseBtn = 0;
 void motion_func(int x, int y)
 {
-    // cout << x << " " << y << "\n";
+    // //cout << x << " " << y << "\n";
     if (mouseBtn == GLUT_RIGHT_BUTTON)
     {
         if (x > mouseX)
@@ -365,7 +485,7 @@ void motion_func(int x, int y)
     }
     else if (mouseBtn == GLUT_LEFT_BUTTON)
     {
-        // cout << "oo\n";
+        // //cout << "oo\n";
     }
 
     mouseX = x;
@@ -373,7 +493,7 @@ void motion_func(int x, int y)
 };
 void mouseWheel_fun(int button, int dir, int x, int y)
 {
-    // cout << "kkk\n";
+    // //cout << "kkk\n";
     if (dir > 0)
         fovy = fmax(fovy - 2, 70);
     else
@@ -383,7 +503,7 @@ void mouseClick_fun(int btn, int state, int x, int y)
 {
     if (state == GLUT_DOWN)
     {
-        // cout << btn << "\n";
+        // //cout << btn << "\n";
         if (btn == GLUT_RIGHT_BUTTON)
         {
             mouseBtn = GLUT_RIGHT_BUTTON;
@@ -391,7 +511,7 @@ void mouseClick_fun(int btn, int state, int x, int y)
         else if (btn == 3)
         {
             fovy = fmax(fovy - 2, 70);
-            // cout << "pos: " << pos[0] << " " << pos[2] << "\n";
+            // //cout << "pos: " << pos[0] << " " << pos[2] << "\n";
         }
         else if (btn == 4)
         {
@@ -399,14 +519,14 @@ void mouseClick_fun(int btn, int state, int x, int y)
         }
         else if (btn == 0)
         {
-            cout << "pos: " << pos[0] << " " << pos[2] << "\n";
+            ////cout << "pos: " << pos[0] << " " << pos[2] << "\n";
         }
     }
     else if (state == GLUT_UP)
     {
         mouseBtn = -1;
     }
-    // cout << GLUT_LEFT_BUTTON << "\n";
+    // //cout << GLUT_LEFT_BUTTON << "\n";
 }
 
 int main(int argc, char **argv)

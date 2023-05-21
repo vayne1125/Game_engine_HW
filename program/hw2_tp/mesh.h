@@ -11,12 +11,12 @@ using namespace std;
 
 class mesh {
 public:
-	
-	mesh(int programID,const vector<float>& vec);
+	mesh(int programID,vector<float>& vec);
 	void draw(int programID);
+	glm::mat3 I{0};
+	vector<glm::vec3> vertices;
 private:
 	unsigned int VAOID;
 	int vertex_count = 0;
-	glm::vec3 mc = {0,0,0};
-	glm::mat3 I_inv{0}; 
+	glm::vec3 mc = {0,0,0}; 
 };

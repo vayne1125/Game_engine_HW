@@ -32,7 +32,7 @@ public:
 
 private:
 } ;
-//sphere(2, 1, 0.4);
+
 class Cube : public PhyObj
 {
 public:
@@ -48,4 +48,8 @@ public:
 
 private:
 };
-//cube({1, 2, 0.5}, 1, 0.2);
+
+class Irregular : public PhyObj{
+public:    
+    Irregular(float _m);
+};

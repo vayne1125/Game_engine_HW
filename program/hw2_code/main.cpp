@@ -51,11 +51,9 @@ Object* cube;
 Object* sphere;
 
 float   eyeAngx = 0.0, eyeAngy = 90.0, eyeAngz = 0.0;
-float   seeAngx = 0.0, seeAngy = 90.0, seeAngz = 0.0;
 float   u[3][3] = { {1.0,0.0,0.0}, {0.0,1.0,0.0}, {0.0,0.0,1.0} };
-float   eye[3] = { 0 },seePoint[3] = {0,0,0};
+float   eye[3] = { 0 };
 float   eyeDis = 0;
-float   seeDis = 0;
 double zNear = 0.1, zFar = 2000, aspect = 800 / (double)800, fovy;
 
 float   cv = cos(5.0 * PI / 180.0), sv = sin(5.0 * PI / 180.0); /* cos(5.0) and sin(5.0) */
@@ -66,6 +64,12 @@ float   eyeMtx[16] = {0};
 int dirLightStr = 2.3;
 bool isDirLightOpen = 1;
 int pretime = 0;
+
+float tpfovy = 50;
+float tpeye[3] = {116,30,150}; //攝影機
+float tptar[3] = {116,30,165}; //準心
+float tpeyeAngy = 90;
+void tporder(unsigned int key);
 
 bool detectCollision(int x, int y, int z,int tar);
 void timerFunc(int nTimerID) {
@@ -187,6 +191,12 @@ void my_move_order(unsigned char key) {        //跟移動相關的判斷
     a[0] = a[0] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     a[1] = a[1] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     a[2] = a[2] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+
+    d[0] = (w[0] + d[0])/2.0;
+    d[2] = (w[2] + d[2])/2.0;
+
+    a[0] = (w[0] + a[0])/2.0;
+    a[2] = (w[2] + a[2])/2.0;
     //if (myRobot->getMoveMode() == ROBOT_WALK && preKey == key && (key == 'W' || key == 'w' || key == 'A' || key == 'a' || key == 'S' || key == 's' || key == 'D' || key == 'd')){
     //    myRobot->change_moveMode(ROBOT_RUN);                       //0.3秒內連續按 就變成跑跑
     //}
@@ -223,7 +233,7 @@ void my_move_order(unsigned char key) {        //跟移動相關的判斷
             myRobot->angle_y = 0;
         }
         else {
-            myRobot->angle_y = 360 - eyeAngy;
+            myRobot->angle_y = 360 - eyeAngy - 45;
             //myRobot->angle_y = 270;
             myRobot->move();
         }
@@ -235,7 +245,7 @@ void my_move_order(unsigned char key) {        //跟移動相關的判斷
             myRobot->angle_y = 0;
         }
         else {
-            myRobot->angle_y = 180 - eyeAngy;
+            myRobot->angle_y = 180 - eyeAngy + 45;
             //myRobot->angle_y = 90;
             myRobot->move();
         }
@@ -256,7 +266,9 @@ float getDis(float x1, float y1, float x2, float y2) {           //算距離
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 void keybaord_fun(unsigned char key, int X, int Y) {
+
     my_move_order(key);
+    tporder(key);
     if (key == '0') {
         isDirLightOpen ^= 1;
         if(isDirLightOpen) dirLightStr = 2.3;
@@ -273,14 +285,49 @@ void keybaord_fun(unsigned char key, int X, int Y) {
         glm::vec3 impactPoint{0.001, -1, 0};
         glm::vec3 J = cross(impactPoint, F);
 
-      //  cube->applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
-      //  cube->applyRotJ(J);
         cube -> phyObj -> applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
         cube -> phyObj -> applyRotJ(J);
         sphere -> phyObj -> applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
         sphere -> phyObj -> applyRotJ(J);
-        //cout << key << "\n";
+        
     }
+}
+void tporder(unsigned int key){
+    float tpPos[3] = { tpeye[0], tpeye[1], tpeye[2] };
+    float w[3] = { tptar[0] - tpeye[0] ,tptar[1] - tpeye[1], tptar[2] - tpeye[2] };
+    float s[3] = { -tptar[0] + tpeye[0] , -tptar[1] + tpeye[1], -tptar[2] + tpeye[2] };
+    float d[3] = { -w[2] , 0 , w[0] };
+    float a[3] = { w[2] , 0 , -w[0] };
+    w[0] = w[0] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
+    w[1] = w[1] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
+    w[2] = w[2] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
+
+    s[0] = s[0] / sqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2]);
+    s[1] = s[1] / sqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2]);
+    s[2] = s[2] / sqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2]);
+
+    d[0] = d[0] / sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
+    d[1] = d[1] / sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
+    d[2] = d[2] / sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
+
+    a[0] = a[0] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+    a[1] = a[1] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+    a[2] = a[2] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+    if(key == 's' || key == 'S'){
+        tptar[0] += s[0];
+        tptar[2] += s[2];
+    }else if(key == 'w' || key == 'W'){
+        tptar[0] += w[0];
+        tptar[2] += w[2];
+    }else if(key == 'a' || key == 'A'){
+        tptar[0] += a[0];
+        tptar[2] += a[2];
+    }else if(key == 'd' || key == 'D'){
+        tptar[0] += d[0];
+        tptar[2] += d[2];
+    }
+    
+    
 }
 void myInit() {
     
@@ -331,10 +378,15 @@ bool detectCollision(int x, int y, int z,int tar) {
 }
 void myDisplay(void)
 {
+    glUseProgram(programID);
+    glEnable(GL_DEPTH_TEST);
+
+    tpeye[0] = tptar[0] - 15 * cos(tpeyeAngy * PI / 180.0);
+    tpeye[2] = tptar[2] - 15 * sin(tpeyeAngy * PI / 180.0);
+
 
     eye[0] = myRobot->pos[0] + eyeDis * cos(eyeAngy * PI / 180.0);
     eye[2] = myRobot->pos[2] + eyeDis * sin(eyeAngy * PI / 180.0);
-    glEnable(GL_DEPTH_TEST);
     glClearColor(0.70, 0.70, 0.70, 1.0);  //Dark grey background
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     
@@ -359,7 +411,7 @@ void myDisplay(void)
         glLoadIdentity();
         //aspect = W/(double)H
         //glOrtho(-60, 60, -60, 60,-1000, 1000);
-        gluPerspective(fovy, aspect, zNear, zFar);
+        gluPerspective(tpfovy, aspect, zNear, zFar);
         float gluPers[16];
         glGetFloatv(GL_PROJECTION_MATRIX, gluPers);
         glUniformMatrix4fv(1, 1, GL_FALSE, gluPers);
@@ -368,23 +420,37 @@ void myDisplay(void)
     {   //lookat
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        gluLookAt(eye[0], eye[1] , eye[2], myRobot->pos[0], myRobot->pos[1] + 20, myRobot->pos[2], 0,1,0);
-        //gluLookAt(myRobot->pos[0], myRobot->pos[1] + 20, myRobot->pos[2] + 20,eye[0], eye[1] , eye[2], 0, 1,0);
+        //gluLookAt(eye[0], eye[1] , eye[2], myRobot->pos[0], myRobot->pos[1] + 20, myRobot->pos[2], 0,1,0);
+        
+        gluLookAt(tpeye[0], tpeye[1] , tpeye[2], tptar[0], tptar[1], tptar[2], 0,1,0);
+
         //gluLookAt(eye[0], eye[1], eye[2], eye[0] - u[2][0], eye[1] - u[2][1], eye[2] - u[2][2], u[1][0], u[1][1], u[1][2]);
         glGetFloatv(GL_MODELVIEW_MATRIX, eyeMtx);
         glUniformMatrix4fv(0, 1, GL_FALSE, eyeMtx);
     }
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    float objMtx[16];
     //robot
     {
-        glPushMatrix();
-        glTranslatef(myRobot->pos[0], myRobot->pos[1], myRobot->pos[2]);
-        myRobot->draw(programID);
-        glPopMatrix();
+        // glPushMatrix();
+        // glTranslatef(myRobot->pos[0], myRobot->pos[1], myRobot->pos[2]);
+        // myRobot->draw(programID);
+        // glPopMatrix();
     }
+    //----new code-----
+    // {
+    //     glPushMatrix();
+    //     glTranslatef(tptar[0], tptar[1], tptar[2]);
+    //     glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+    //     glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+    //     myTex->robot_pink_eye->use(programID);
+    //     graphicObj->solidsphere->draw(programID);
+    //     glPopMatrix();
+    // }
+
     {
-        //sceneVendor -> draw(eyeMtx,programID);
+        sceneVendor -> draw(eyeMtx,programID);
         scenePhysicalExpFiled->draw(eyeMtx,programID);
     }
     int pt = clock();
@@ -396,13 +462,37 @@ void myDisplay(void)
     cube -> draw(programID);
     sphere -> draw(programID);
 
+
+    glDisable(GL_DEPTH_TEST);
+    glUseProgram(0);
+    glLineWidth(2);
+    glBegin(GL_LINES);
+    glVertex2f(-0.05,0);
+    glVertex2f(0.05,0);
+    glVertex2f(0,-0.05);
+    glVertex2f(0,0.05);
+    glEnd();
     glutSwapBuffers();
     glutPostRedisplay();
     usleep(1000); //micro sleep
     
 }
 int mouseX = 0, mouseY = 0,mouseBtn = 0;
+void passive_motion_func(int x,int y){
+    //cout << x << " " << y << "\n";
+    //glutWarpPointer(400,400);
+    tpeyeAngy += 0.8*(x-mouseX);
+    if (tpeyeAngy >= 360) tpeyeAngy -= 360;
+    if (tpeyeAngy <= 0) tpeyeAngy += 360;
+
+    if (y < mouseY)  tptar[1] = fmin(tptar[1] - 0.2*(y-mouseY), 50.0);
+    else tptar[1] = fmax(tptar[1] - 0.2*(y-mouseY), 0.0);    
+
+    mouseX = x;
+    mouseY = y;
+}
 void motion_func(int  x, int y) {
+    
     //cout << x << " " << y << "\n";
     if (mouseBtn == GLUT_RIGHT_BUTTON) {
         if (x > mouseX) eyeAngy += 1;
@@ -506,6 +596,8 @@ int main(int argc, char** argv) {
     glUseProgram(programID);
     //The main loop.
     myInit();
+    glutSetCursor(GLUT_CURSOR_NONE);
+    glutPassiveMotionFunc(passive_motion_func);
     glutKeyboardFunc(keybaord_fun);
     glutKeyboardUpFunc(keyboardUp_func);
     glutMotionFunc(motion_func);/* Mouse motion event callback func */

@@ -12,9 +12,11 @@ public:
 mesh();
 	mesh(unsigned int programID,vector<float>& vec,bool phy);
 	void draw(int programID);
+	const glm::mat3 &getI(){return I;}
 private:
 	unsigned int VAOID;
 	int vertex_count = 0;
 	glm::vec3 mc = {0,0,0};
-	glm::mat3 I_inv{0}; 
+	glm::mat3 I{0};
+	vector<glm::vec3> vertices;
 };
