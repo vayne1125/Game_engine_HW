@@ -124,7 +124,7 @@ void Object::reset()
 {
     phyObj->v = {0,0,0};
     phyObj->w = {0,0,0};
-    phyObj->rot = {1,0,0,0};
+    //phyObj->rot = {1,0,0,0};
 }
 void Object::reset(float x, float y, float z)
 {
