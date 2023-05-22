@@ -4,47 +4,20 @@
 #include <GL/freeglut.h>
 #include <GL/glut.h>
 #include"../glad/glad.h"
+#include "UI.h"
 using namespace std;
+UI* ui = new UI((1920/990.0));
+Object* obj = new Object();
+vector<float> pos={0,0,0};
 void myDisplay(void)
 {
 
     //glEnable(GL_DEPTH_TEST);
     glClearColor(0.70, 0.70, 0.70, 1.0); // Dark grey background
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(208 / 255.0, 159 / 255.0, 159 / 255.0,0.5);
-    glBegin(GL_QUADS);
-    glVertex2f(0.95,-0.3);
-    glVertex2f(0.5,-0.3);
-    glVertex2f(0.5,0.95);
-    glVertex2f(0.95,0.95);
-    glEnd();
-    glDisable(GL_BLEND);
-
-    glColor3f(0,0,0);
-    
-
-    vector<string> vecs = {"--object info--","ID: cube","pos: (1,2,3)","weight: 1 kg",
-    "velocity: (0.1, 0.1, 0.1)m/s","angular velocity:  (0.1, 0.1, 0.1)m/s","drag force (0) press Z to switch",
-    "gravity (0) press X to switch"};
-    vector<string> vecs2 = {"--bullet info--","pos: (1,1,1)","dir: (1,1,1)","force: 100N press +/- to change"}; 
-    string s;
-    for(int i=0;i<vecs.size();i++){
-        s = vecs[i];
-        glRasterPos2f(0.52,0.88 - i*0.1); 
-        for (int j = 0; j < s.size(); j++) {
-            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
-        }
-    }
-    for(int i=0;i<vecs2.size();i++){
-        s = vecs2[i];
-        glRasterPos2f(0.52,0.04 - i*0.1); 
-        for (int j = 0; j < s.size(); j++) {
-            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
-        }
-    }
+    int windowWidth = 1920;
+    int windowHeight = 990;
+    ui -> draw(*obj,pos,pos,100);
     glutSwapBuffers();
     glutPostRedisplay();
     usleep(1000); //micro sleep
@@ -52,6 +25,11 @@ void myDisplay(void)
 
 void win(int x,int y){
     cout << x << " " << y<<"\n";
+}
+void key(unsigned char a,int b,int c){
+    if(a == 'p') pos[0]++;
+    if(a == 'k') pos[1]++;
+    if(a == 'l') pos[2]++;
 }
 int main(int argc, char **argv)
 {
@@ -75,11 +53,12 @@ int main(int argc, char **argv)
         glGetString(GL_SHADING_LANGUAGE_VERSION));
     //Setup the shaders and create my program object
     //Program objects and shaders must be created after glad has been initiated!!!
+    
     glewInit();
     // The main loop.
     
     glutReshapeFunc(win);
-
+    glutKeyboardFunc(key);
     glutMainLoop();
     return 0;
 }

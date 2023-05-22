@@ -54,8 +54,30 @@ void Object::applyForce(const glm::vec3 &F,const glm::vec3 &impactPoint)
     phyObj -> applyLinearForce(dot(F, impactPoint) * impactPoint / dot(impactPoint, impactPoint));
     phyObj -> applyRotJ(J);
 }
+bool Object::isChoose(const glm::vec3& start, const glm::vec3& dir){
+    //因為是正交矩陣，所以 inverse = transpose
+    glm::mat4 tp = glm::translate(glm::mat4(1),phyObj->pos)*glm::toMat4(phyObj->rot)*glm::scale(glm::mat4(1),sz);
 
-void Object::shoot(float F_,glm::vec3 start, glm::vec3 dir)
+    float min_pnt = 1e9;
+    const vector<glm::vec3>& tpvec = graphicObj->getVerticesByID(GraphicObjID);
+    for(int i = 0; i < tpvec.size(); i += 3){
+        glm::vec3 a = tp*glm::vec4{tpvec[i],1};
+        glm::vec3 b = tp*glm::vec4{tpvec[i+1],1};
+        glm::vec3 c = tp*glm::vec4{tpvec[i+2],1};
+        glm::vec3 U = b - a;
+        glm::vec3 V = c - a;
+        float det_mtx = dot(V, cross(U, - dir));
+        float s = dot(start - a, cross(U, -dir)) / det_mtx;
+        float t = dot(V, cross(start - a, -dir)) / det_mtx;
+        float r = dot(V, cross(U, start - a)) / det_mtx;
+
+        if(s >= 0 && t >= 0 && s + t <= 1 && r >= 0){
+            return 1;
+        }
+    }
+    return 0;
+}
+void Object::shoot(const float& F_,const glm::vec3& start, const glm::vec3& dir)
 {
     //因為是正交矩陣，所以 inverse = transpose
     glm::mat4 tp = glm::translate(glm::mat4(1),phyObj->pos)*glm::toMat4(phyObj->rot)*glm::scale(glm::mat4(1),sz);
@@ -85,6 +107,10 @@ void Object::shoot(float F_,glm::vec3 start, glm::vec3 dir)
     }
 }
 
+void Object::setName(const string &n_)
+{
+    name = n_;
+}
 Object::Object(int GraphicObjID, int PhyObjID, int textureID, float r, float m):GraphicObjID(GraphicObjID),PhyObjID(PhyObjID),textureID(textureID)
 {
     if(PhyObjID == YU_PHYSICS_SPHERE){
@@ -92,7 +118,6 @@ Object::Object(int GraphicObjID, int PhyObjID, int textureID, float r, float m):
         sz = {r,r,r};
     }
 }
-
 Object::Object(int GraphicObjID, int PhyObjID, int textureID, const glm::vec3 &sz_, float m, float k):GraphicObjID(GraphicObjID),PhyObjID(PhyObjID),textureID(textureID)
 {
     if(PhyObjID == YU_PHYSICS_CUBE){
@@ -119,12 +144,12 @@ Object::Object(int GraphicObjID, int PhyObjID, int textureID, const glm::vec3 &s
     }
 
 }
-
 Object::Object(int GraphicObjID, int PhyObjID, int textureID, float m):GraphicObjID(GraphicObjID),PhyObjID(PhyObjID),textureID(textureID)
 {
     switch(PhyObjID){
         case YU_PHYSICS_IRREGULAR:
             phyObj = new Irregular(m);
+            phyObj->isOpenGravity = 0;
             phyObj->I_inv = glm::inverse(graphicObj->getIByID(GraphicObjID));
             break;
         default:
@@ -132,3 +157,6 @@ Object::Object(int GraphicObjID, int PhyObjID, int textureID, float m):GraphicOb
     }
 
 }
+Object::Object(){
+    phyObj = new PhyObj(0);
+};

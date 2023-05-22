@@ -13,7 +13,7 @@ public:
     glm::quat rot{1, 0, 0, 0};
     glm::vec3 v{0, 0, 0};
     glm::vec3 w{0, 0, 0};
-    glm::vec3 pos;
+    glm::vec3 pos{0,0,0};
     glm::vec3 lin_a{0,0,0};
     glm::vec3 rot_a{0,0,0};
     float m, k;
@@ -22,6 +22,8 @@ public:
     void applyLinearForce(const glm::vec3 &F);
     void applyRotJ(const glm::vec3 &J);
     virtual void update(float dt);
+    bool isOpenDragForce = 1;
+    bool isOpenGravity = 1;
 };
 class Sphere : public PhyObj
 {

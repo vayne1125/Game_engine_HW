@@ -16,6 +16,7 @@
 #include "Billboard.h"
 #include "PhyObj.h"
 #include "Object.h"
+#include "UI.h"
 #define   PI   3.1415927
 //location
 #define DIR_LIGHT_POS    4
@@ -51,10 +52,9 @@ mytex* myTex;
 Billboard* billboard;
 magicwand* uiui;
 
-Object* cube;
-Object* sphere;
-Object* cloud;
-
+Object* object[3];
+Object* chooseObject;
+UI* ui;
 float   eyeAngx = 0.0, eyeAngy = 90.0, eyeAngz = 0.0;
 float   u[3][3] = { {1.0,0.0,0.0}, {0.0,1.0,0.0}, {0.0,0.0,1.0} };
 float   eye[3] = { 0 };
@@ -289,9 +289,9 @@ void keybaord_fun(unsigned char key, int X, int Y) {
         glm::vec3 F{0, 60, 0};
         glm::vec3 impactPoint{0.01, -1, 0};  //在地座標系
 
-        cube->applyForce(F,impactPoint);
-        sphere->applyForce(F,impactPoint);
-        cloud->applyForce(F,impactPoint);
+        object[0]->applyForce(F,impactPoint);
+        object[1]->applyForce(F,impactPoint);
+        object[2]->applyForce(F,impactPoint);
     }
 }
 void first_sight_move_order(unsigned int key){
@@ -316,17 +316,17 @@ void first_sight_move_order(unsigned int key){
     a[1] = a[1] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     a[2] = a[2] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     if(key == 's' || key == 'S'){
-        firstSightSeePoint[0] += s[0];
-        firstSightSeePoint[2] += s[2];
+        firstSightEyePos[0] += s[0];
+        firstSightEyePos[2] += s[2];
     }else if(key == 'w' || key == 'W'){
-        firstSightSeePoint[0] += w[0];
-        firstSightSeePoint[2] += w[2];
+        firstSightEyePos[0] += w[0];
+        firstSightEyePos[2] += w[2];
     }else if(key == 'a' || key == 'A'){
-        firstSightSeePoint[0] += a[0];
-        firstSightSeePoint[2] += a[2];
+        firstSightEyePos[0] += a[0];
+        firstSightEyePos[2] += a[2];
     }else if(key == 'd' || key == 'D'){
-        firstSightSeePoint[0] += d[0];
-        firstSightSeePoint[2] += d[2];
+        firstSightEyePos[0] += d[0];
+        firstSightEyePos[2] += d[2];
     }
 }
 void myInit() {
@@ -347,6 +347,7 @@ void myInit() {
     sceneVendor = new SceneVendor();
     scenePhysicalExpFiled = new ScenePhysicalExpFiled();
     
+
     eyeDis = 30;
     fovy = 100;
     eye[0] = 0;
@@ -355,14 +356,23 @@ void myInit() {
 
     pretime = clock();
     
-    cube = new Object(YU_GRAPHICS_CUBE,YU_PHYSICS_CUBE,YU_CHEESE,{5, 10, 2.5}, 1, 0.2);
-    cube->setPos(100,10,250);
+    //object.resize(3);
+    // = 
+    object[0] = new Object(YU_GRAPHICS_CUBE,YU_PHYSICS_CUBE,YU_CHEESE,{5, 10, 2.5}, 1, 0.2);
+    object[0] -> setPos(100,10,250);
+    object[0] -> setName("cube");
     
-    sphere = new Object(YU_GRAPHICS_SPHERE,YU_PHYSICS_SPHERE,YU_RED,10,1,0.01f);
-    sphere -> setPos(200,100,250);
+    object[1] = new Object(YU_GRAPHICS_SPHERE,YU_PHYSICS_SPHERE,YU_RED,10,1,0.01f);
+    object[1] -> setPos(200,100,250);
+    object[1] -> setName("sphere");
 
-    cloud = new Object(YU_GRAPHICS_CLOUD,YU_PHYSICS_IRREGULAR,YU_CHEESE,{4,4,4},1);
-    cloud -> setPos(200,10,250);
+    object[2] = new Object(YU_GRAPHICS_CLOUD,YU_PHYSICS_IRREGULAR,YU_CHEESE,{4,4,4},1);
+    object[2] -> setPos(200,10,250);
+    object[2] -> setName("cloud");
+    
+    chooseObject = new Object();
+
+    ui = new UI(aspect);
 }
 bool detectCollision(int x, int y, int z,int tar) {
     if (z <= 48 + 6) return 1;   //第一行攤販
@@ -384,9 +394,8 @@ void myDisplay(void)
     glUseProgram(programID);
     glEnable(GL_DEPTH_TEST);
 
-    firstSightEyePos[0] = firstSightSeePoint[0] - 15 * cos(firstSightEyeAngY * PI / 180.0);
-    firstSightEyePos[2] = firstSightSeePoint[2] - 15 * sin(firstSightEyeAngY * PI / 180.0);
-
+    firstSightSeePoint[0] = firstSightEyePos[0] + 15 * cos(firstSightEyeAngY * PI / 180.0);
+    firstSightSeePoint[2] = firstSightEyePos[2] + 15 * sin(firstSightEyeAngY * PI / 180.0);
 
     eye[0] = myRobot->pos[0] + eyeDis * cos(eyeAngy * PI / 180.0);
     eye[2] = myRobot->pos[2] + eyeDis * sin(eyeAngy * PI / 180.0);
@@ -436,74 +445,37 @@ void myDisplay(void)
     float objMtx[16];
     //robot
     {
-        // glPushMatrix();
-        // glTranslatef(myRobot->pos[0], myRobot->pos[1], myRobot->pos[2]);
-        // myRobot->draw(programID);
-        // glPopMatrix();
+        glPushMatrix();
+        //glTranslatef(myRobot->pos[0], myRobot->pos[1], myRobot->pos[2]);
+        glTranslatef(firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]);
+        myRobot->draw(programID);
+        glPopMatrix();
     }
 
     {
         sceneVendor -> draw(eyeMtx,programID);
         scenePhysicalExpFiled->draw(eyeMtx,programID);
     }
+
     int pt = clock();
     float dt = std::min((pt - pretime) / 1000.f, 0.01f);
     pretime = pt;
     
-    cube -> update(dt);
-    sphere -> update(dt);
-    cloud -> update(dt);
+    object[0] -> update(dt);
+    object[1] -> update(dt);
+    object[2] -> update(dt);
 
-    cube -> draw(programID);
-    sphere -> draw(programID);
-    cloud -> draw(programID);
+    object[0] -> draw(programID);
+    object[1] -> draw(programID);
+    object[2] -> draw(programID);
     
+
     //ui
-    float f = 0.1 / aspect;
-    glColor3f(1,1,1);
-    glDisable(GL_DEPTH_TEST);
-    glUseProgram(0);
-    glLineWidth(2);
-    glBegin(GL_LINES);
-    glVertex2f(-f/2.0,0);
-    glVertex2f(f/2.0,0);
-    glVertex2f(0,-0.05);
-    glVertex2f(0,0.05);
-    glEnd();
+    
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(208 / 255.0, 159 / 255.0, 159 / 255.0,0.5);
-    glBegin(GL_QUADS);
-    glVertex2f(0.95,-0.3);
-    glVertex2f(0.5,-0.3);
-    glVertex2f(0.5,0.95);
-    glVertex2f(0.95,0.95);
-    glEnd();
-    glDisable(GL_BLEND);
-
-    glColor3f(0,0,0);
-
-    glColor3f(0,0,0);
-    vector<string> vecs = {"--object info--","ID: cube","pos: (1,2,3)","weight: 1 kg",
-    "velocity: (0.1, 0.1, 0.1)m/s","angular velocity:  (0.1, 0.1, 0.1)m/s","drag force (0) press Z to switch",
-    "gravity (0) press X to switch"};
-    vector<string> vecs2 = {"--bullet info--","pos: (1,1,1)","dir: (1,1,1)","force: 100N press +/- to change"}; 
-    string s;
-    for(int i=0;i<vecs.size();i++){
-        s = vecs[i];
-        glRasterPos2f(0.52,0.88 - i*0.1); 
-        for (int j = 0; j < s.size(); j++) {
-            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
-        }
-    }
-    for(int i=0;i<vecs2.size();i++){
-        s = vecs2[i];
-        glRasterPos2f(0.52,0.04 - i*0.1); 
-        for (int j = 0; j < s.size(); j++) {
-            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
-        }
-    }
+    float dir_[3] = {firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]};
+    
+    ui->draw(*chooseObject,firstSightEyePos,dir_,100);
 
     glutSwapBuffers();
     glutPostRedisplay();
@@ -513,8 +485,7 @@ void myDisplay(void)
 int mouseX = 0, mouseY = 0,mouseBtn = 0;
 void passive_motion_func(int x,int y){
     if(firstClick == 0) return;
-    //cout << x << " " << y << "\n";
-    //glutWarpPointer(400,400);
+
     firstSightEyeAngY += 0.8*(x-mouseX);
     if (firstSightEyeAngY >= 360) firstSightEyeAngY -= 360;
     if (firstSightEyeAngY <= 0) firstSightEyeAngY += 360;
@@ -525,6 +496,11 @@ void passive_motion_func(int x,int y){
     //cout << "firstSightSeePoint: " << firstSightSeePoint[1] << "\n";
     mouseX = x;
     mouseY = y;
+    float dir_[3] = {firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]};
+    for(int i=0;i<3;i++){
+        if(object[i]->isChoose({firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{dir_[0],dir_[1],dir_[2]}))
+            *chooseObject = *object[i];
+    }
 }
 void motion_func(int  x, int y) {
     
@@ -566,9 +542,9 @@ void mouseClick_fun(int btn, int state, int x, int y) {
         }else if(btn == 0){
             firstClick = 1;
             //cout << "pos: " << myRobot->pos[0] << " " << myRobot->pos[2] << "\n";
-            cube->shoot(50,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
-            cloud->shoot(50,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
-            sphere->shoot(50,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
+            object[0]->shoot(50,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
+            object[2]->shoot(50,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
+            object[1]->shoot(50,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
         }
     }
     else if (state == GLUT_UP) {
