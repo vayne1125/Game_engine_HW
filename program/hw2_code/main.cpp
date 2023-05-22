@@ -54,6 +54,8 @@ magicwand* uiui;
 
 Object* object[3];
 Object* chooseObject;
+int chooseID = 0;
+vector<vector<float>> tpposforobj = {{75,20,250},{157,30,250},{116,40,250}};
 UI* ui;
 float   eyeAngx = 0.0, eyeAngy = 90.0, eyeAngz = 0.0;
 float   u[3][3] = { {1.0,0.0,0.0}, {0.0,1.0,0.0}, {0.0,0.0,1.0} };
@@ -70,6 +72,7 @@ float   eyeMtx[16] = {0};
 int dirLightStr = 2.3;
 bool isDirLightOpen = 1;
 int pretime = 0;
+float force = 50;
 
 bool firstClick = 0;
 float firstSightFovy = 40;
@@ -273,8 +276,8 @@ float getDis(float x1, float y1, float x2, float y2) {           //算距離
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 void keybaord_fun(unsigned char key, int X, int Y) {
-
-    my_move_order(key);
+    cout << int(key) << "\n";
+    //my_move_order(key);
     first_sight_move_order(key);
     if (key == '0') {
         isDirLightOpen ^= 1;
@@ -284,14 +287,28 @@ void keybaord_fun(unsigned char key, int X, int Y) {
     if (key == 127) { //ctrl + backspace
         reset_camera();
     }
-    if (key == 'p' || key == 'P')
+    if (key == 'z' || key == 'Z')
     {
-        glm::vec3 F{0, 60, 0};
-        glm::vec3 impactPoint{0.01, -1, 0};  //在地座標系
-
-        object[0]->applyForce(F,impactPoint);
-        object[1]->applyForce(F,impactPoint);
-        object[2]->applyForce(F,impactPoint);
+        chooseObject->switchDragforce();
+    }
+    if(key == 'x' || key == 'X'){
+        chooseObject->switchGravity();
+    }
+    if(key == 't'){
+        chooseObject->reset();
+    }else if(key == 'T'){
+        for(auto i:object) i->reset();
+    }else if(key == 'r'){
+        for(int i = 0;i<3; i++) {
+            if(object[i]->name == chooseObject->name) chooseObject->reset(tpposforobj[i][0],tpposforobj[i][1],tpposforobj[i][2]);
+        }
+    }else if(key == 'R'){
+        for(int i = 0;i<3; i++) object[i]->reset(tpposforobj[i][0],tpposforobj[i][1],tpposforobj[i][2]);
+    }
+    if(key == '+' || key == '='){
+        force++;
+    }else if(key == '-'){
+        force = fmax(1,--force);
     }
 }
 void first_sight_move_order(unsigned int key){
@@ -316,17 +333,17 @@ void first_sight_move_order(unsigned int key){
     a[1] = a[1] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     a[2] = a[2] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     if(key == 's' || key == 'S'){
-        firstSightEyePos[0] += s[0];
-        firstSightEyePos[2] += s[2];
+        firstSightEyePos[0] += 2*s[0];
+        firstSightEyePos[2] += 2*s[2];
     }else if(key == 'w' || key == 'W'){
-        firstSightEyePos[0] += w[0];
-        firstSightEyePos[2] += w[2];
+        firstSightEyePos[0] += 2*w[0];
+        firstSightEyePos[2] += 2*w[2];
     }else if(key == 'a' || key == 'A'){
-        firstSightEyePos[0] += a[0];
-        firstSightEyePos[2] += a[2];
+        firstSightEyePos[0] += 2*a[0];
+        firstSightEyePos[2] += 2*a[2];
     }else if(key == 'd' || key == 'D'){
-        firstSightEyePos[0] += d[0];
-        firstSightEyePos[2] += d[2];
+        firstSightEyePos[0] += 2*d[0];
+        firstSightEyePos[2] += 2*d[2];
     }
 }
 void myInit() {
@@ -359,15 +376,16 @@ void myInit() {
     //object.resize(3);
     // = 
     object[0] = new Object(YU_GRAPHICS_CUBE,YU_PHYSICS_CUBE,YU_CHEESE,{5, 10, 2.5}, 1, 0.2);
-    object[0] -> setPos(100,10,250);
+    object[0] -> setPos(tpposforobj[0][0],tpposforobj[0][1],tpposforobj[0][2]);
     object[0] -> setName("cube");
     
-    object[1] = new Object(YU_GRAPHICS_SPHERE,YU_PHYSICS_SPHERE,YU_RED,10,1,0.01f);
-    object[1] -> setPos(200,100,250);
+    object[1] = new Object(YU_GRAPHICS_SPHERE,YU_PHYSICS_SPHERE,YU_CHEESE,10,1,0.01f);
+    object[1] -> setPos(tpposforobj[1][0],tpposforobj[1][1],tpposforobj[1][2]);
     object[1] -> setName("sphere");
+    object[1]->switchGravity();
 
     object[2] = new Object(YU_GRAPHICS_CLOUD,YU_PHYSICS_IRREGULAR,YU_CHEESE,{4,4,4},1);
-    object[2] -> setPos(200,10,250);
+    object[2] -> setPos(tpposforobj[2][0],tpposforobj[2][1],tpposforobj[2][2]);
     object[2] -> setName("cloud");
     
     chooseObject = new Object();
@@ -446,8 +464,8 @@ void myDisplay(void)
     //robot
     {
         glPushMatrix();
-        //glTranslatef(myRobot->pos[0], myRobot->pos[1], myRobot->pos[2]);
-        glTranslatef(firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]);
+        glTranslatef(myRobot->pos[0], myRobot->pos[1], myRobot->pos[2]);
+        //glTranslatef(firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]);
         myRobot->draw(programID);
         glPopMatrix();
     }
@@ -471,11 +489,9 @@ void myDisplay(void)
     
 
     //ui
-    
-
     float dir_[3] = {firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]};
     
-    ui->draw(*chooseObject,firstSightEyePos,dir_,100);
+    ui->draw(*chooseObject,firstSightEyePos,dir_,force);
 
     glutSwapBuffers();
     glutPostRedisplay();
@@ -500,6 +516,8 @@ void passive_motion_func(int x,int y){
     for(int i=0;i<3;i++){
         if(object[i]->isChoose({firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{dir_[0],dir_[1],dir_[2]}))
             *chooseObject = *object[i];
+            //cout << chooseObject << "\n";
+            //chooseID
     }
 }
 void motion_func(int  x, int y) {
@@ -542,9 +560,9 @@ void mouseClick_fun(int btn, int state, int x, int y) {
         }else if(btn == 0){
             firstClick = 1;
             //cout << "pos: " << myRobot->pos[0] << " " << myRobot->pos[2] << "\n";
-            object[0]->shoot(50,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
-            object[2]->shoot(50,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
-            object[1]->shoot(50,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
+            object[0]->shoot(force,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
+            object[2]->shoot(force,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
+            object[1]->shoot(force,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
         }
     }
     else if (state == GLUT_UP) {

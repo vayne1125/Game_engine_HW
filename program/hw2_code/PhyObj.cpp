@@ -5,7 +5,6 @@ PhyObj::PhyObj(float _m): m(_m), k(0.5){
 }
 void PhyObj::applyLinearForce(const glm::vec3 &F)
 {
-    //std::cout << "in2\n";
     lin_a += F / m;
 }
 
@@ -22,10 +21,11 @@ void PhyObj::applyRotJ(const glm::vec3 &J)
 void PhyObj::update(float dt)
 {
     //給空氣阻力 （平移 ＋ 旋轉）
-    glm::vec3 dragforce = -v * k;
-    applyLinearForce(dragforce);
-    w *= 0.995;
-
+    if(isOpenDragForce){
+        glm::vec3 dragforce = -v * k;
+        applyLinearForce(dragforce);
+        w *= 0.995;
+    }
     v += lin_a * dt;
     w += rot_a * dt;
 
@@ -43,9 +43,8 @@ Sphere::Sphere(float r, float _m) : rad(r), PhyObj(_m)
 }
 void Sphere::update(float dt)
 {
-    //std::cout << "sphereupdate\n";
     //給重力
-    applyLinearForce({0, -9.8 * m, 0});
+    if(isOpenGravity) applyLinearForce({0, -9.8 * m, 0});
     // collision
     if (pos[1]<= (0 + 0.00001) + rad/2.0)
     {
@@ -91,7 +90,7 @@ Cube::Cube(const glm::vec3 &_sz, float _m) : sz(_sz), PhyObj(_m)
 void Cube :: update(float dt){
     // collision
     // v.y-=9.8*dt;
-    applyLinearForce({0, -9.8 * m, 0});
+    if(isOpenGravity)applyLinearForce({0, -9.8 * m, 0});
     glm::vec3 mny = {1e9, 1e9, 1e9};
     std::array<glm::vec3, 8> tmp;
     for (int i = 0; i < 8; ++i)
@@ -120,13 +119,9 @@ void Cube :: update(float dt){
         mny = tmp[i];
         if (mny.y <= 0)
         {
-
-            // cout << "\ncf: " << cf.x << " " << cf.y << " " << cf.z << "\n";
             glm::vec3 r = mny - pos;
             glm::vec3 J = glm::cross(r, {0, 0.08 * m, 0});
-            // cout << "\nJ: " << J.x << " " << J.y << " " << J.z << "\n";
             applyRotJ(J);
-            // cout << "\nmny: " << mny.x << " " << mny.y << " " << mny.z << "\n";
         }
     }
     PhyObj::update(dt);

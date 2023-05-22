@@ -111,7 +111,29 @@ void Object::setName(const string &n_)
 {
     name = n_;
 }
-Object::Object(int GraphicObjID, int PhyObjID, int textureID, float r, float m):GraphicObjID(GraphicObjID),PhyObjID(PhyObjID),textureID(textureID)
+void Object::switchDragforce()
+{
+    phyObj->isOpenDragForce ^= 1;
+}
+void Object::switchGravity()
+{
+    if(PhyObjID == YU_PHYSICS_IRREGULAR) return;   //不規則物體沒有重力
+    phyObj->isOpenGravity ^= 1;
+}
+void Object::reset()
+{
+    phyObj->v = {0,0,0};
+    phyObj->w = {0,0,0};
+    phyObj->rot = {1,0,0,0};
+}
+void Object::reset(float x, float y, float z)
+{
+    phyObj->pos = {x,y,z};
+    phyObj->v = {0,0,0};
+    phyObj->w = {0,0,0};
+    phyObj->rot = {1,0,0,0};
+}
+Object::Object(int GraphicObjID, int PhyObjID, int textureID, float r, float m) : GraphicObjID(GraphicObjID), PhyObjID(PhyObjID), textureID(textureID)
 {
     if(PhyObjID == YU_PHYSICS_SPHERE){
         phyObj = new Sphere(r,m);

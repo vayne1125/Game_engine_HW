@@ -21,6 +21,10 @@ public:
     void shoot(const float& F_,const glm::vec3& start, const glm::vec3& dir);
     bool isChoose(const glm::vec3& start, const glm::vec3& dir);
     void setName(const string& n_);
+    void switchDragforce();
+    void switchGravity();
+    void reset();
+    void reset(float x,float y,float z);
     Object();
     Object(int GraphicObjID, int PhyObjID, int textureID,float r,float m);
     Object(int GraphicObjID, int PhyObjID, int textureID,const glm::vec3& sz,float m,float k);

@@ -17,7 +17,7 @@ private:
     std::string fixed2(float val);
     float aspect;
     std::vector<std::string> vecs;
-    std::vector<std::string> vecs2;
+    std::vector<std::string> vecs2,vecs3;
     std::vector<std::string> modelForObject = {
         "--object info--",
         "name: ",
@@ -31,5 +31,9 @@ private:
         "--bullet info--",
         "pos: ",
         "dir: ",
-        "force: "," N, press +/- to change"}; 
+        "force: "," N, press +/- to change"};
+    std::vector<std::string> modelForOthers = {
+        "--reset--",
+        "press T/t to stop  (all)object",
+        "press R/r to reset (all)object"}; 
 };

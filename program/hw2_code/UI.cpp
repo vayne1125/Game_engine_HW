@@ -87,8 +87,8 @@ void UI::draw(const Object &object, float pos[3], float dir[3], float F)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(208 / 255.0, 159 / 255.0, 159 / 255.0, 0.5);
     glBegin(GL_QUADS);
-    glVertex2f(0.95, -0.3);
-    glVertex2f(0.5, -0.3);
+    glVertex2f(0.95, -0.55);
+    glVertex2f(0.5, -0.55);
     glVertex2f(0.5, 0.95);
     glVertex2f(0.95, 0.95);
     glEnd();
@@ -116,4 +116,15 @@ void UI::draw(const Object &object, float pos[3], float dir[3], float F)
             glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
         }
     }
+
+    for (int i = 0; i < modelForOthers.size(); i++)
+    {
+        s = modelForOthers[i];
+        glRasterPos2f(0.52, -0.3 - i * 0.1);
+        for (int j = 0; j < s.size(); j++)
+        {
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
+        }
+    }
+
 }
