@@ -73,7 +73,6 @@ void UI::draw(const Object &object, float pos[3], float dir[3], float F)
     glDisable(GL_DEPTH_TEST);
     float f = 0.1 / aspect;
     glColor3f(1, 1, 1);
-    glDisable(GL_DEPTH_TEST);
     glUseProgram(0);
     glLineWidth(2);
     glBegin(GL_LINES);

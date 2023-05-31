@@ -15,7 +15,7 @@ void PhyObj::applyRotJ(const glm::vec3 &J)
     glm::mat3 Rot = toMat3(rot);
     glm::mat3 Rot_inv = transpose(Rot);
     rot_a += Rot_inv * I_inv * Rot * J;
-    std::cout << rot_a[1] << "\n";
+    //std::cout << rot_a[1] << "\n";
 }
 
 void PhyObj::update(float dt)
