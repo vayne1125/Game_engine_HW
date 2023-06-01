@@ -351,7 +351,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
 
     {   //spotlight
         glPushMatrix();
-        cout << "light: " << spotLightElf->pos[0] << " " << spotLightElf->pos[2] << "\n";
+        //cout << "light: " << spotLightElf->pos[0] << " " << spotLightElf->pos[2] << "\n";
         glTranslatef(spotLightElf->pos[0], spotLightElf->pos[1], spotLightElf->pos[2]);
         glScalef(4, 4, 4);
         spotLightElf->draw(programID);
@@ -419,4 +419,11 @@ void SceneVendor::draw(float* eyeMtx,int programID)
 
 
 
+}
+void SceneVendor::keyEvent(unsigned char key){
+    if (key == '0') {
+        isDirLightOpen ^= 1;
+        if(isDirLightOpen) dirLight->setStr(2.3);
+        else dirLight->setStr(0);
+    }   
 }

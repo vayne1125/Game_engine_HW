@@ -25,7 +25,7 @@ public:
     // exop 0點光 1spot
     // str 
     Light(int type,float pos_x,float pos_y,float pos_z,float dir_x,float dir_y,float dir_z,float color_r,float color_g,float color_b,int expo,float str);
-    
+    void setStr(float);
     void use();
     void use(float pos_x,float pos_y,float pos_z);
 private:

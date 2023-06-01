@@ -26,6 +26,7 @@ void Object::draw(unsigned int programID)
 void Object::setPos(float x, float y, float z)
 {
     phyObj->pos = {x,y,z};
+    initpos = {x,y,z};      //設為初始位置 用於reset時可以取位置
 }
 
 void Object::init()
@@ -120,15 +121,15 @@ void Object::switchGravity()
     if(PhyObjID == YU_PHYSICS_IRREGULAR) return;   //不規則物體沒有重力
     phyObj->isOpenGravity ^= 1;
 }
-void Object::reset()
+void Object::stopMove()
 {
     phyObj->v = {0,0,0};
     phyObj->w = {0,0,0};
     //phyObj->rot = {1,0,0,0};
 }
-void Object::reset(float x, float y, float z)
+void Object::reset()
 {
-    phyObj->pos = {x,y,z};
+    phyObj->pos = initpos;
     phyObj->v = {0,0,0};
     phyObj->w = {0,0,0};
     phyObj->rot = {1,0,0,0};
@@ -136,6 +137,7 @@ void Object::reset(float x, float y, float z)
 Object::Object(int GraphicObjID, int PhyObjID, int textureID, float r, float m) : GraphicObjID(GraphicObjID), PhyObjID(PhyObjID), textureID(textureID)
 {
     if(PhyObjID == YU_PHYSICS_SPHERE){
+        cout << "create sphere---\n";
         phyObj = new Sphere(r,m);
         sz = {r,r,r};
     }
@@ -144,6 +146,7 @@ Object::Object(int GraphicObjID, int PhyObjID, int textureID, const glm::vec3 &s
 {
     if(PhyObjID == YU_PHYSICS_CUBE){
         //cout << "in\n";
+        cout << "create cube---\n";
         sz = sz_;
         phyObj = new Cube(sz,m,k);
     }
@@ -153,10 +156,13 @@ Object::Object(int GraphicObjID, int PhyObjID, int textureID, const glm::vec3 &s
     sz = sz_;
     switch(PhyObjID){
         case YU_PHYSICS_CUBE:
+            cout << "create sphere---\n";
             phyObj = new Cube(sz,m);
             break;
         case YU_PHYSICS_IRREGULAR:
+            cout << "create irregular---\n";
             phyObj = new Irregular(m);
+            phyObj->isOpenGravity = 0;
             phyObj->I_inv = glm::inverse(graphicObj->getIByID(GraphicObjID));
             //cout << "come2\n";
             //cout << phyObj->I_inv[0][0] << "\n";
@@ -170,6 +176,7 @@ Object::Object(int GraphicObjID, int PhyObjID, int textureID, float m):GraphicOb
 {
     switch(PhyObjID){
         case YU_PHYSICS_IRREGULAR:
+            cout << "create irregular---\n";
             phyObj = new Irregular(m);
             phyObj->isOpenGravity = 0;
             phyObj->I_inv = glm::inverse(graphicObj->getIByID(GraphicObjID));

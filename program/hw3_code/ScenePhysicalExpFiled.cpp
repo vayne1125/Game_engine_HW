@@ -35,4 +35,57 @@ void ScenePhysicalExpFiled::draw(float *eyeMtx, int programID)
         }
         glPopMatrix();
     }
+    
+    int pt = clock();
+    float dt = std::min((pt - pretime) / 1000.f, 0.01f);
+    pretime = pt;
+
+    for(int i=0;i<3;i++){
+        object[i] -> update(dt);
+        object[i] -> draw(programID);
+    }
+    
+}
+void ScenePhysicalExpFiled::keyEvent(unsigned char key){
+    if (key == 'z' || key == 'Z')
+    {
+        chooseObject->switchDragforce();
+    }
+    if(key == 'x' || key == 'X'){
+        chooseObject->switchGravity();
+    }
+    if(key == 't'){
+        chooseObject->stopMove();
+    }else if(key == 'T'){
+        for(auto i:object) i->stopMove();
+    }else if(key == 'r'){
+        for(int i = 0;i<3; i++) {
+            if(object[i]->name == chooseObject->name) chooseObject->reset();
+        }
+    }else if(key == 'R'){
+        for(int i = 0;i<3; i++) object[i]->reset();
+    }
+    if(key == '+' || key == '='){
+        force++;
+    }else if(key == '-'){
+        force = fmax(1,--force);
+    }
+
+}
+ScenePhysicalExpFiled::ScenePhysicalExpFiled(){
+    object[0] = new Object(YU_GRAPHICS_CUBE,YU_PHYSICS_CUBE,YU_CHEESE,{5, 10, 2.5}, 1, 0.2);
+    object[0] -> setPos(70,20,250);
+    object[0] -> setName("cube");
+    
+    object[1] = new Object(YU_GRAPHICS_SPHERE,YU_PHYSICS_SPHERE,YU_CHEESE,10,1,0.01f);
+    object[1] -> setPos(156,30,250);
+    object[1] -> setName("sphere");
+    object[1]->switchGravity();
+
+    object[2] = new Object(YU_GRAPHICS_CLOUD,YU_PHYSICS_IRREGULAR,YU_CHEESE,{4,4,4},1);
+    object[2] -> setPos(116,40,250);
+    object[2] -> setName("cloud");
+    
+    chooseObject = new Object();  
+    pretime = clock();  
 }

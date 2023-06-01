@@ -23,14 +23,15 @@ public:
     void setName(const string& n_);
     void switchDragforce();
     void switchGravity();
+    void stopMove();
     void reset();
-    void reset(float x,float y,float z);
     Object();
     Object(int GraphicObjID, int PhyObjID, int textureID,float r,float m);
     Object(int GraphicObjID, int PhyObjID, int textureID,const glm::vec3& sz,float m,float k);
     Object(int GraphicObjID, int PhyObjID, int textureID,const glm::vec3& sz,float m);
     Object(int GraphicObjID, int PhyObjID, int textureID,float m);
 private:
+    glm::vec3 initpos;
     glm::vec3 sz = {1,1,1};
     int GraphicObjID,PhyObjID,textureID;
 };

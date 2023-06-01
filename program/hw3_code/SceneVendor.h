@@ -26,7 +26,9 @@ public:
 	int eevee_ani = 0;
 	bool detectCollision(float x,float y,float z,int ITEM);
 	void useLight();
+	void keyEvent(unsigned char key);
 private:
+	bool isDirLightOpen = 1;
 	float getDis(float x1, float y1, float x2, float y2);	
 	void elfMove();
 	float floorX = 232;

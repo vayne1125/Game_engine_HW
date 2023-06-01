@@ -17,9 +17,9 @@
 #include "PhyObj.h"
 #include "Object.h"
 #include "UIPhy.h"
+#include "Perspective.h"
 #define   PI   3.1415927
 //location
-#define CAMERA_POS       10
 #define AMBIENT          11
 //時間模式
 #define RUNTIMER 50             //判斷是否跑跑跑
@@ -38,14 +38,8 @@ Robot* myRobot;
 GraphicObj* graphicObj;
 mytex* myTex;
 Billboard* billboard;
-magicwand* uiui;
-
-Object* object[3];
-Object* chooseObject;
-int worldTime = 0; //0~60*1000
-int chooseID = 0;
-vector<vector<float>> tpposforobj = {{75,20,250},{157,30,250},{116,40,250}};
 UIPhy* uiphy;
+FPPerspective* fpperspective;
 float   eyeAngx = 0.0, eyeAngy = 90.0, eyeAngz = 0.0;
 float   u[3][3] = { {1.0,0.0,0.0}, {0.0,1.0,0.0}, {0.0,0.0,1.0} };
 float   eye[3] = { 0 };
@@ -54,23 +48,11 @@ double zNear = 0.1, zFar = 2000, aspect = WINDOW_WIDTH / (double)WINDOW_HEIGHT, 
 
 float   cv = cos(5.0 * PI / 180.0), sv = sin(5.0 * PI / 180.0); /* cos(5.0) and sin(5.0) */
 
-
 int     preKey = -1;
 float   eyeMtx[16] = {0};
 
-int dirLightStr = 2.3;
-bool isDirLightOpen = 1;
-int pretime = 0;
-float force = 50;
-
 bool firstClick = 0;
-float firstSightFovy = 40;
-float firstSightEyePos[3] = {116,30,150}; //攝影機
-float firstSightSeePoint[3] = {116,30,155}; //看向的點：準心
-float firstSightEyeAngY = 90;
-void first_sight_move_order(unsigned int key);
 
-bool detectCollision(int x, int y, int z,int tar);
 void timerFunc(int nTimerID) {
     switch (nTimerID) {
     case RUNTIMER:                //偵測跑
@@ -220,74 +202,15 @@ float getDis(float x1, float y1, float x2, float y2) {           //算距離
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 void keybaord_fun(unsigned char key, int X, int Y) {
-    cout << int(key) << "\n";
-    //my_move_order(key);
-    first_sight_move_order(key);
-    if (key == '0') {
-        isDirLightOpen ^= 1;
-        if(isDirLightOpen) dirLightStr = 2.3;
-        else dirLightStr = 0;
-    }   
+    //cout << int(key) << "\n";
+    my_move_order(key);
+    
+    //scenePhysicalExpFiled->keyEvent(key);
+    //sceneVendor->keyEvent(key);
+    //fpperspective->keyEvent(key);
+
     if (key == 127) { //ctrl + backspace
         reset_camera();
-    }
-    if (key == 'z' || key == 'Z')
-    {
-        chooseObject->switchDragforce();
-    }
-    if(key == 'x' || key == 'X'){
-        chooseObject->switchGravity();
-    }
-    if(key == 't'){
-        chooseObject->reset();
-    }else if(key == 'T'){
-        for(auto i:object) i->reset();
-    }else if(key == 'r'){
-        for(int i = 0;i<3; i++) {
-            if(object[i]->name == chooseObject->name) chooseObject->reset(tpposforobj[i][0],tpposforobj[i][1],tpposforobj[i][2]);
-        }
-    }else if(key == 'R'){
-        for(int i = 0;i<3; i++) object[i]->reset(tpposforobj[i][0],tpposforobj[i][1],tpposforobj[i][2]);
-    }
-    if(key == '+' || key == '='){
-        force++;
-    }else if(key == '-'){
-        force = fmax(1,--force);
-    }
-}
-void first_sight_move_order(unsigned int key){
-    float tpPos[3] = { firstSightEyePos[0], firstSightEyePos[1], firstSightEyePos[2] };
-    float w[3] = { firstSightSeePoint[0] - firstSightEyePos[0] ,firstSightSeePoint[1] - firstSightEyePos[1], firstSightSeePoint[2] - firstSightEyePos[2] };
-    float s[3] = { -firstSightSeePoint[0] + firstSightEyePos[0] , -firstSightSeePoint[1] + firstSightEyePos[1], -firstSightSeePoint[2] + firstSightEyePos[2] };
-    float d[3] = { -w[2] , 0 , w[0] };
-    float a[3] = { w[2] , 0 , -w[0] };
-    w[0] = w[0] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
-    w[1] = w[1] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
-    w[2] = w[2] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
-
-    s[0] = s[0] / sqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2]);
-    s[1] = s[1] / sqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2]);
-    s[2] = s[2] / sqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2]);
-
-    d[0] = d[0] / sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
-    d[1] = d[1] / sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
-    d[2] = d[2] / sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
-
-    a[0] = a[0] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
-    a[1] = a[1] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
-    a[2] = a[2] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
-    if(key == 's' || key == 'S'){
-        firstSightEyePos[0] += 2*s[0];
-        firstSightEyePos[2] += 2*s[2];
-    }else if(key == 'w' || key == 'W'){
-        firstSightEyePos[0] += 2*w[0];
-        firstSightEyePos[2] += 2*w[2];
-    }else if(key == 'a' || key == 'A'){
-        firstSightEyePos[0] += 2*a[0];
-        firstSightEyePos[2] += 2*a[2];
-    }else if(key == 'd' || key == 'D'){
-        firstSightEyePos[0] += 2*d[0];
-        firstSightEyePos[2] += 2*d[2];
     }
 }
 void myInit() {
@@ -308,28 +231,13 @@ void myInit() {
     sceneVendor = new SceneVendor();
     scenePhysicalExpFiled = new ScenePhysicalExpFiled();
     
+    fpperspective = new FPPerspective(aspect);
+
     eyeDis = 30;
     fovy = 100;
     eye[0] = 0;
     eye[1] = 20;
     eye[2] = eyeDis;
-
-    pretime = clock();
-    
-    object[0] = new Object(YU_GRAPHICS_CUBE,YU_PHYSICS_CUBE,YU_CHEESE,{5, 10, 2.5}, 1, 0.2);
-    object[0] -> setPos(tpposforobj[0][0],tpposforobj[0][1],tpposforobj[0][2]);
-    object[0] -> setName("cube");
-    
-    object[1] = new Object(YU_GRAPHICS_SPHERE,YU_PHYSICS_SPHERE,YU_CHEESE,10,1,0.01f);
-    object[1] -> setPos(tpposforobj[1][0],tpposforobj[1][1],tpposforobj[1][2]);
-    object[1] -> setName("sphere");
-    object[1]->switchGravity();
-
-    object[2] = new Object(YU_GRAPHICS_CLOUD,YU_PHYSICS_IRREGULAR,YU_CHEESE,{4,4,4},1);
-    object[2] -> setPos(tpposforobj[2][0],tpposforobj[2][1],tpposforobj[2][2]);
-    object[2] -> setName("cloud");
-    
-    chooseObject = new Object();
 
     uiphy = new UIPhy(aspect);
 }
@@ -338,25 +246,25 @@ void myDisplay(void)
     glUseProgram(programID);
     glEnable(GL_DEPTH_TEST);
 
-    firstSightSeePoint[0] = firstSightEyePos[0] + 15 * cos(firstSightEyeAngY * PI / 180.0);
-    firstSightSeePoint[2] = firstSightEyePos[2] + 15 * sin(firstSightEyeAngY * PI / 180.0);
+    fpperspective->update();    //更新眼睛位置和看的方向
 
     eye[0] = myRobot->pos[0] + eyeDis * cos(eyeAngy * PI / 180.0);
     eye[2] = myRobot->pos[2] + eyeDis * sin(eyeAngy * PI / 180.0);
+    
     glClearColor(0.70, 0.70, 0.70, 1.0);  //Dark grey background
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     
     {
         sceneVendor->useLight();
-        glUniform3f(CAMERA_POS, firstSightEyePos[0], firstSightEyePos[1], firstSightEyePos[2]);
         glUniform1f(AMBIENT, 0.2);
     }
+    //fpperspective->use();
     {   //projection
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         //aspect = W/(double)H
         //glOrtho(-60, 60, -60, 60,-1000, 1000);
-        gluPerspective(firstSightFovy, aspect, zNear, zFar);
+        gluPerspective(fovy, aspect, zNear, zFar);
         float gluPers[16];
         glGetFloatv(GL_PROJECTION_MATRIX, gluPers);
         glUniformMatrix4fv(1, 1, GL_FALSE, gluPers);
@@ -365,11 +273,7 @@ void myDisplay(void)
     {   //lookat
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        //gluLookAt(eye[0], eye[1] , eye[2], myRobot->pos[0], myRobot->pos[1] + 20, myRobot->pos[2], 0,1,0);
-        
-        gluLookAt(firstSightEyePos[0], firstSightEyePos[1] , firstSightEyePos[2], firstSightSeePoint[0], firstSightSeePoint[1], firstSightSeePoint[2], 0,1,0);
-
-        //gluLookAt(eye[0], eye[1], eye[2], eye[0] - u[2][0], eye[1] - u[2][1], eye[2] - u[2][2], u[1][0], u[1][1], u[1][2]);
+        gluLookAt(eye[0], eye[1] , eye[2], myRobot->pos[0], myRobot->pos[1] + 20, myRobot->pos[2], 0,1,0);
         glGetFloatv(GL_MODELVIEW_MATRIX, eyeMtx);
         glUniformMatrix4fv(0, 1, GL_FALSE, eyeMtx);
     }
@@ -380,7 +284,6 @@ void myDisplay(void)
     {
         glPushMatrix();
         glTranslatef(myRobot->pos[0], myRobot->pos[1], myRobot->pos[2]);
-        //glTranslatef(firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]);
         myRobot->draw(programID);
         glPopMatrix();
     }
@@ -388,21 +291,14 @@ void myDisplay(void)
     {
         sceneVendor -> draw(eyeMtx,programID);
         scenePhysicalExpFiled->draw(eyeMtx,programID);
-    }
-
-    int pt = clock();
-    float dt = std::min((pt - pretime) / 1000.f, 0.01f);
-    pretime = pt;
-    
-    for(int i=0;i<3;i++){
-        object[i] -> update(dt);
-        object[i] -> draw(programID);
+        // sceneVendor -> draw(fpperspective->eyeMtx,programID);
+        // scenePhysicalExpFiled->draw(fpperspective->eyeMtx,programID);
     }
 
     //uiphy
-    float dir_[3] = {firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]};
-    
-    uiphy->draw(*chooseObject,firstSightEyePos,dir_,force);
+    // float dir_[3] = {fpperspective->dir[0],fpperspective->dir[1],fpperspective->dir[2]};
+    // float pos_[3] = {fpperspective->pos[0],fpperspective->pos[1],fpperspective->pos[2]};
+    // uiphy->draw(*(scenePhysicalExpFiled->chooseObject),pos_,dir_,scenePhysicalExpFiled->force);
 
     glutSwapBuffers();
     glutPostRedisplay();
@@ -411,22 +307,12 @@ void myDisplay(void)
 }
 int mouseX = 0, mouseY = 0,mouseBtn = 0;
 void passive_motion_func(int x,int y){
-    if(firstClick == 0) return;
+    //fpperspective->passiveMotionEvent(x,y);
 
-    firstSightEyeAngY += 0.8*(x-mouseX);
-    if (firstSightEyeAngY >= 360) firstSightEyeAngY -= 360;
-    if (firstSightEyeAngY <= 0) firstSightEyeAngY += 360;
-
-    if (y < mouseY)  firstSightSeePoint[1] = fmin(firstSightSeePoint[1] - 0.2*(y-mouseY), 50.0);
-    else firstSightSeePoint[1] = fmax(firstSightSeePoint[1] - 0.2*(y-mouseY), 0.0);    
-
-    //cout << "firstSightSeePoint: " << firstSightSeePoint[1] << "\n";
-    mouseX = x;
-    mouseY = y;
-    float dir_[3] = {firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]};
+    float dir_[3] = {fpperspective->dir[0],fpperspective->dir[1],fpperspective->dir[2]};
     for(int i=0;i<3;i++){
-        if(object[i]->isChoose({firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{dir_[0],dir_[1],dir_[2]}))
-            *chooseObject = *object[i];
+        if(scenePhysicalExpFiled->object[i]->isChoose({fpperspective->pos[0],fpperspective->pos[1],fpperspective->pos[2]},{dir_[0],dir_[1],dir_[2]}))
+            *(scenePhysicalExpFiled->chooseObject) = *(scenePhysicalExpFiled->object[i]);
     }
 }
 void motion_func(int  x, int y) {
@@ -441,17 +327,14 @@ void motion_func(int  x, int y) {
         else eye[1] = fmax(eye[1] - 0.5, 10.0);
     }
     else if (mouseBtn == GLUT_LEFT_BUTTON) {
-        //cout << "oo\n";
-    
+
     }
     mouseX = x;
     mouseY = y;
 };
 void mouseWheel_fun(int button, int dir, int x, int y) {
-    //cout << "kkk\n";
     if (dir > 0) fovy = fmax(fovy - 2, 70);
     else fovy = fmin(fovy + 2, 150);
-
 }
 void mouseClick_fun(int btn, int state, int x, int y) {
     if (state == GLUT_DOWN) {
@@ -465,10 +348,9 @@ void mouseClick_fun(int btn, int state, int x, int y) {
             fovy = fmin(fovy + 2, 150);
         }else if(btn == 0){
             firstClick = 1;
-            //cout << "pos: " << myRobot->pos[0] << " " << myRobot->pos[2] << "\n";
-            object[0]->shoot(force,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
-            object[2]->shoot(force,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
-            object[1]->shoot(force,{firstSightEyePos[0],firstSightEyePos[1],firstSightEyePos[2]},{firstSightSeePoint[0]-firstSightEyePos[0],firstSightSeePoint[1]-firstSightEyePos[1],firstSightSeePoint[2]-firstSightEyePos[2]});
+            scenePhysicalExpFiled->object[0]->shoot(scenePhysicalExpFiled->force,fpperspective->pos,fpperspective->dir);
+            scenePhysicalExpFiled->object[2]->shoot(scenePhysicalExpFiled->force,fpperspective->pos,fpperspective->dir);
+            scenePhysicalExpFiled->object[1]->shoot(scenePhysicalExpFiled->force,fpperspective->pos,fpperspective->dir);
         }
     }
     else if (state == GLUT_UP) {

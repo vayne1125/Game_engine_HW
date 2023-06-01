@@ -14,6 +14,10 @@ Light::Light(int type_, float pos_x_, float pos_y_, float pos_z_, float dir_x_, 
     str = str_;
     expo = expo_;
 }
+void Light::setStr(float s)
+{
+    str = s;
+}
 void Light::use()
 {
     if(type == 0){
