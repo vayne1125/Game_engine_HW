@@ -1,4 +1,6 @@
 #include "Perspective.h"
+#include "MyRobot.h"
+extern MyRobot* myRobot;
 Perspective::Perspective(float aspect_)
 {
     aspect = aspect_;
@@ -98,10 +100,62 @@ void FPPerspective::update()
 }
 TPPerspective::TPPerspective(float aspect_):Perspective(aspect_)
 {
-
+    pos = {116,20,150};
+    seePoint = {116,30,155};
+    eyeAngY = 90;
+    eyeDis = 30;
+    fovy = 100;
 }
 
 void TPPerspective::update()
 {
+    pos[0] = myRobot->pos[0] + eyeDis * cos(eyeAngY * PI / 180.0);
+    pos[2] = myRobot->pos[2] + eyeDis * sin(eyeAngY * PI / 180.0);
 
+    seePoint = {myRobot->pos[0],myRobot->pos[1]+20,myRobot->pos[2]};
+}
+
+void TPPerspective::motionEvent(int x, int y)
+{
+    if (mouseBtn == GLUT_RIGHT_BUTTON) {
+        if (x > mouseX) eyeAngY += 1;
+        else eyeAngY -= 1;
+
+        if (eyeAngY >= 360) eyeAngY -= 360;
+        if (eyeAngY <= 0) eyeAngY += 360;
+
+        if (y > mouseY)  pos[1] = fmin(pos[1] + 0.5, 80.0);
+        else pos[1] = fmax(pos[1] - 0.5, 10.0);
+    }
+    else if (mouseBtn == GLUT_LEFT_BUTTON) {
+
+    }
+    mouseX = x;
+    mouseY = y;
+}
+
+void TPPerspective::mouseWheelEvent(int button, int dir, int x, int y)
+{
+    if (dir > 0) fovy = fmax(fovy - 2, 70);
+    else fovy = fmin(fovy + 2, 150);
+}
+
+void TPPerspective::mouseClickEvent(int btn, int state, int x, int y)
+{
+    if (state == GLUT_DOWN) {
+        //cout << btn << "\n";
+        if (btn == GLUT_RIGHT_BUTTON) {
+            mouseBtn = GLUT_RIGHT_BUTTON;
+        }
+        else if(btn == 3){
+            fovy = fmax(fovy - 2, 70);
+        }else if(btn == 4){
+            fovy = fmin(fovy + 2, 150);
+        }else if(btn == 0){   //left
+            
+        }
+    }
+    else if (state == GLUT_UP) {
+        mouseBtn = -1;
+    }
 }

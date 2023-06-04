@@ -6,7 +6,8 @@
 #include "mesh.h"
 #define YU_RED    0
 #define YU_CHEESE 1
-
+#define YU_SLIME_CUBE 2
+#define YU_SLIME_SPHERE_PHY 3
 using namespace std;
 class texture{
 public:
@@ -28,6 +29,7 @@ public:
 	texture* eevee[56],* fountain_base,* fountain_water,* elf_red;
 	texture* yellow_light, * yellow_dark, * orange_dark, * orange_light,*red_dark,*orgred_dark,*orgred_light, *stone_floor;
 	texture* wood, * wood2, *wood3, *wood4, * wood5, *tablecloth, *tent, *pear, *bread, *cheese, *red_apple, *green_apple, *lemon, *silver, * blue_fabric, * green_fabric, * red_lantern, * red_lantern2;
+	texture* slime_cube,*slime_sphere_phy;
 private:
 };
 

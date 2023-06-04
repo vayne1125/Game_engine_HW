@@ -11,6 +11,7 @@
 #include "GraphicObj.h"
 #include "mytex.h"
 #include "Robot.h"
+#include "MyRobot.h"
 #include "SceneVendor.h"
 #include "ScenePhysicalExpFiled.h"
 #include "Billboard.h"
@@ -34,14 +35,14 @@ using namespace std;
 GLuint programID;
 SceneVendor* sceneVendor;
 ScenePhysicalExpFiled* scenePhysicalExpFiled;
-Robot* myRobot;
+MyRobot* myRobot;
 GraphicObj* graphicObj;
 mytex* myTex;
 Billboard* billboard;
 UIPhy* uiphy;
+TPPerspective* tpperspective;
 FPPerspective* fpperspective;
-float   eyeAngx = 0.0, eyeAngy = 90.0, eyeAngz = 0.0;
-float   u[3][3] = { {1.0,0.0,0.0}, {0.0,1.0,0.0}, {0.0,0.0,1.0} };
+float   eyeAngy = 90.0;
 float   eye[3] = { 0 };
 float   eyeDis = 0;
 double zNear = 0.1, zFar = 2000, aspect = WINDOW_WIDTH / (double)WINDOW_HEIGHT, fovy;
@@ -50,8 +51,6 @@ float   cv = cos(5.0 * PI / 180.0), sv = sin(5.0 * PI / 180.0); /* cos(5.0) and 
 
 int     preKey = -1;
 float   eyeMtx[16] = {0};
-
-bool firstClick = 0;
 
 void timerFunc(int nTimerID) {
     switch (nTimerID) {
@@ -122,89 +121,89 @@ void keyboardUp_func(unsigned char key, int x, int y) {
 }
 void my_move_order(unsigned char key) {        //跟移動相關的判斷
 
-    float tpPos[3] = { myRobot->pos[0], myRobot->pos[1], myRobot->pos[2] };
-    float w[3] = { myRobot->pos[0] - eye[0] ,myRobot->pos[1] - eye[1], myRobot->pos[2] - eye[2] };
-    float s[3] = { -myRobot->pos[0] + eye[0] , -myRobot->pos[1] + eye[1], -myRobot->pos[2] + eye[2] };
-    float d[3] = { -w[2] , 0 , w[0] };
-    float a[3] = { w[2] , 0 , -w[0] };
-    w[0] = w[0] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
-    w[1] = w[1] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
-    w[2] = w[2] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
+//     float tpPos[3] = { myRobot->pos[0], myRobot->pos[1], myRobot->pos[2] };
+//     float w[3] = { myRobot->pos[0] - eye[0] ,myRobot->pos[1] - eye[1], myRobot->pos[2] - eye[2] };
+//     float s[3] = { -myRobot->pos[0] + eye[0] , -myRobot->pos[1] + eye[1], -myRobot->pos[2] + eye[2] };
+//     float d[3] = { -w[2] , 0 , w[0] };
+//     float a[3] = { w[2] , 0 , -w[0] };
+//     w[0] = w[0] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
+//     w[1] = w[1] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
+//     w[2] = w[2] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
 
-    s[0] = s[0] / sqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2]);
-    s[1] = s[1] / sqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2]);
-    s[2] = s[2] / sqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2]);
+//     s[0] = s[0] / sqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2]);
+//     s[1] = s[1] / sqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2]);
+//     s[2] = s[2] / sqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2]);
 
-    d[0] = d[0] / sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
-    d[1] = d[1] / sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
-    d[2] = d[2] / sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
+//     d[0] = d[0] / sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
+//     d[1] = d[1] / sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
+//     d[2] = d[2] / sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
 
-    a[0] = a[0] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
-    a[1] = a[1] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
-    a[2] = a[2] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+//     a[0] = a[0] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+//     a[1] = a[1] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+//     a[2] = a[2] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
 
-    d[0] = (w[0] + d[0])/2.0;
-    d[2] = (w[2] + d[2])/2.0;
+//     d[0] = (w[0] + d[0])/2.0;
+//     d[2] = (w[2] + d[2])/2.0;
 
-    a[0] = (w[0] + a[0])/2.0;
-    a[2] = (w[2] + a[2])/2.0;
+//     a[0] = (w[0] + a[0])/2.0;
+//     a[2] = (w[2] + a[2])/2.0;
 
-    if (key == 'S' || key == 's') {
-        myRobot->angle_y = (90 - eyeAngy);
-        myRobot->move();
+//     if (key == 'S' || key == 's') {
+//         myRobot->angle_y = (90 - eyeAngy);
+//         myRobot->move();
         
-        tpPos[0] += myRobot->moveOffset * s[0];
-        tpPos[2] += myRobot->moveOffset * s[2];
-    }
-    else if (key == 'W' || key == 'w') {
-        if (myRobot->isOnWand) {
-            myRobot->angle_y = 90;
-        }
-        else {
-            myRobot->angle_y = 270 - eyeAngy;
-            myRobot->move();
-        }
-        tpPos[0] += myRobot->moveOffset * w[0];
-        tpPos[2] += myRobot->moveOffset * w[2];
-    }
-    else if (key == 'A' || key == 'a') {
-        if (myRobot->isOnWand) {
-            myRobot->angle_y = 0;
-        }
-        else {
-            myRobot->angle_y = 360 - eyeAngy - 45;
-            myRobot->move();
-        }
-        tpPos[0] += myRobot->moveOffset * a[0];
-        tpPos[2] += myRobot->moveOffset * a[2];
-    }
-    else if (key == 'D' || key == 'd') {
-        if (myRobot->isOnWand) {
-            myRobot->angle_y = 0;
-        }
-        else {
-            myRobot->angle_y = 180 - eyeAngy + 45;
-            myRobot->move();
-        }
-        tpPos[0] += myRobot->moveOffset * d[0];
-        tpPos[2] += myRobot->moveOffset * d[2];
-    }
-    else if (key == 'r' || key == 'R') {            //轉圈圈
-        myRobot->angle_y += 5;  
-        myRobot->change_moveMode(ROBOT_TURN);
-        myRobot->move();    //在地板才要動腳
+//         tpPos[0] += myRobot->moveOffset * s[0];
+//         tpPos[2] += myRobot->moveOffset * s[2];
+//     }
+//     else if (key == 'W' || key == 'w') {
+//         if (myRobot->isOnWand) {
+//             myRobot->angle_y = 90;
+//         }
+//         else {
+//             myRobot->angle_y = 270 - eyeAngy;
+//             myRobot->move();
+//         }
+//         tpPos[0] += myRobot->moveOffset * w[0];
+//         tpPos[2] += myRobot->moveOffset * w[2];
+//     }
+//     else if (key == 'A' || key == 'a') {
+//         if (myRobot->isOnWand) {
+//             myRobot->angle_y = 0;
+//         }
+//         else {
+//             myRobot->angle_y = 360 - eyeAngy - 45;
+//             myRobot->move();
+//         }
+//         tpPos[0] += myRobot->moveOffset * a[0];
+//         tpPos[2] += myRobot->moveOffset * a[2];
+//     }
+//     else if (key == 'D' || key == 'd') {
+//         if (myRobot->isOnWand) {
+//             myRobot->angle_y = 0;
+//         }
+//         else {
+//             myRobot->angle_y = 180 - eyeAngy + 45;
+//             myRobot->move();
+//         }
+//         tpPos[0] += myRobot->moveOffset * d[0];
+//         tpPos[2] += myRobot->moveOffset * d[2];
+//     }
+//     else if (key == 'r' || key == 'R') {            //轉圈圈
+//         myRobot->angle_y += 5;  
+//         myRobot->change_moveMode(ROBOT_TURN);
+//         myRobot->move();    //在地板才要動腳
         
-    }
-    if (sceneVendor->detectCollision(tpPos[0], tpPos[1], tpPos[2],ROBOT)) return;
-    for (int i = 0; i < 3; i++) myRobot->pos[i] = tpPos[i];
+//     }
+//     if (sceneVendor->detectCollision(tpPos[0], tpPos[1], tpPos[2],ROBOT)) return;
+//     for (int i = 0; i < 3; i++) myRobot->pos[i] = tpPos[i];
 }
 float getDis(float x1, float y1, float x2, float y2) {           //算距離
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 void keybaord_fun(unsigned char key, int X, int Y) {
     //cout << int(key) << "\n";
-    my_move_order(key);
-    
+    //my_move_order(key);
+    myRobot->keyEvent(key);
     //scenePhysicalExpFiled->keyEvent(key);
     //sceneVendor->keyEvent(key);
     //fpperspective->keyEvent(key);
@@ -218,7 +217,7 @@ void myInit() {
     myTex = new mytex(programID);
     graphicObj = new GraphicObj(programID);
     
-    myRobot = new Robot(programID,116,0,165);
+    myRobot = new MyRobot(programID,116,0,165);
 
     myRobot->setColor(myTex->robot_blue_main, myTex->robot_blue_sub);
 
@@ -232,12 +231,13 @@ void myInit() {
     scenePhysicalExpFiled = new ScenePhysicalExpFiled();
     
     fpperspective = new FPPerspective(aspect);
+    tpperspective = new TPPerspective(aspect);
 
-    eyeDis = 30;
-    fovy = 100;
-    eye[0] = 0;
-    eye[1] = 20;
-    eye[2] = eyeDis;
+    // eyeDis = 30;
+    // fovy = 100;
+    // eye[0] = 0;
+    // eye[1] = 20;
+    // eye[2] = eyeDis;
 
     uiphy = new UIPhy(aspect);
 }
@@ -246,10 +246,10 @@ void myDisplay(void)
     glUseProgram(programID);
     glEnable(GL_DEPTH_TEST);
 
-    fpperspective->update();    //更新眼睛位置和看的方向
-
-    eye[0] = myRobot->pos[0] + eyeDis * cos(eyeAngy * PI / 180.0);
-    eye[2] = myRobot->pos[2] + eyeDis * sin(eyeAngy * PI / 180.0);
+    //fpperspective->update();    //更新眼睛位置和看的方向
+    tpperspective->update();
+    // eye[0] = myRobot->pos[0] + eyeDis * cos(eyeAngy * PI / 180.0);
+    // eye[2] = myRobot->pos[2] + eyeDis * sin(eyeAngy * PI / 180.0);
     
     glClearColor(0.70, 0.70, 0.70, 1.0);  //Dark grey background
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -259,24 +259,26 @@ void myDisplay(void)
         glUniform1f(AMBIENT, 0.2);
     }
     //fpperspective->use();
-    {   //projection
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        //aspect = W/(double)H
-        //glOrtho(-60, 60, -60, 60,-1000, 1000);
-        gluPerspective(fovy, aspect, zNear, zFar);
-        float gluPers[16];
-        glGetFloatv(GL_PROJECTION_MATRIX, gluPers);
-        glUniformMatrix4fv(1, 1, GL_FALSE, gluPers);
-        glLoadIdentity();
-    }
-    {   //lookat
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        gluLookAt(eye[0], eye[1] , eye[2], myRobot->pos[0], myRobot->pos[1] + 20, myRobot->pos[2], 0,1,0);
-        glGetFloatv(GL_MODELVIEW_MATRIX, eyeMtx);
-        glUniformMatrix4fv(0, 1, GL_FALSE, eyeMtx);
-    }
+    tpperspective->use();
+    // {   //projection
+    //     glMatrixMode(GL_PROJECTION);
+    //     glLoadIdentity();
+    //     //aspect = W/(double)H
+    //     //glOrtho(-60, 60, -60, 60,-1000, 1000);
+    //     gluPerspective(fovy, aspect, zNear, zFar);
+    //     float gluPers[16];
+    //     glGetFloatv(GL_PROJECTION_MATRIX, gluPers);
+    //     glUniformMatrix4fv(1, 1, GL_FALSE, gluPers);
+    //     glLoadIdentity();
+    // }
+    // {   //lookat
+    //     glMatrixMode(GL_MODELVIEW);
+    //     glLoadIdentity();
+    //     gluLookAt(eye[0], eye[1] , eye[2], myRobot->pos[0], myRobot->pos[1] + 20, myRobot->pos[2], 0,1,0);
+    //     glGetFloatv(GL_MODELVIEW_MATRIX, eyeMtx);
+    //     glUniformMatrix4fv(0, 1, GL_FALSE, eyeMtx);
+    // }
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     float objMtx[16];
@@ -290,9 +292,9 @@ void myDisplay(void)
 
     {
         sceneVendor -> draw(eyeMtx,programID);
-        scenePhysicalExpFiled->draw(eyeMtx,programID);
-        // sceneVendor -> draw(fpperspective->eyeMtx,programID);
-        // scenePhysicalExpFiled->draw(fpperspective->eyeMtx,programID);
+        //scenePhysicalExpFiled->draw(eyeMtx,programID);
+        //sceneVendor -> draw(fpperspective->eyeMtx,programID);
+        //scenePhysicalExpFiled->draw(fpperspective->eyeMtx,programID);
     }
 
     //uiphy
@@ -307,55 +309,59 @@ void myDisplay(void)
 }
 int mouseX = 0, mouseY = 0,mouseBtn = 0;
 void passive_motion_func(int x,int y){
+
     //fpperspective->passiveMotionEvent(x,y);
 
-    float dir_[3] = {fpperspective->dir[0],fpperspective->dir[1],fpperspective->dir[2]};
-    for(int i=0;i<3;i++){
-        if(scenePhysicalExpFiled->object[i]->isChoose({fpperspective->pos[0],fpperspective->pos[1],fpperspective->pos[2]},{dir_[0],dir_[1],dir_[2]}))
-            *(scenePhysicalExpFiled->chooseObject) = *(scenePhysicalExpFiled->object[i]);
-    }
+    // float dir_[3] = {fpperspective->dir[0],fpperspective->dir[1],fpperspective->dir[2]};
+    // for(int i=0;i<3;i++){
+    //     if(scenePhysicalExpFiled->object[i]->isChoose({fpperspective->pos[0],fpperspective->pos[1],fpperspective->pos[2]},{dir_[0],dir_[1],dir_[2]}))
+    //         *(scenePhysicalExpFiled->chooseObject) = *(scenePhysicalExpFiled->object[i]);
+    // }
 }
 void motion_func(int  x, int y) {
-    if (mouseBtn == GLUT_RIGHT_BUTTON) {
-        if (x > mouseX) eyeAngy += 1;
-        else eyeAngy -= 1;
+    tpperspective->motionEvent(x,y);
+    // if (mouseBtn == GLUT_RIGHT_BUTTON) {
+    //     if (x > mouseX) eyeAngy += 1;
+    //     else eyeAngy -= 1;
 
-        if (eyeAngy >= 360) eyeAngy -= 360;
-        if (eyeAngy <= 0) eyeAngy += 360;
+    //     if (eyeAngy >= 360) eyeAngy -= 360;
+    //     if (eyeAngy <= 0) eyeAngy += 360;
 
-        if (y > mouseY)  eye[1] = fmin(eye[1] + 0.5, 80.0);
-        else eye[1] = fmax(eye[1] - 0.5, 10.0);
-    }
-    else if (mouseBtn == GLUT_LEFT_BUTTON) {
+    //     if (y > mouseY)  eye[1] = fmin(eye[1] + 0.5, 80.0);
+    //     else eye[1] = fmax(eye[1] - 0.5, 10.0);
+    // }
+    // else if (mouseBtn == GLUT_LEFT_BUTTON) {
 
-    }
-    mouseX = x;
-    mouseY = y;
+    // }
+    // mouseX = x;
+    // mouseY = y;
 };
 void mouseWheel_fun(int button, int dir, int x, int y) {
-    if (dir > 0) fovy = fmax(fovy - 2, 70);
-    else fovy = fmin(fovy + 2, 150);
+    tpperspective->mouseWheelEvent(button,dir,x,y);
+    // if (dir > 0) fovy = fmax(fovy - 2, 70);
+    // else fovy = fmin(fovy + 2, 150);
 }
 void mouseClick_fun(int btn, int state, int x, int y) {
-    if (state == GLUT_DOWN) {
-        //cout << btn << "\n";
-        if (btn == GLUT_RIGHT_BUTTON) {
-            mouseBtn = GLUT_RIGHT_BUTTON;
-        }
-        else if(btn == 3){
-            fovy = fmax(fovy - 2, 70);
-        }else if(btn == 4){
-            fovy = fmin(fovy + 2, 150);
-        }else if(btn == 0){
-            firstClick = 1;
-            scenePhysicalExpFiled->object[0]->shoot(scenePhysicalExpFiled->force,fpperspective->pos,fpperspective->dir);
-            scenePhysicalExpFiled->object[2]->shoot(scenePhysicalExpFiled->force,fpperspective->pos,fpperspective->dir);
-            scenePhysicalExpFiled->object[1]->shoot(scenePhysicalExpFiled->force,fpperspective->pos,fpperspective->dir);
-        }
-    }
-    else if (state == GLUT_UP) {
-        mouseBtn = -1;
-    }
+    tpperspective->mouseClickEvent(btn,state,x,y);
+    // if (state == GLUT_DOWN) {
+    //     //cout << btn << "\n";
+    //     if (btn == GLUT_RIGHT_BUTTON) {
+    //         mouseBtn = GLUT_RIGHT_BUTTON;
+    //     }
+    //     else if(btn == 3){
+    //         fovy = fmax(fovy - 2, 70);
+    //     }else if(btn == 4){
+    //         fovy = fmin(fovy + 2, 150);
+    //     }else if(btn == 0){
+            
+    //         // scenePhysicalExpFiled->object[0]->shoot(scenePhysicalExpFiled->force,fpperspective->pos,fpperspective->dir);
+    //         // scenePhysicalExpFiled->object[2]->shoot(scenePhysicalExpFiled->force,fpperspective->pos,fpperspective->dir);
+    //         // scenePhysicalExpFiled->object[1]->shoot(scenePhysicalExpFiled->force,fpperspective->pos,fpperspective->dir);
+    //     }
+    // }
+    // else if (state == GLUT_UP) {
+    //     mouseBtn = -1;
+    // }
 }
 int main(int argc, char** argv) {
     srand(time(NULL));

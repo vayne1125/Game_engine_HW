@@ -1,5 +1,5 @@
 #pragma once
-#include<cmath>
+#include <cmath>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <GL/glut.h>
@@ -21,11 +21,11 @@ public:
     virtual void update();
     void use();
     float eyeMtx[16];
+    int mouseX,mouseY;
 };
 class FPPerspective:public Perspective{
 public:
     bool first = 1;
-    int mouseX,mouseY;
     FPPerspective(float aspect_);
     void update() override;
     void keyEvent(unsigned char key);
@@ -34,7 +34,13 @@ public:
 
 class TPPerspective:public Perspective{
 public:
+    void mouseWheelEvent(int button, int dir, int x, int y);
+    void motionEvent(int x,int y);
+    void mouseClickEvent(int btn, int state, int x, int y);
     TPPerspective(float aspect_);
     void update() override;
+    float eyeDis = 0;             //
+    int mouseBtn = 0;
+
 };
 

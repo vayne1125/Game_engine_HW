@@ -73,16 +73,16 @@ void ScenePhysicalExpFiled::keyEvent(unsigned char key){
 
 }
 ScenePhysicalExpFiled::ScenePhysicalExpFiled(){
-    object[0] = new Object(YU_GRAPHICS_CUBE,YU_PHYSICS_CUBE,YU_CHEESE,{5, 10, 2.5}, 1, 0.2);
+    object[0] = new Object(YU_GRAPHICS_CUBE,YU_PHYSICS_CUBE,YU_SLIME_CUBE,{5, 5, 5}, 1, 0.2);
     object[0] -> setPos(70,20,250);
     object[0] -> setName("cube");
     
-    object[1] = new Object(YU_GRAPHICS_SPHERE,YU_PHYSICS_SPHERE,YU_CHEESE,10,1,0.01f);
+    object[1] = new Object(YU_GRAPHICS_SPHERE,YU_PHYSICS_SPHERE,YU_SLIME_SPHERE_PHY,10,1,0.01f);
     object[1] -> setPos(156,30,250);
     object[1] -> setName("sphere");
     object[1]->switchGravity();
 
-    object[2] = new Object(YU_GRAPHICS_CLOUD,YU_PHYSICS_IRREGULAR,YU_CHEESE,{4,4,4},1);
+    object[2] = new Object(YU_GRAPHICS_CLOUD,YU_PHYSICS_IRREGULAR,YU_SLIME_CUBE,{4,4,4},1);
     object[2] -> setPos(116,40,250);
     object[2] -> setName("cloud");
     

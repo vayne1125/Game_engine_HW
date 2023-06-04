@@ -106,7 +106,8 @@ mytex::mytex(unsigned int programID)
     green_fabric = new texture("../texture/green_fabric.jpg", programID);
     red_lantern = new texture("../texture/red_lantern.jpg", programID);
     red_lantern2 = new texture("../texture/red_lantern2.jpg", programID);
-
+    slime_cube = new texture("../texture/slime_cube.png", programID);
+    slime_sphere_phy = new texture("../texture/slime_sphere_phy.png",programID);
     //orange_dark, * orange_light, * dark_red, * orgred_dark, * orgred_light;
     //blacksmith = new texture("../texture/black_smith.png", programID);
     //a = new texture("../texture/pool.jpg", programID);
@@ -120,6 +121,13 @@ void mytex::useByID(int texID, unsigned int programID)
             break;
         case YU_CHEESE:
             cheese -> use(programID);
+            break;
+        case YU_SLIME_CUBE:
+            slime_cube -> use(programID);
+            break;
+        case YU_SLIME_SPHERE_PHY:
+            slime_sphere_phy -> use(programID);
+            break;
         default:
             break;
     }
