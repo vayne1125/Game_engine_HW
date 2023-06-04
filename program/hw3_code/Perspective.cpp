@@ -1,6 +1,8 @@
 #include "Perspective.h"
 #include "MyRobot.h"
+#include "SceneVendor.h"
 extern MyRobot* myRobot;
+extern SceneVendor* sceneVendor;
 Perspective::Perspective(float aspect_)
 {
     aspect = aspect_;
@@ -31,8 +33,8 @@ void Perspective::use()
 
 FPPerspective::FPPerspective(float aspect_):Perspective(aspect_)
 {
-    pos = {116,30,150};
-    seePoint = {116,30,155};
+    pos = {116,30,165};
+    seePoint = {116,30,170};
     fovy = 40;
     eyeAngY = 90;
 }
@@ -42,6 +44,7 @@ void FPPerspective::keyEvent(unsigned char key)
     float tpPos[3] = { pos[0], pos[1], pos[2] };
     float w[3] = { seePoint[0] - pos[0] ,seePoint[1] - pos[1], seePoint[2] - pos[2] };
     float s[3] = { -seePoint[0] + pos[0] , -seePoint[1] + pos[1], -seePoint[2] + pos[2] };
+
     float d[3] = { -w[2] , 0 , w[0] };
     float a[3] = { w[2] , 0 , -w[0] };
     w[0] = w[0] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
@@ -60,18 +63,20 @@ void FPPerspective::keyEvent(unsigned char key)
     a[1] = a[1] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     a[2] = a[2] / sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     if(key == 's' || key == 'S'){
-        pos[0] += 2*s[0];
-        pos[2] += 2*s[2];
+        tpPos[0] += 2*s[0];
+        tpPos[2] += 2*s[2];
     }else if(key == 'w' || key == 'W'){
-        pos[0] += 2*w[0];
-        pos[2] += 2*w[2];
+        tpPos[0] += 2*w[0];
+        tpPos[2] += 2*w[2];
     }else if(key == 'a' || key == 'A'){
-        pos[0] += 2*a[0];
-        pos[2] += 2*a[2];
+        tpPos[0] += 2*a[0];
+        tpPos[2] += 2*a[2];
     }else if(key == 'd' || key == 'D'){
-        pos[0] += 2*d[0];
-        pos[2] += 2*d[2];
+        tpPos[0] += 2*d[0];
+        tpPos[2] += 2*d[2];
     }
+    //if (sceneVendor->detectCollision(tpPos[0], tpPos[1], tpPos[2],ROBOT)) return;
+    for (int i = 0; i < 3; i++) pos[i] = tpPos[i];
 }
 void FPPerspective::passiveMotionEvent(int x, int y)
 {
@@ -96,6 +101,7 @@ void FPPerspective::update()
 {
     seePoint[0] = pos[0] + 15 * cos(eyeAngY * PI / 180.0);
     seePoint[2] = pos[2] + 15 * sin(eyeAngY * PI / 180.0);
+
     dir = seePoint - pos;
 }
 TPPerspective::TPPerspective(float aspect_):Perspective(aspect_)

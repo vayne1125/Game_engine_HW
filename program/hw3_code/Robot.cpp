@@ -104,7 +104,8 @@ void Robot::draw(unsigned int programID)
     float objMtx[16];
     //glMatrixMode(GL_MODELVIEW);
     //glLoadIdentity();
-
+    glPushMatrix();
+    glTranslatef(pos[0],pos[1],pos[2]);
     glPushMatrix();
     //
     glScalef(2.5, 2.5, 2.5);
@@ -241,7 +242,7 @@ void Robot::draw(unsigned int programID)
     glPopMatrix();                       //離開頭 
     
     glPopMatrix();                       //離開肚子坐標系 
-    
+    glPopMatrix();  
 }
 void Robot::stand()
 {

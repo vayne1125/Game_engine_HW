@@ -3,7 +3,7 @@ extern GraphicObj* graphicObj;
 extern mytex* myTex;
 extern Billboard* billboard;
 
-SceneVendor::SceneVendor()
+SceneVendor::SceneVendor(int programID)
 {
     spotLightElf = new Elf(0,40,203);
     spotLight = new Light(1,spotLightElf->pos[0],spotLightElf->pos[1],spotLightElf->pos[2],
@@ -14,6 +14,8 @@ SceneVendor::SceneVendor()
                         -1,-1,-1,
                         1,1,1,
                         1,2.3f);
+    chiefOfVillage = new Robot(programID,116,0,160);
+    chiefOfVillage->setColor(myTex->yellow_light,myTex->yellow_dark);
     
 }
 void SceneVendor::useLight(){
@@ -108,7 +110,35 @@ void SceneVendor::draw(float* eyeMtx,int programID)
         }
         glPopMatrix();
     }
-    
+
+    {   //地塊(往tree)
+        glPushMatrix();
+        glTranslatef(101.5, -10.5, 203);
+        glScalef(29, floorY, 87);
+        glPushMatrix();
+        glTranslatef(0.5, 0.5, 0.5);
+        glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+        glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+        myTex->robot_gray ->use(programID);
+        graphicObj->cube->draw(programID);
+        glPopMatrix();
+        glPopMatrix();
+        //石頭
+        glPushMatrix();
+        for (float i = 7.25; i < 29; i += 14.5) {
+            for (float j = 7.25; j < 87; j += 14.5) {
+                glPushMatrix();
+                glTranslatef(101.5 + i, 0, 203 + j);
+                glScalef(14.5, 1, 14.5);
+                glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+                glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+                myTex->stone_floor->use(programID);
+                graphicObj->square->draw(programID);
+                glPopMatrix();
+            }
+        }
+        glPopMatrix();
+    }
     {   //伊布
         //cout << eyeMtx << "\n";
         billboard->draw(65, 70, 28.125, 15, myTex->eevee[eevee_ani],eyeMtx,programID);
@@ -417,7 +447,9 @@ void SceneVendor::draw(float* eyeMtx,int programID)
         }
     }
 
-
+    {   //村長
+        chiefOfVillage->draw(programID);
+    }
 
 }
 void SceneVendor::keyEvent(unsigned char key){

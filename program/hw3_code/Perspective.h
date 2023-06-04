@@ -6,6 +6,8 @@
 #include <glm/vec3.hpp>
 #define CAMERA_POS       10
 #define   PI   3.1415927
+#define TPPERSPECTIVE 0
+#define FPPERSPECTIVE 1
 using glm::vec3;
 class Perspective{
 public:

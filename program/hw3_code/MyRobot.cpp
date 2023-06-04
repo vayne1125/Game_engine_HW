@@ -4,15 +4,23 @@
 #include "Perspective.h"
 extern SceneVendor* sceneVendor;
 extern TPPerspective* tpperspective;
+extern FPPerspective* fpperspective;
+extern int perspective;
 MyRobot::MyRobot(unsigned int programID, float pos_x, float pos_y, float pos_z):Robot(programID,pos_x,pos_y,pos_z)
 {
 
 }
 void MyRobot::keyEvent(unsigned char key)
 {
+    if(perspective == FPPERSPECTIVE) {
+        // pos[0] = fpperspective->pos[0];
+        // pos[2] = fpperspective->pos[2];
+        return;
+    }
     float tpPos[3] = { pos[0], pos[1], pos[2] };
     float w[3] = { pos[0] - tpperspective->pos[0] ,pos[1] - tpperspective->pos[1], pos[2] - tpperspective->pos[2] };
     float s[3] = { -pos[0] + tpperspective->pos[0] , -pos[1] + tpperspective->pos[1], -pos[2] + tpperspective->pos[2] };
+
     float d[3] = { -w[2] , 0 , w[0] };
     float a[3] = { w[2] , 0 , -w[0] };
     w[0] = w[0] / sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
@@ -85,4 +93,5 @@ void MyRobot::keyEvent(unsigned char key)
     }
     if (sceneVendor->detectCollision(tpPos[0], tpPos[1], tpPos[2],ROBOT)) return;
     for (int i = 0; i < 3; i++) pos[i] = tpPos[i];
+    dir = {w[0],w[1],w[2]};
 }
