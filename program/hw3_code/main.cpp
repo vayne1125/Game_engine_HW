@@ -80,7 +80,7 @@ float getDis(float x1, float y1, float x2, float y2) {           //算距離
 void keybaord_fun(unsigned char key, int X, int Y) {
     myRobot->keyEvent(key);
     //scenePhysicalExpFiled->keyEvent(key);
-    //sceneVendor->keyEvent(key);
+    sceneVendor->keyEvent(key);
     if(perspective == FPPERSPECTIVE) fpperspective->keyEvent(key);
 
     if(key == 'Y' || key == 'y') {
@@ -269,7 +269,6 @@ int main(int argc, char** argv) {
     glUseProgram(programID);
     //The main loop.
     myInit();
-    glutSetCursor(GLUT_CURSOR_NONE);
     glutPassiveMotionFunc(passive_motion_func);
     glutKeyboardFunc(keybaord_fun);
     glutKeyboardUpFunc(keyboardUp_func);

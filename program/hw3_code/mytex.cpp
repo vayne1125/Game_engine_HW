@@ -115,6 +115,7 @@ mytex::mytex(unsigned int programID)
     slime_fire = new texture("../texture/slime_fire.jpg",programID);
     slime_light = new texture("../texture/slime_light.jpg",programID);
     slime_water = new texture("../texture/slime_water.png",programID);
+    magic_circle = new texture("../texture/magic_circle.png",programID);
     //orange_dark, * orange_light, * dark_red, * orgred_dark, * orgred_light;
     //blacksmith = new texture("../texture/black_smith.png", programID);
     //a = new texture("../texture/pool.jpg", programID);

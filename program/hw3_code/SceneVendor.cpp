@@ -1,8 +1,9 @@
 #include "SceneVendor.h"
+#include "MyRobot.h"
 extern GraphicObj* graphicObj;
 extern mytex* myTex;
 extern Billboard* billboard;
-
+extern MyRobot *myRobot;
 SceneVendor::SceneVendor(int programID)
 {
     spotLightElf = new Elf(0,40,203);
@@ -19,14 +20,14 @@ SceneVendor::SceneVendor(int programID)
     chiefOfVillage->setColor(myTex->orange_light_robot,myTex->orange_dark_robot);
     
     fruitMerchant = new Robot(programID,116,0,23);
-    fruitMerchant->setColor(myTex->yellow_light_robot,myTex->yellow_dark_robot);
+    fruitMerchant->setColor(myTex->white,myTex->yellow_light_robot);
     fruitMerchant->scaleX = 3;
     fruitMerchant->scaleY = 3;
     fruitMerchant->scaleZ = 3;
 
     weaponDealer = new Robot(programID,205.5,0,70);
     weaponDealer->angle_y = 270;
-    weaponDealer->setColor(myTex->yellow_light_robot,myTex->yellow_dark_robot);
+    weaponDealer->setColor(myTex->white,myTex->yellow_light_robot);
     weaponDealer->scaleX = 3;
     weaponDealer->scaleY = 3;
     weaponDealer->scaleZ = 3;
@@ -66,7 +67,8 @@ float SceneVendor::getDis(float x1, float y1, float x2, float y2) {           //
 bool SceneVendor::detectCollision(float x,float y,float z,int ITEM){
     if (z <= 48 + 6) return 1;   //第一行攤販
     if ((z <= 95 && (x <= 48 + 6 || x >= 187)) || (z <= 95 && (x <= 48 - 6 || x >= 187 - 7))) return 1;     //第二條攤販
-    if (x < 0 || x > 232 || z < 0 || z > 203) return 1; //邊界
+    if (x < 0 || x > 232 || z < 0 || z > 280) return 1; //邊界
+    if (z >= 203 && !(x >= 101 && x <= 131)) return 1;
     if (ITEM == 0) {
         if (getDis(x, z, fountainPos[0], fountainPos[2]) <= 29) return 1;   //噴水池
     }
@@ -528,17 +530,27 @@ glPopMatrix();
         myTex->coffee_dark->use(programID);
         graphicObj->tree_conical_btn->draw(programID);
         glPopMatrix();
+    }
+    {   //轉移魔法陣
+        glPushMatrix();
+ 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        // glPushMatrix();
-        // glTranslatef(220, 0, 28);
-        // glScalef(4, 4, 4);
-        // glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-        // glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-        // myTex->grass_light->use(programID);
-        // graphicObj->tree_round_up->draw(programID);
-        // myTex->coffee_dark->use(programID);
-        // graphicObj->tree_round_btn->draw(programID);
-        // glPopMatrix();
+        glEnable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0.5);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        glTranslatef(116, 1, 270);  
+        glScalef(20, 1, 20);
+        glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+        glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+        myTex->magic_circle->use(programID);
+        graphicObj->square->draw(programID);
+
+        glDisable(GL_ALPHA_TEST);
+        glDisable(GL_BLEND); 
+
+        glPopMatrix();
     }
 }
 void SceneVendor::keyEvent(unsigned char key){
@@ -546,5 +558,9 @@ void SceneVendor::keyEvent(unsigned char key){
         isDirLightOpen ^= 1;
         if(isDirLightOpen) dirLight->setStr(2.3);
         else dirLight->setStr(0);
-    }   
+    }else if((int)key == 13){  //轉移魔法陣 
+        if(getDis(myRobot->pos[0],myRobot->pos[2],116,270) <= 10){
+            //todo
+        }
+    }
 }
