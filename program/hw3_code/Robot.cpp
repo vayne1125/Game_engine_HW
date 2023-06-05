@@ -108,7 +108,7 @@ void Robot::draw(unsigned int programID)
     glTranslatef(pos[0],pos[1],pos[2]);
     glPushMatrix();
     //
-    glScalef(2.5, 2.5, 2.5);
+    glScalef(scaleX, scaleY, scaleZ);
     glTranslatef(x, y, z);                      //整隻的座標
 
     glRotatef(angle_y, 0, 1, 0);

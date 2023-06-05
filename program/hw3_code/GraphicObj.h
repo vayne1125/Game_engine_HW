@@ -20,6 +20,7 @@ public:
 	const glm::mat3 &getIByID(int graID);	
 	const vector<glm::vec3>& getVerticesByID(int graID);																  
 	mesh* phy_sphere, *phy_cube, *phy_cloud;
+	mesh* slime;
 private:																												  
 	mesh* getMesh(string fname,unsigned int programID,bool isphy);
 };

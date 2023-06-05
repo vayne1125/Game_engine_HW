@@ -35,5 +35,5 @@ private:
 	float floorX = 232;
 	float floorY = 10;
 	float floorZ = 203;
-	Robot *chiefOfVillage;  
+	Robot *chiefOfVillage,*fruitMerchant,*weaponDealer;  
 };

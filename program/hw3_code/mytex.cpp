@@ -83,8 +83,12 @@ mytex::mytex(unsigned int programID)
     coffee_dark = new texture(141,84,28,255, programID);
     coffee_light = new texture(162, 92, 21, 255, programID);
     flower = new texture("../texture/flower.png", programID);
-    yellow_light = new texture(255, 255, 204, 255, programID);
-    yellow_dark = new texture(173, 142, 0, 255, programID);
+    // yellow_light = new texture(255, 255, 204, 255, programID);
+    // yellow_dark = new texture(173, 142, 0, 255, programID);
+    yellow_light_robot = new texture(255, 255, 204, 255, programID);
+    yellow_dark_robot = new texture(255, 231, 112, 255, programID);
+    orange_light_robot = new texture(255, 219, 184, 255, programID);
+    orange_dark_robot = new texture(255, 176, 97, 255, programID);
     red_dark = new texture(117, 0, 0, 255, programID);
     stone_floor = new texture("../texture/stone_floor.jpg", programID);
     wood = new texture("../texture/wood.jpg", programID);
@@ -108,6 +112,9 @@ mytex::mytex(unsigned int programID)
     red_lantern2 = new texture("../texture/red_lantern2.jpg", programID);
     slime_cube = new texture("../texture/slime_cube.png", programID);
     slime_sphere_phy = new texture("../texture/slime_sphere_phy.png",programID);
+    slime_fire = new texture("../texture/slime_fire.jpg",programID);
+    slime_light = new texture("../texture/slime_light.jpg",programID);
+    slime_water = new texture("../texture/slime_water.png",programID);
     //orange_dark, * orange_light, * dark_red, * orgred_dark, * orgred_light;
     //blacksmith = new texture("../texture/black_smith.png", programID);
     //a = new texture("../texture/pool.jpg", programID);

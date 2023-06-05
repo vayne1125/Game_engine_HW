@@ -58,7 +58,7 @@ public:
     int getMoveMode();
     float moveOffset = 0;
     void setColor(texture* m,texture* s);
-                        
+    float scaleX = 2.5,scaleY = 2.5,scaleZ = 2.5;                       
     float pos[3] = {0,0,0};        //控制機器人在世界座標系的座標
         
 private:

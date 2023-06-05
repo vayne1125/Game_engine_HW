@@ -30,6 +30,8 @@ public:
 	texture* yellow_light, * yellow_dark, * orange_dark, * orange_light,*red_dark,*orgred_dark,*orgred_light, *stone_floor;
 	texture* wood, * wood2, *wood3, *wood4, * wood5, *tablecloth, *tent, *pear, *bread, *cheese, *red_apple, *green_apple, *lemon, *silver, * blue_fabric, * green_fabric, * red_lantern, * red_lantern2;
 	texture* slime_cube,*slime_sphere_phy;
+	texture* slime_water,*slime_light,*slime_fire;
+	texture* orange_dark_robot, * orange_light_robot,*yellow_light_robot,*yellow_dark_robot;
 private:
 };
 

@@ -14,9 +14,22 @@ SceneVendor::SceneVendor(int programID)
                         -1,-1,-1,
                         1,1,1,
                         1,2.3f);
-    chiefOfVillage = new Robot(programID,116,0,160);
-    chiefOfVillage->setColor(myTex->yellow_light,myTex->yellow_dark);
+
+    chiefOfVillage = new Robot(programID,116,0,157); 
+    chiefOfVillage->setColor(myTex->orange_light_robot,myTex->orange_dark_robot);
     
+    fruitMerchant = new Robot(programID,116,0,23);
+    fruitMerchant->setColor(myTex->yellow_light_robot,myTex->yellow_dark_robot);
+    fruitMerchant->scaleX = 3;
+    fruitMerchant->scaleY = 3;
+    fruitMerchant->scaleZ = 3;
+
+    weaponDealer = new Robot(programID,205.5,0,70);
+    weaponDealer->angle_y = 270;
+    weaponDealer->setColor(myTex->yellow_light_robot,myTex->yellow_dark_robot);
+    weaponDealer->scaleX = 3;
+    weaponDealer->scaleY = 3;
+    weaponDealer->scaleZ = 3;
 }
 void SceneVendor::useLight(){
     dirLight->use();
@@ -214,7 +227,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
         graphicObj->vendor_desk->draw(programID);
         glPopMatrix();
         glPopMatrix();
-        {
+        {// 水果攤
             //籃子
             for (int i = 0; i < 5; i++) {
                 glPushMatrix();
@@ -252,143 +265,138 @@ void SceneVendor::draw(float* eyeMtx,int programID)
                 }
                 glPopMatrix();
             }
-            //麵包攤
-            {
-                //起司盤子
-                glPushMatrix();
-                glTranslatef(155, 16, 44);
-                glPushMatrix();
-                glScalef(6, 6, 6);
-                glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-                glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-                myTex->wood5->use(programID);
-                graphicObj->plate->draw(programID);
-                glPopMatrix();
-                glPushMatrix();         //起司
-                glTranslatef(-1, 0.2, 1);
-                glScalef(23, 23, 23);
-                glRotatef(100, 0, 1, 0);
-                glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-                glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-                myTex->cheese->use(programID);
-                graphicObj->cheese->draw(programID);
-                glPopMatrix();
-                glPopMatrix();
+        }
+
+        {//麵包攤
+            //起司盤子
+            glPushMatrix();
+            glTranslatef(155, 16, 44);
+            glPushMatrix();
+            glScalef(6, 6, 6);
+            glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+            glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+            myTex->wood5->use(programID);
+            graphicObj->plate->draw(programID);
+            glPopMatrix();
+            glPushMatrix();         //起司
+            glTranslatef(-1, 0.2, 1);
+            glScalef(23, 23, 23);
+            glRotatef(100, 0, 1, 0);
+            glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+            glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+            myTex->cheese->use(programID);
+            graphicObj->cheese->draw(programID);
+            glPopMatrix();
+            glPopMatrix();
 
 
-                //麵包盤子
-                glPushMatrix();
-                glTranslatef(174, 16, 44);
-                glPushMatrix();
-                glScalef(6.5, 4, 4);
-                glRotatef(90, 0, 1, 0);
-                glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-                glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-                myTex->wood5->use(programID);
-                graphicObj->plate->draw(programID);
-                glPopMatrix();
-                //麵包
-                glPushMatrix();
-                glTranslatef(-2, 0.2, 2.5);
-                glScalef(2.7, 2.7, 2.7);
-                glRotatef(100, 0, 1, 0);
-                glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-                glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-                myTex->bread->use(programID);
-                graphicObj->bread2->draw(programID);
-                glPopMatrix();
-                glPopMatrix();
-            }
-            // 武器攤
-            {
-                // 劍
-                glPushMatrix();
-                glTranslatef(191, 16, 58);
-                glPushMatrix();
-                glScalef(4.5, 4, 4);
-                glRotatef(90, 0, 1, 0);
-                glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-                glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-                myTex->silver->use(programID,0.508273f, 0.508273f, 0.508273f,51.25f);
-                graphicObj->sword->draw(programID);
-                glPopMatrix();
-                glPopMatrix();
+            //麵包盤子
+            glPushMatrix();
+            glTranslatef(174, 16, 44);
+            glPushMatrix();
+            glScalef(6.5, 4, 4);
+            glRotatef(90, 0, 1, 0);
+            glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+            glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+            myTex->wood5->use(programID);
+            graphicObj->plate->draw(programID);
+            glPopMatrix();
+            //麵包
+            glPushMatrix();
+            glTranslatef(-2, 0.2, 2.5);
+            glScalef(2.7, 2.7, 2.7);
+            glRotatef(100, 0, 1, 0);
+            glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+            glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+            myTex->bread->use(programID);
+            graphicObj->bread2->draw(programID);
+            glPopMatrix();
+            glPopMatrix();
+        }
+        
+        {// 武器攤
+            // 劍
+            glPushMatrix();
+            glTranslatef(191, 16, 58);
+            glPushMatrix();
+            glScalef(4.5, 4, 4);
+            glRotatef(90, 0, 1, 0);
+            glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+            glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+            myTex->silver->use(programID,0.508273f, 0.508273f, 0.508273f,51.25f);
+            graphicObj->sword->draw(programID);
+            glPopMatrix();
+            glPopMatrix();
 
-                //弓箭
+            //弓箭
+            glPushMatrix();
+            glTranslatef(189, 16, 78);
+            glPushMatrix();
+            glScalef(7.8, 7.8, 7.8);
+            glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+            glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+            myTex->wood->use(programID, 0.508273f, 0.508273f, 0.508273f, 51.25f);
+            graphicObj->bow->draw(programID);
+            glPopMatrix();
+            glPopMatrix();
+            //弓箭
+            glPushMatrix();
+            glTranslatef(194, 16, 78);
+            glPushMatrix();
+            glScalef(7.8, 7.8, 7.8);
+            glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+            glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+            myTex->wood->use(programID, 0.508273f, 0.508273f, 0.508273f, 51.25f);
+            graphicObj->bow->draw(programID);
+            glPopMatrix();
+            glPopMatrix();
+        }
+        
+        {//燈籠攤
+            for (int i = 0; i < 3; i++) {
                 glPushMatrix();
-                glTranslatef(189, 16, 78);
+                glTranslatef(45, 32, 60+10*i);
                 glPushMatrix();
-                glScalef(7.8, 7.8, 7.8);
+                glScalef(3, 3, 3);
                 //glRotatef(90, 1, 0, 0);
                 //glRotatef(90, 0, 0, 1);
                 glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
                 glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-                myTex->wood->use(programID, 0.508273f, 0.508273f, 0.508273f, 51.25f);
-                graphicObj->bow->draw(programID);
-                glPopMatrix();
-                glPopMatrix();
-                //弓箭
-                glPushMatrix();
-                glTranslatef(194, 16, 78);
-                glPushMatrix();
-                glScalef(7.8, 7.8, 7.8);
-                //glRotatef(90, 1, 0, 0);
-                //glRotatef(90, 0, 0, 1);
-                glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-                glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-                myTex->wood->use(programID, 0.508273f, 0.508273f, 0.508273f, 51.25f);
-                graphicObj->bow->draw(programID);
-                glPopMatrix();
-                glPopMatrix();
-            }
-            //燈籠攤
-            {
-                for (int i = 0; i < 3; i++) {
-                    glPushMatrix();
-                    glTranslatef(45, 32, 60+10*i);
-                    glPushMatrix();
-                    glScalef(3, 3, 3);
-                    //glRotatef(90, 1, 0, 0);
-                    //glRotatef(90, 0, 0, 1);
-                    glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-                    glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-                    if(i&1)
-                        myTex->red_lantern2->use(programID, 0.508273f, 0.508273f, 0.508273f, 51.25f);
-                    else
-                        myTex->red_lantern->use(programID, 0.508273f, 0.508273f, 0.508273f, 51.25f);
-                    graphicObj->lantern3->draw(programID);
-                    glPopMatrix();
-                    glPopMatrix();
-                }
-                for (int i = 0; i < 5; i++) {
-                    glPushMatrix();
-                    glTranslatef(45+(i*37 % 5 )/5 - 2.5f, 18, 55 + 8 * i);
-                    glPushMatrix();
-                    glScalef(108, 128, 108);
-                    //glRotatef(90, 1, 0, 0);
-                    //glRotatef(90, 0, 0, 1);
-                    glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-                    glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+                if(i&1)
+                    myTex->red_lantern2->use(programID, 0.508273f, 0.508273f, 0.508273f, 51.25f);
+                else
                     myTex->red_lantern->use(programID, 0.508273f, 0.508273f, 0.508273f, 51.25f);
-                    graphicObj->lantern1->draw(programID);
-                    glPopMatrix();
-                    glPopMatrix();
-                }
+                graphicObj->lantern3->draw(programID);
+                glPopMatrix();
+                glPopMatrix();
+            }
+            for (int i = 0; i < 5; i++) {
+                glPushMatrix();
+                glTranslatef(45+(i*37 % 5 )/5 - 2.5f, 18, 55 + 8 * i);
+                glPushMatrix();
+                glScalef(108, 128, 108);
+                //glRotatef(90, 1, 0, 0);
+                //glRotatef(90, 0, 0, 1);
+                glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+                glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+                myTex->red_lantern->use(programID, 0.508273f, 0.508273f, 0.508273f, 51.25f);
+                graphicObj->lantern1->draw(programID);
+                glPopMatrix();
+                glPopMatrix();
             }
         }
+        
     }
     
-
     {   //spotlight
         glPushMatrix();
-        //cout << "light: " << spotLightElf->pos[0] << " " << spotLightElf->pos[2] << "\n";
         glTranslatef(spotLightElf->pos[0], spotLightElf->pos[1], spotLightElf->pos[2]);
         glScalef(4, 4, 4);
         spotLightElf->draw(programID);
         glPopMatrix();
-    } 
+    }
 
-    {   //tree
+    {   //vendor tree
         glPushMatrix();
         glTranslatef(15,0,15);
         glScalef(7, 7, 7);
@@ -447,10 +455,91 @@ void SceneVendor::draw(float* eyeMtx,int programID)
         }
     }
 
-    {   //村長
+    {   //NPC
+        //村長
         chiefOfVillage->draw(programID);
+        //水果店老闆
+        fruitMerchant->draw(programID);
+        //武器行老闆
+        weaponDealer->draw(programID);
+    }
+    
+    {   //slime
+        glPushMatrix();
+        glTranslatef(fountainPos[0], fountainPos[1], fountainPos[2]+40);
+        glPushMatrix();
+        glScalef(5, 5, 5);
+        glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+        glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+        myTex->slime_water->use(programID);
+        graphicObj->slime->draw(programID);
+glPopMatrix();
+        glTranslatef(0,0,20);
+        glPushMatrix();
+        glScalef(5, 5, 5);
+        glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+        glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+        myTex->slime_fire->use(programID);
+        graphicObj->slime->draw(programID);
+glPopMatrix();
+        glTranslatef(0,0,20);
+        glPushMatrix();
+        glScalef(5, 5, 5);
+        
+        glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+        glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+        myTex->slime_light->use(programID);
+        graphicObj->slime->draw(programID);
+        glPopMatrix();
+        glPopMatrix();
+
     }
 
+    {   //前往叢林 tree
+        glPushMatrix();
+        glTranslatef(105, 0, 275);
+        glScalef(4, 4, 4);
+        glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+        glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+        myTex->grass_light->use(programID);
+        graphicObj->tree_round_up->draw(programID);
+        myTex->coffee_dark->use(programID);
+        graphicObj->tree_round_btn->draw(programID);
+        glPopMatrix();
+
+        glPushMatrix();
+        glTranslatef(116,0,285);
+        glScalef(5, 5, 5);
+        glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+        glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+        myTex->grass_dark->use(programID);
+        graphicObj->tree_round_up->draw(programID);
+        myTex->coffee_dark->use(programID);
+        graphicObj->tree_round_btn->draw(programID);
+        glPopMatrix();
+
+        glPushMatrix();
+        glTranslatef(128, 0, 275);
+        glScalef(5, 5, 5);
+        glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+        glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+        myTex->grass_dark->use(programID);
+        graphicObj->tree_conical_up ->draw(programID);
+        myTex->coffee_dark->use(programID);
+        graphicObj->tree_conical_btn->draw(programID);
+        glPopMatrix();
+
+        // glPushMatrix();
+        // glTranslatef(220, 0, 28);
+        // glScalef(4, 4, 4);
+        // glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+        // glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+        // myTex->grass_light->use(programID);
+        // graphicObj->tree_round_up->draw(programID);
+        // myTex->coffee_dark->use(programID);
+        // graphicObj->tree_round_btn->draw(programID);
+        // glPopMatrix();
+    }
 }
 void SceneVendor::keyEvent(unsigned char key){
     if (key == '0') {

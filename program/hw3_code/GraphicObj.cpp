@@ -35,14 +35,14 @@ GraphicObj::GraphicObj(unsigned int programID)
     sword = getMesh("../model/sword.obj", programID,0);
     bow = getMesh("../model/bow.obj", programID,0);
     lantern1 = getMesh("../model/lantern1.obj", programID,0);
-    //lantern2 = getMesh("../model/lantern2.obj", programID,0);
     lantern3 = getMesh("../model/lantern3.obj", programID,0); 
-    
+    slime = getMesh("../model/slime.obj",programID,0);
 
     //---------------------phy---------------------------------//
     phy_sphere = getMesh("../model/solidsphere.obj", programID,1);
     phy_cube = getMesh("../model/cube.obj", programID,1);
     phy_cloud = getMesh("../model/cloud1.obj", programID,1); 
+    //phy_slime = getMesh("../model/slime.obj",programID,1);
 }   
 void GraphicObj::drawByID(int graID, unsigned int programID)
 {
