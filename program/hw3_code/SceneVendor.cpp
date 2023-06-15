@@ -1,9 +1,11 @@
 #include "SceneVendor.h"
 #include "MyRobot.h"
+#include "Define.h"
 extern GraphicObj* graphicObj;
 extern mytex* myTex;
 extern Billboard* billboard;
 extern MyRobot *myRobot;
+extern int scene;
 SceneVendor::SceneVendor(int programID)
 {
     spotLightElf = new Elf(0,40,203);
@@ -560,7 +562,8 @@ void SceneVendor::keyEvent(unsigned char key){
         else dirLight->setStr(0);
     }else if((int)key == 13){  //轉移魔法陣 
         if(getDis(myRobot->pos[0],myRobot->pos[2],116,270) <= 10){
-            //todo
+            scene = SCENE_JUNGLE;
+            myRobot->pos[0] = myRobot->pos[2] = 355;
         }
     }
 }

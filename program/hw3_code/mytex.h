@@ -8,6 +8,9 @@
 #define YU_CHEESE 1
 #define YU_SLIME_CUBE 2
 #define YU_SLIME_SPHERE_PHY 3
+#define YU_SLIME_FIRE 4
+#define YU_SLIME_WATER 5
+#define YU_SLIME_LIGHT 6
 using namespace std;
 class texture{
 public:

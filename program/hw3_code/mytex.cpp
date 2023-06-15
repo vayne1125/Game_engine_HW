@@ -136,6 +136,15 @@ void mytex::useByID(int texID, unsigned int programID)
         case YU_SLIME_SPHERE_PHY:
             slime_sphere_phy -> use(programID);
             break;
+        case YU_SLIME_FIRE:
+            slime_fire->use(programID);
+            break;
+        case YU_SLIME_LIGHT:
+            slime_light->use(programID);
+            break;
+        case YU_SLIME_WATER:
+            slime_water->use(programID);
+            break;
         default:
             break;
     }

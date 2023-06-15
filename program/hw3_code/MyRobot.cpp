@@ -1,11 +1,15 @@
 #include "MyRobot.h"
 #include "SceneVendor.h"
 #include "ScenePhysicalExpFiled.h"
+#include "SceneJungle.h"
 #include "Perspective.h"
+#include "Define.h"
 extern SceneVendor* sceneVendor;
+extern SceneJungle* sceneJungle;
 extern TPPerspective* tpperspective;
 extern FPPerspective* fpperspective;
 extern int perspective;
+extern int scene;
 MyRobot::MyRobot(unsigned int programID, float pos_x, float pos_y, float pos_z):Robot(programID,pos_x,pos_y,pos_z)
 {
 
@@ -91,7 +95,8 @@ void MyRobot::keyEvent(unsigned char key)
         move();    //在地板才要動腳
         
     }
-    if (sceneVendor->detectCollision(tpPos[0], tpPos[1], tpPos[2],ROBOT)) return;
+    if (scene == SCENE_VENDOR && sceneVendor->detectCollision(tpPos[0], tpPos[1], tpPos[2],SV_ROBOT)) return;
+    if (scene == SCENE_JUNGLE && sceneJungle->detectCollision(tpPos[0], tpPos[2],SJ_ROBOT)) return;
     for (int i = 0; i < 3; i++) pos[i] = tpPos[i];
     dir = {w[0],w[1],w[2]};
 }

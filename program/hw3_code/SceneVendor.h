@@ -9,7 +9,7 @@
 #include "Billboard.h"
 #include "Light.h"
 #include "Robot.h"
-#define ROBOT 0
+#define SV_ROBOT 0
 #define SPOTLIGHT_ELF 1
 
 #define ANIMATION_SPOTLIGHT_ELF 6300

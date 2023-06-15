@@ -14,11 +14,13 @@
 #include "MyRobot.h"
 #include "SceneVendor.h"
 #include "ScenePhysicalExpFiled.h"
+#include "SceneJungle.h"
 #include "Billboard.h"
 #include "PhyObj.h"
 #include "Object.h"
 #include "UIPhy.h"
 #include "Perspective.h"
+#include "Define.h"
 #define   PI   3.1415927
 //location
 #define AMBIENT          11
@@ -34,6 +36,7 @@ using namespace std;
 GLuint programID;
 SceneVendor* sceneVendor;
 ScenePhysicalExpFiled* scenePhysicalExpFiled;
+SceneJungle* sceneJungle;
 MyRobot* myRobot;
 GraphicObj* graphicObj;
 mytex* myTex;
@@ -43,6 +46,7 @@ TPPerspective* tpperspective;
 FPPerspective* fpperspective;
 
 int perspective = TPPERSPECTIVE;
+int scene = SCENE_JUNGLE;
 
 double aspect = WINDOW_WIDTH / (double)WINDOW_HEIGHT;
 float   cv = cos(5.0 * PI / 180.0), sv = sin(5.0 * PI / 180.0); /* cos(5.0) and sin(5.0) */
@@ -80,7 +84,15 @@ float getDis(float x1, float y1, float x2, float y2) {           //算距離
 void keybaord_fun(unsigned char key, int X, int Y) {
     myRobot->keyEvent(key);
     //scenePhysicalExpFiled->keyEvent(key);
-    sceneVendor->keyEvent(key);
+    switch(scene){
+    case SCENE_VENDOR:   
+        sceneVendor->keyEvent(key);
+        break;
+    case SCENE_JUNGLE:
+        break;
+    case SCENE_PHYSICALEXPFILED:
+        break;
+    }
     if(perspective == FPPERSPECTIVE) fpperspective->keyEvent(key);
 
     if(key == 'Y' || key == 'y') {
@@ -109,7 +121,7 @@ void myInit() {
 
     sceneVendor = new SceneVendor(programID);
     scenePhysicalExpFiled = new ScenePhysicalExpFiled();
-    
+    sceneJungle = new SceneJungle();
     fpperspective = new FPPerspective(aspect);
     tpperspective = new TPPerspective(aspect);
 
@@ -126,10 +138,19 @@ void myDisplay(void)
     glClearColor(0.70, 0.70, 0.70, 1.0);  //Dark grey background
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     
-    {
-        sceneVendor->useLight();
-        glUniform1f(AMBIENT, 0.2);
+    switch(scene){
+        case SCENE_VENDOR:
+            sceneVendor->useLight();
+            break;
+        case SCENE_PHYSICALEXPFILED:
+            break;
+        case SCENE_JUNGLE:
+            //cout<<"O\n";
+            sceneJungle->useLight();
+            break;
     }
+    
+    glUniform1f(AMBIENT, 0.2);
 
     if(perspective == FPPERSPECTIVE) fpperspective->use();    //更新眼睛位置和看的方向
     else if(perspective == TPPERSPECTIVE) tpperspective->use();
@@ -141,19 +162,28 @@ void myDisplay(void)
     {
         myRobot->draw(programID);
     }
+    
+    
+    {
+        float eyeM[16];
 
-    {   
-
-        if(perspective == FPPERSPECTIVE) {
-            sceneVendor -> draw(fpperspective->eyeMtx,programID);
-            //scenePhysicalExpFiled->draw(fpperspective->eyeMtx,programID);
-
-            uiphy->draw();
+        if(perspective == FPPERSPECTIVE)
+            for(int i=0;i<16;i++) eyeM[i] = fpperspective->eyeMtx[i];
+        else if(perspective == TPPERSPECTIVE) 
+            for(int i=0;i<16;i++) eyeM[i] = tpperspective->eyeMtx[i];
+        
+        switch(scene){
+            case SCENE_VENDOR:
+                sceneVendor -> draw(eyeM,programID);
+                break;
+            case SCENE_PHYSICALEXPFILED:
+                scenePhysicalExpFiled->draw(eyeM,programID);
+                break;
+            case SCENE_JUNGLE:
+                sceneJungle->draw(eyeM,programID);
+                break;
         }
-        else if(perspective == TPPERSPECTIVE) {
-            sceneVendor -> draw(tpperspective->eyeMtx,programID);
-            //scenePhysicalExpFiled->draw(tpperspective->eyeMtx,programID);
-        }
+        if(perspective == FPPERSPECTIVE) uiphy->draw();
     }
 
     //uiphy

@@ -36,13 +36,15 @@ GraphicObj::GraphicObj(unsigned int programID)
     bow = getMesh("../model/bow.obj", programID,0);
     lantern1 = getMesh("../model/lantern1.obj", programID,0);
     lantern3 = getMesh("../model/lantern3.obj", programID,0); 
-    slime = getMesh("../model/slime.obj",programID,0);
+    //slime = getMesh("../model/slime.obj",programID,0);
 
-    //---------------------phy---------------------------------//
+    //---------------------phy(object)-------------------------//
     phy_sphere = getMesh("../model/solidsphere.obj", programID,1);
     phy_cube = getMesh("../model/cube.obj", programID,1);
     phy_cloud = getMesh("../model/cloud1.obj", programID,1); 
-    //phy_slime = getMesh("../model/slime.obj",programID,1);
+    
+    //---------------------(object)-------------------------//
+    slime = getMesh("../model/slime.obj",programID,2);
 }   
 void GraphicObj::drawByID(int graID, unsigned int programID)
 {
@@ -56,6 +58,9 @@ void GraphicObj::drawByID(int graID, unsigned int programID)
         case YU_GRAPHICS_CLOUD:
             //cout << "draw cloud\n";
             phy_cloud -> draw(programID);
+            break;
+        case YU_GRAPHICS_SLIME:
+            slime->draw(programID);
             break;
         default:
             cout << "GraphicObj::drawByID(int graID, unsigned int programID) has wrong!!!\n"; 
@@ -83,22 +88,20 @@ const vector<glm::vec3> &GraphicObj::getVerticesByID(int graID)
             return phy_sphere->getVertices();
         case YU_GRAPHICS_CLOUD:
             return phy_cloud->getVertices();
+        case YU_GRAPHICS_SLIME:
+            return slime->getVertices();
         default:
             cout << "GraphicObj::getVerticesByID has wrong!!! in GraphicObj.cpp\n";
             break;
     }    
     // TODO: insert return statement here
 }
-mesh *GraphicObj::getMesh(string fname, unsigned int programID, bool isphy)
+mesh *GraphicObj::getMesh(string fname, unsigned int programID, int type)
 {
     
     fstream file(fname.c_str(),std::fstream::in | std::fstream::ate); //ate -> 移到最後面
     int sz = file.tellg();  //回傳當前指針位置( ate在尾巴 -> 檔案大小 )
     file.seekg(0); //移到頭
-    //string data;
-    //data.resize(sz);
-    //file.read((char*)data.data(), sz);
-    //file.close();
     vector<float>tp;
     string s;
     float x, y, z;
@@ -134,7 +137,7 @@ mesh *GraphicObj::getMesh(string fname, unsigned int programID, bool isphy)
         }
     }
     file.close();
-    mesh* m = new mesh(programID, tp,isphy);
+    mesh* m = new mesh(programID, tp,type);
     cout <<fname << " " <<tp.size() << "\n";
     
     return m;

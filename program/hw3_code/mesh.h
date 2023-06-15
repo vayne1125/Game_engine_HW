@@ -10,7 +10,7 @@ using namespace std;
 class mesh {
 public:
 mesh();
-	mesh(unsigned int programID,vector<float>& vec,bool phy);
+	mesh(unsigned int programID,vector<float>& vec,int type);
 	void draw(int programID);
 	const glm::mat3 &getI(){return I;}
 	const vector<glm::vec3> &getVertices();

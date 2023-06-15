@@ -10,6 +10,7 @@
 #define YU_GRAPHICS_SPHERE  0
 #define YU_GRAPHICS_CUBE    1
 #define YU_GRAPHICS_CLOUD   2
+#define YU_GRAPHICS_SLIME   3
 using namespace std;
 class GraphicObj {
 public:
@@ -22,5 +23,5 @@ public:
 	mesh* phy_sphere, *phy_cube, *phy_cloud;
 	mesh* slime;
 private:																												  
-	mesh* getMesh(string fname,unsigned int programID,bool isphy);
+	mesh* getMesh(string fname,unsigned int programID,int type);
 };

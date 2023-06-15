@@ -1,8 +1,8 @@
 #include "mesh.h"
 mesh::mesh(){};
-mesh::mesh(unsigned int programID,vector<float>& vec,bool phy){
+mesh::mesh(unsigned int programID,vector<float>& vec,int type){
     vertex_count = vec.size() / 8;
-    if(phy == 1)
+    if(type == 1)  //phy
     {
         float tot = 0;                  //體積
         glm::vec3 tot2 = {0,0,0};       //類質心
@@ -67,6 +67,13 @@ mesh::mesh(unsigned int programID,vector<float>& vec,bool phy){
         I[1][2] = I[2][1] = -zy;
 
         //cout << I[0][0] << "\n";
+    }else if(type == 2){   //for choose obj but not phy
+        for(int i=0;i<vertex_count/3;i++){
+            vertices.push_back({vec[i*24+0],vec[i*24+1],vec[i*24+2]});
+            vertices.push_back({vec[i*24+8],vec[i*24+9],vec[i*24+10]});
+            vertices.push_back({vec[i*24+16],vec[i*24+17],vec[i*24+18]});
+        }
+        cout << "slime!!\n";
     }
 
     { //VAO VBO
