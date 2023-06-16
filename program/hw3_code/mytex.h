@@ -35,6 +35,7 @@ public:
 	texture* slime_cube,*slime_sphere_phy;
 	texture* slime_water,*slime_light,*slime_fire,*magic_circle;
 	texture* orange_dark_robot, * orange_light_robot,*yellow_light_robot,*yellow_dark_robot;
+	texture* fire;
 private:
 };
 

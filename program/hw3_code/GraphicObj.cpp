@@ -36,6 +36,7 @@ GraphicObj::GraphicObj(unsigned int programID)
     bow = getMesh("../model/bow.obj", programID,0);
     lantern1 = getMesh("../model/lantern1.obj", programID,0);
     lantern3 = getMesh("../model/lantern3.obj", programID,0); 
+    circle = getMesh("../model/circle.obj", programID,0);
     //slime = getMesh("../model/slime.obj",programID,0);
 
     //---------------------phy(object)-------------------------//

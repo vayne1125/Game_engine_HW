@@ -222,6 +222,7 @@ void mouseWheel_fun(int button, int dir, int x, int y) {
 }
 void mouseClick_fun(int btn, int state, int x, int y) {
     if(perspective == TPPERSPECTIVE) tpperspective->mouseClickEvent(btn,state,x,y);
+    if(scene == SCENE_JUNGLE) sceneJungle->mouseClickEvent(btn,state,x,y);
     // if (state == GLUT_DOWN) {
     //     if (btn == GLUT_RIGHT_BUTTON) {
     //         mouseBtn = GLUT_RIGHT_BUTTON;
