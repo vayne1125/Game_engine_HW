@@ -19,6 +19,7 @@
 #include "PhyObj.h"
 #include "Object.h"
 #include "UIPhy.h"
+#include "UI.h"
 #include "Perspective.h"
 #include "Define.h"
 #define   PI   3.1415927
@@ -42,6 +43,7 @@ GraphicObj* graphicObj;
 mytex* myTex;
 Billboard* billboard;
 UIPhy* uiphy;
+UI* ui;
 TPPerspective* tpperspective;
 FPPerspective* fpperspective;
 
@@ -126,6 +128,7 @@ void myInit() {
     tpperspective = new TPPerspective(aspect);
 
     uiphy = new UIPhy(aspect);
+    ui = new UI(aspect);
 }
 void myDisplay(void)
 {
@@ -183,7 +186,7 @@ void myDisplay(void)
                 sceneJungle->draw(eyeM,programID);
                 break;
         }
-        if(perspective == FPPERSPECTIVE) uiphy->draw();
+        if(perspective == FPPERSPECTIVE) ui->draw();
     }
 
     //uiphy
@@ -199,7 +202,7 @@ void myDisplay(void)
 int mouseX = 0, mouseY = 0,mouseBtn = 0;
 void passive_motion_func(int x,int y){
     if(perspective == FPPERSPECTIVE) fpperspective->passiveMotionEvent(x,y);
-
+    if(scene == SCENE_JUNGLE) sceneJungle->passiveMotionEvent(x,y);
     // float dir_[3] = {fpperspective->dir[0],fpperspective->dir[1],fpperspective->dir[2]};
     // for(int i=0;i<3;i++){
     //     if(scenePhysicalExpFiled->object[i]->isChoose({fpperspective->pos[0],fpperspective->pos[1],fpperspective->pos[2]},{dir_[0],dir_[1],dir_[2]}))

@@ -16,6 +16,7 @@ class GraphicObj {
 public:
 	mesh* cube, * solidsphere, * cylinder, * solidtorus_5_025, *fountain, *blacksmith, * fountain_base , * fountain_water,* vendor_base, * vendor_col,* vendor_roof;
 	mesh* square, *vendor_desk, *tree_round_up, *tree_round_btn,* tree_conical_btn,* tree_conical_up, *cloud1, *vendor_crate, * apple, * cheese, *bread2, *plate, *sword, *bow, *lantern1, * lantern2, * lantern3;
+	mesh* tree_open_btn,*tree_open_up,*tree_pyramidal_btn,*tree_pyramidal_up;
 	GraphicObj(unsigned int programID);		
 	void drawByID(int graID,unsigned int programID);	
 	const glm::mat3 &getIByID(int graID);	

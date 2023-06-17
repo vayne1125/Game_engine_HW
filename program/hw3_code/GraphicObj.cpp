@@ -26,6 +26,10 @@ GraphicObj::GraphicObj(unsigned int programID)
     tree_round_btn = getMesh("../model/tree_round_btn.obj", programID,0);
     tree_conical_up = getMesh("../model/tree_conical_up.obj", programID,0);
     tree_conical_btn = getMesh("../model/tree_conical_btn.obj", programID,0);
+    tree_open_btn = getMesh("../model/tree_open_btn.obj", programID,0);
+    tree_open_up = getMesh("../model/tree_open_up.obj", programID,0);
+    tree_pyramidal_btn = getMesh("../model/tree_pyramidal_btn.obj", programID,0);
+    tree_pyramidal_up = getMesh("../model/tree_pyramidal_up.obj", programID,0);
     cloud1 = getMesh("../model/cloud1.obj", programID,0);
     vendor_crate = getMesh("../model/vendor_crate.obj", programID,0);
     apple = getMesh("../model/apple.obj", programID,0);

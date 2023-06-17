@@ -82,6 +82,12 @@ mytex::mytex(unsigned int programID)
     grass_light = new texture(204, 255, 204,255, programID);
     coffee_dark = new texture(141,84,28,255, programID);
     coffee_light = new texture(162, 92, 21, 255, programID);
+    coffee = new texture(161, 107, 71, 255, programID);
+
+    green0 = new texture(80, 200, 120, 255, programID);
+    green1 = new texture(102, 255, 89, 255, programID);
+    green2 = new texture(152, 251, 152, 255, programID);
+
     flower = new texture("../texture/flower.png", programID);
     // yellow_light = new texture(255, 255, 204, 255, programID);
     // yellow_dark = new texture(173, 142, 0, 255, programID);
@@ -120,6 +126,9 @@ mytex::mytex(unsigned int programID)
     //orange_dark, * orange_light, * dark_red, * orgred_dark, * orgred_light;
     //blacksmith = new texture("../texture/black_smith.png", programID);
     //a = new texture("../texture/pool.jpg", programID);
+    text_WaterSlime = new texture("../texture/text_WaterSlime.png",programID);
+    text_LightSlime = new texture("../texture/text_LightSlime.png",programID);
+    text_FireSlime = new texture("../texture/text_FireSlime.png",programID);
 }
     
 void mytex::useByID(int texID, unsigned int programID)

@@ -6,6 +6,7 @@ extern mytex* myTex;
 extern MyRobot *myRobot;
 extern FPPerspective* fpperspective;
 extern SceneJungle* sceneJungle;
+extern Billboard* billboard;
 AISlime::AISlime(int textureID_, int AIID_, vec3 pos_, int sz_)
 {
     textureID = textureID_;
@@ -14,12 +15,12 @@ AISlime::AISlime(int textureID_, int AIID_, vec3 pos_, int sz_)
     sz = sz_;
     if(textureID == YU_SLIME_FIRE) {
         attackRange = 15;
-        detectRange = 50;
+        detectRange = 80;
         type = FIRE;
     }
     else if(textureID == YU_SLIME_WATER) {
-        attackRange = 1000;
-        detectRange = 80;
+        attackRange = 100;
+        detectRange = 200;
         type = WATER;
     }else if(textureID == YU_SLIME_LIGHT){
         type = LIGHT;
@@ -40,8 +41,24 @@ void AISlime::attack()
     pos[1] = 0;
     flag = 0;
 // move_animation();
-    attackAngY+=0.5;
-    if(attackAngY >= 360) attackAngY = 0;
+    if(type == FIRE){
+        attackAngY+=0.5;
+        if(attackAngY >= 360) attackAngY = 0;
+    }else if(type == WATER){
+        if(bulletGenState == 0){
+            vec3 tppos = pos;tppos[1] += 0.875*sz/2.0;
+            bullet.push_back(BulletInfo(tppos,{fpperspective->pos-pos}));
+        }
+        bulletGenState++;
+        bulletGenState %= 100;
+
+        vec3 a{fpperspective->pos[0] - pos[0],0,fpperspective->pos[2] - pos[2]};
+        vec3 b{0,0,1};
+        angY = glm::dot(a,b)/(sqrt(a[0]*a[0] + a[2]*a[2])*sqrt(b[0]*b[0] + b[2]*b[2]));
+        angY = acos(angY) * 180 / 3.1415926;  //弧度轉角度
+        if(a[0] < 0) angY = 360 - angY;
+        angY = glm::radians(ceil(angY));  
+    }
 }
 
 void AISlime::move_animation()
@@ -49,7 +66,7 @@ void AISlime::move_animation()
     if(!flag){
         pos[1]+= jumpYoffset;
         moveAnimationState++;
-        if(moveAnimationState == 30) flag = 1;
+        if(moveAnimationState ==  moveAnimationStateMax) flag = 1;
     }else{
         pos[1]-= jumpYoffset;
         moveAnimationState--;
@@ -68,14 +85,15 @@ void AISlime::draw(unsigned int programID)
     myTex->useByID(textureID,programID);
     graphicObj->drawByID(YU_GRAPHICS_SLIME,programID);
 
+    glPushMatrix();
+    glTranslatef(0,pos[1]+sz*1.875,0);
+    if(type == WATER) billboard->draw(pos[0],pos[2],20,5,myTex->text_WaterSlime,fpperspective->eyeMtx,programID);
+    else if(type == FIRE) billboard->draw(pos[0],pos[2],20,5,myTex->text_FireSlime,fpperspective->eyeMtx,programID);
+    else if(type == LIGHT) billboard->draw(pos[0],pos[2],20,5,myTex->text_LightSlime,fpperspective->eyeMtx,programID);
+    glPopMatrix();
+
     if(state == ATTACK){
         if(type == FIRE){
-            // tp = glm::translate(glm::mat4(1), {pos[0],0.1,pos[2]}) * glm::rotate(glm::mat4(1),angY,glm::vec3(0.0,1.0,0.0)) * glm::scale(glm::mat4(1), {40,40,40});
-            // glUniformMatrix4fv(2, 1, GL_FALSE, &tp[0][0]);
-            // myTex->red->use(programID);
-            // graphicObj->circle->draw(programID);
-
-
             glPushMatrix();
  
             glEnable(GL_BLEND);
@@ -84,9 +102,10 @@ void AISlime::draw(unsigned int programID)
             glEnable(GL_ALPHA_TEST);
             glAlphaFunc(GL_GREATER, 0.5);
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-            tp = glm::translate(glm::mat4(1), {pos[0],0.1,pos[2]}) * glm::rotate(glm::mat4(1),(float)attackAngY,glm::vec3(0.0,1.0,0.0)) * glm::scale(glm::mat4(1), {30,30,30});
+            tp = glm::translate(glm::mat4(1), {pos[0],0.1,pos[2]}) * glm::rotate(glm::mat4(1),(float)attackAngY,glm::vec3(0.0,1.0,0.0)) * glm::scale(glm::mat4(1), {70,70,70});
             glUniformMatrix4fv(2, 1, GL_FALSE, &tp[0][0]);
             myTex->fire->use(programID);
+            //myTex->black->use(programID);
             graphicObj->square->draw(programID);
 
             glDisable(GL_ALPHA_TEST);
@@ -95,10 +114,30 @@ void AISlime::draw(unsigned int programID)
             glPopMatrix();
         }
     }
+    for(int i=0;i<bullet.size();i++){
+        if(getDis(bullet[i].pos,fpperspective->pos) <= 10){
+            myRobot->blood -= 10;
+            cout << "blood: "<<myRobot->blood << "\n";
+            if(myRobot->blood <= 0) {
+                
+            }
+            bullet.erase(bullet.begin()+i);
+        }else {
+            bullet[i].state++;
+            bullet[i].pos+=(vec3{bullet[i].dir[0]*2.5,bullet[i].dir[1]*2.5,bullet[i].dir[2]*2.5});
+        }
+        if(bullet[i].state >= 500) bullet.erase(bullet.begin()+i);
+        tp = glm::translate(glm::mat4(1), bullet[i].pos) * glm::scale(glm::mat4(1), {1,1,1});
+        glUniformMatrix4fv(2, 1, GL_FALSE, &tp[0][0]);
+        myTex->robot_blue_sub->use(programID);
+        graphicObj->solidsphere->draw(programID);
+    }
+
 }
 
 bool AISlime::isChoose()
 {
+    cout << "k\n";
     vec3 start = fpperspective->pos;
     vec3 dir = fpperspective->dir;
 
@@ -169,12 +208,12 @@ void AISlime::timid_fsm()
     float dis = getDis(pos[0],pos[2],fpperspective->pos[0],fpperspective->pos[2]);   
     if(state == STANDBY){
         if(injuried) state = QUICK_RUNAWAY;
-        else if(dis < 30){
+        else if(dis < 50){
             state = RUNAWAY;
         }else standBy();
     }else if(state == RUNAWAY){
         if(injuried) state = QUICK_RUNAWAY;
-        else if(dis > 50) {
+        else if(dis > 100) {
             state = STANDBY;
             injuried = 0;
         }
@@ -200,19 +239,18 @@ void AISlime::normal_fsm()
         else if(dis < attackRange) state = ATTACK;
         else move();
     }else if(state == ATTACK){
-        if(blood < 30) state = QUICK_RUNAWAY;
-        else if(blood < 50)  state = RUNAWAY;
+        if(blood < 50) state = QUICK_RUNAWAY;
         else if(dis > attackRange) state = MOVETOROBOT;
         else attack();
     }else if(state == RUNAWAY){
-        if(dis < 10) state = QUICK_RUNAWAY;
-        else if(dis >= 50) {
+        if(dis < 30) state = QUICK_RUNAWAY;
+        else if(dis >= 100) {
             state = STANDBY;
             injuried = 0;
         }
         else move();
     }else if(state == QUICK_RUNAWAY){
-        if(dis >= 50) {
+        if(dis >= 100) {
             state = STANDBY;
             injuried = 0;
         }
