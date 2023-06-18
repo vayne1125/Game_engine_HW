@@ -35,34 +35,35 @@ void UI::draw()
     glVertex2f(-0.84, -0.91);
     glEnd();
     glDisable(GL_BLEND);
-    // glColor3f(0,0,0);
-    // std::string s = "A l l u k a";
-    // glRasterPos2f(-0.96, -0.65);
-    // for (int j = 0; j < s.size(); j++)
-    // {
-    //     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
-    // }
 
-    // s = "blood";
-    // glRasterPos2f(-0.96, -0.7);
-    // for (int j = 0; j < s.size(); j++)
-    // {
-    //     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
-    // }    
+    glColor3f(0,0,0);
+    std::string s = "A l l u k a";
+    glRasterPos2f(-0.83, -0.69);
+    for (int j = 0; j < s.size(); j++)
+    {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
+    }
 
-    // s = "money";
-    // glRasterPos2f(-0.96, -0.75);
-    // for (int j = 0; j < s.size(); j++)
-    // {
-    //     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
-    // }   
+    s = "blood";
+    glRasterPos2f(-0.83, -0.76);
+    for (int j = 0; j < s.size(); j++)
+    {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
+    }    
 
-    // s = "exp";
-    // glRasterPos2f(-0.96, -0.8);
-    // for (int j = 0; j < s.size(); j++)
-    // {
-    //     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
-    // }   
+    s = "money";
+    glRasterPos2f(-0.83, -0.82);
+    for (int j = 0; j < s.size(); j++)
+    {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
+    }   
+
+    s = "exp";
+    glRasterPos2f(-0.83, -0.88);
+    for (int j = 0; j < s.size(); j++)
+    {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, int(s[j]));
+    }   
     // for (int i = 0; i < vecs.size(); i++)
     // {
     //     s = vecs[i];
