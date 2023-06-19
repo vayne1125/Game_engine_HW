@@ -44,8 +44,13 @@ public:
     float moveToRobotOffset = 0.2;
     float runAwayOffset = 0.3;
     float standByOffset = 0.1;
-    float blood = 100,moveAnimationStateMax = 30;
+    int moveAnimationStateMax = 30;
     int sz = 1;
+    void addBlood(float b){
+        blood += b;
+    };
+    float getBlood(){return blood;};
+    int type = 0;
 private:
     float getDis(float x1, float y1, float x2, float y2) {           //算距離
         return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
@@ -60,7 +65,7 @@ private:
     void standBy();
     void move();
     //int sz = 1;
-    int type = 0;
+    float blood = 100;
     int state = STANDBY,moveAnimationState = 0,standByState = 0;
     vec3 standByDir{0,0,0};
     bool flag = 0;
@@ -72,5 +77,6 @@ private:
     int detectRange = 0;
     vector<BulletInfo> bullet;
     int bulletGenState = 0;
+    int atkMsgState = 0;
     //int bloodstate = 0;
 };

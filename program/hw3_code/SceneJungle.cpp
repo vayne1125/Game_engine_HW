@@ -1,11 +1,12 @@
 #include "SceneJungle.h"
 #include "MyRobot.h"
+#include "UI.h"
 extern GraphicObj* graphicObj;
 extern mytex* myTex;
 extern Billboard* billboard;
 extern MyRobot *myRobot;
 extern FPPerspective* fpperspective;
-
+extern UI *ui;
 extern int scene;
 SceneJungle::SceneJungle()
 {
@@ -18,23 +19,23 @@ SceneJungle::SceneJungle()
                             0,-1,0,
                             1,1,1,
                             1,0);
-    // vec3 tppos;
-    // for(int i=0;i<10;i++){
-    //     if(rand()%2) tppos={rand()%200,0,rand()%200};
-    //     else tppos={160 + rand()%200,0, 160 + rand()%200};
-    //     slime.push_back(AISlime(slimeTex[rand()%3],slimeAI[rand()%3],tppos,3+rand()%3));
-    //     slime[i].name = i+'0';
-    // }
+    vec3 tppos;
+    for(int i=0;i<10;i++){
+        if(rand()%2) tppos={rand()%200,0,rand()%200};
+        else tppos={160 + rand()%200,0, 160 + rand()%200};
+        slime.push_back(AISlime(slimeTex[rand()%3],slimeAI[rand()%3],tppos,4+rand()%2));
+        slime[i].name = i+'0';
+    }
     //fireslime = new AISlime(YU_SLIME_FIRE,FEROCIOUS,{160,0,160},5);
-    slime.push_back(AISlime(YU_SLIME_WATER,NORMAL,{160,0,0},5));
-    slime[0].moveAnimationStateMax = 40;
-    slime[0].name = "water";
-    slime.push_back(AISlime(YU_SLIME_LIGHT,TIMID,{160,0,0},5));
-    slime[1].moveAnimationStateMax = 30;
-    slime[1].name = "light";
-    slime.push_back(AISlime(YU_SLIME_FIRE,FEROCIOUS,{160,0,0},5));
-    slime[2].moveAnimationStateMax = 20;
-    slime[2].name = "fire";
+    // slime.push_back(AISlime(YU_SLIME_WATER,NORMAL,{160,0,0},5));
+    // slime[0].moveAnimationStateMax = 40;
+    // slime[0].name = "water";
+    // slime.push_back(AISlime(YU_SLIME_LIGHT,TIMID,{160,0,0},5));
+    // slime[1].moveAnimationStateMax = 30;
+    // slime[1].name = "light";
+    // slime.push_back(AISlime(YU_SLIME_FIRE,FEROCIOUS,{160,0,0},5));
+    // slime[2].moveAnimationStateMax = 20;
+    // slime[2].name = "fire";
 }
 
 
@@ -208,7 +209,7 @@ void SceneJungle::draw(float *eyeMtx, int programID)
         myTex->black->use(programID);
         graphicObj->solidsphere->draw(programID);
     }
-    //addSlime();
+    addSlime();
 }
 
 void SceneJungle::useLight()
@@ -231,7 +232,11 @@ void SceneJungle::attackSlime(){
         for(int j=0;j<slime.size();j++){
             if(getDis(bullet[i].pos,{slime[j].pos[0],slime[j].pos[1]+0.875*slime[j].sz,slime[j].pos[2]}) <= slime[j].sz){
                 slime[j].shoot();
-                if(slime[j].blood <= 0) {
+                ui->addMsg(ATTACK_SLIME,slime[j].type);
+                if(slime[j].getBlood() <= 0) {
+                    myRobot->addExp(5);
+                    myRobot->money += 5 + rand() % 5; 
+                    ui->addMsg(SLIME_DIE,slime[j].type);
                     slime.erase(slime.begin()+j);
                 }
                 bullet.erase(bullet.begin()+i);
@@ -254,7 +259,7 @@ void SceneJungle::addSlime(){
     if(slimeGenState == 0 && slime.size()<=10){
         if(rand()%2) tppos={rand()%200,0,rand()%200};
         else tppos={160 + rand()%200,0, 160 + rand()%200};
-        slime.push_back(AISlime(slimeTex[rand()%3],slimeAI[rand()%3],tppos,1+rand()%6));
+        slime.push_back(AISlime(slimeTex[rand()%3],slimeAI[rand()%3],tppos,3+rand()%3));
     }
 };
 void SceneJungle::mouseClickEvent(int btn, int state, int x, int y)
@@ -265,9 +270,9 @@ void SceneJungle::mouseClickEvent(int btn, int state, int x, int y)
                 if(slime[i].isChoose()){
                     chooseSlime = &slime[i];
                     slime[i].name = "jj";
+                    cout << chooseSlime->name << "\n";
                 }
             }
-            cout << chooseSlime->name << "\n";
         }
         else if(btn == 3){
         }else if(btn == 4){

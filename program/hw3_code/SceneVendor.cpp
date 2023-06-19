@@ -461,43 +461,43 @@ void SceneVendor::draw(float* eyeMtx,int programID)
 
     {   //NPC
         //村長
-        chiefOfVillage->draw(programID);
+        //chiefOfVillage->draw(programID);
         //水果店老闆
         fruitMerchant->draw(programID);
         //武器行老闆
         weaponDealer->draw(programID);
     }
     
-    {   //slime
-        glPushMatrix();
-        glTranslatef(fountainPos[0], fountainPos[1], fountainPos[2]+40);
-        glPushMatrix();
-        glScalef(5, 5, 5);
-        glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-        glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-        myTex->slime_water->use(programID);
-        graphicObj->slime->draw(programID);
-glPopMatrix();
-        glTranslatef(0,0,20);
-        glPushMatrix();
-        glScalef(5, 5, 5);
-        glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-        glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-        myTex->slime_fire->use(programID);
-        graphicObj->slime->draw(programID);
-glPopMatrix();
-        glTranslatef(0,0,20);
-        glPushMatrix();
-        glScalef(5, 5, 5);
+//     {   //slime
+//         glPushMatrix();
+//         glTranslatef(fountainPos[0], fountainPos[1], fountainPos[2]+40);
+//         glPushMatrix();
+//         glScalef(5, 5, 5);
+//         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+//         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+//         myTex->slime_water->use(programID);
+//         graphicObj->slime->draw(programID);
+// glPopMatrix();
+//         glTranslatef(0,0,20);
+//         glPushMatrix();
+//         glScalef(5, 5, 5);
+//         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+//         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+//         myTex->slime_fire->use(programID);
+//         graphicObj->slime->draw(programID);
+// glPopMatrix();
+//         glTranslatef(0,0,20);
+//         glPushMatrix();
+//         glScalef(5, 5, 5);
         
-        glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-        glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-        myTex->slime_light->use(programID);
-        graphicObj->slime->draw(programID);
-        glPopMatrix();
-        glPopMatrix();
+//         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+//         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+//         myTex->slime_light->use(programID);
+//         graphicObj->slime->draw(programID);
+//         glPopMatrix();
+//         glPopMatrix();
 
-    }
+//     }
 
     {   //前往叢林 tree
         glPushMatrix();

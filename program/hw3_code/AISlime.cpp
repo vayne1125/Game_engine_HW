@@ -1,12 +1,14 @@
 #include "AISlime.h"
 #include "MyRobot.h"
 #include "SceneJungle.h"
+#include "UI.h"
 extern GraphicObj* graphicObj;
 extern mytex* myTex;
 extern MyRobot *myRobot;
 extern FPPerspective* fpperspective;
 extern SceneJungle* sceneJungle;
 extern Billboard* billboard;
+extern UI* ui;
 AISlime::AISlime(int textureID_, int AIID_, vec3 pos_, int sz_)
 {
     textureID = textureID_;
@@ -24,6 +26,7 @@ AISlime::AISlime(int textureID_, int AIID_, vec3 pos_, int sz_)
         type = WATER;
     }else if(textureID == YU_SLIME_LIGHT){
         type = LIGHT;
+        AIID = TIMID;
     }
 }
 
@@ -44,13 +47,21 @@ void AISlime::attack()
     if(type == FIRE){
         attackAngY+=0.5;
         if(attackAngY >= 360) attackAngY = 0;
+        if(getDis(pos[0],pos[2],fpperspective->pos[0],fpperspective->pos[2]) <= 20) {
+            myRobot->addBlood(-0.1);
+            if(atkMsgState == 0) ui->addMsg(ATTACK_ROBOT,type);
+            atkMsgState++;
+            atkMsgState %= 100;
+        }else{
+            atkMsgState = 0;
+        }
     }else if(type == WATER){
         if(bulletGenState == 0){
             vec3 tppos = pos;tppos[1] += 0.875*sz/2.0;
             bullet.push_back(BulletInfo(tppos,{fpperspective->pos-pos}));
         }
         bulletGenState++;
-        bulletGenState %= 100;
+        bulletGenState %= 50;
 
         vec3 a{fpperspective->pos[0] - pos[0],0,fpperspective->pos[2] - pos[2]};
         vec3 b{0,0,1};
@@ -116,11 +127,15 @@ void AISlime::draw(unsigned int programID)
     }
     for(int i=0;i<bullet.size();i++){
         if(getDis(bullet[i].pos,fpperspective->pos) <= 10){
-            myRobot->blood -= 10;
-            cout << "blood: "<<myRobot->blood << "\n";
-            if(myRobot->blood <= 0) {
+            myRobot->addBlood(-10);
+            // if(atkMsgState == 0) 
+            ui->addMsg(ATTACK_ROBOT,type);
+            // atkMsgState++;
+            // atkMsgState %= 100;
+            //cout << "blood: "<<myRobot->blood << "\n";
+            // if(myRobot->blood <= 0) {
                 
-            }
+            // }
             bullet.erase(bullet.begin()+i);
         }else {
             bullet[i].state++;
@@ -137,7 +152,7 @@ void AISlime::draw(unsigned int programID)
 
 bool AISlime::isChoose()
 {
-    cout << "k\n";
+    //cout << "k\n";
     vec3 start = fpperspective->pos;
     vec3 dir = fpperspective->dir;
 
@@ -166,7 +181,7 @@ bool AISlime::isChoose()
 void AISlime::shoot()
 {
     //cout << "shoot\n";
-    blood -= 20;
+    blood -= myRobot->bulletAtk;
     injuried = 1; //受到攻擊
     cout << name << " ";
     cout << blood << "\n";
@@ -278,8 +293,8 @@ void AISlime::move()
         x *= -runAwayOffset;
         z *= -runAwayOffset;
     }else if(state == QUICK_MOVETOROBOT){
-        x *=  (moveToRobotOffset*5);
-        z *=  (moveToRobotOffset*5);
+        x *=  (moveToRobotOffset*3);
+        z *=  (moveToRobotOffset*3);
     }else if(state == QUICK_RUNAWAY){
         x *=  (-runAwayOffset*5);
         z *=  (-runAwayOffset*5);
