@@ -17,7 +17,9 @@ public:
     void addMsg(int type,int slimename);
     void addMsg(int type);
 private:
-    unsigned int head[1];
+    unsigned int head[4];
     float aspect;
+    int showMsgState = 0;
+    bool showMsg = 0;
     list<string> msg;
 };

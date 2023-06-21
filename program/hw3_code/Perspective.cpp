@@ -1,8 +1,10 @@
 #include "Perspective.h"
 #include "MyRobot.h"
 #include "SceneVendor.h"
+#include "SceneJungle.h"
 extern MyRobot* myRobot;
 extern SceneVendor* sceneVendor;
+extern SceneJungle* sceneJungle;
 Perspective::Perspective(float aspect_)
 {
     aspect = aspect_;
@@ -76,6 +78,7 @@ void FPPerspective::keyEvent(unsigned char key)
         tpPos[2] += 2*d[2];
     }
     //if (sceneVendor->detectCollision(tpPos[0], tpPos[1], tpPos[2],ROBOT)) return;
+    //if(sceneJungle->detectCollision(tpPos[0], tpPos[2],SJ_ROBOT)) return;
     for (int i = 0; i < 3; i++) pos[i] = tpPos[i];
 }
 void FPPerspective::passiveMotionEvent(int x, int y)

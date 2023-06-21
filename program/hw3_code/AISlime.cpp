@@ -19,15 +19,23 @@ AISlime::AISlime(int textureID_, int AIID_, vec3 pos_, int sz_)
         attackRange = 15;
         detectRange = 80;
         type = FIRE;
+        name = "Fire Slime";
     }
     else if(textureID == YU_SLIME_WATER) {
         attackRange = 100;
         detectRange = 200;
         type = WATER;
+        name = "Water Slime";
     }else if(textureID == YU_SLIME_LIGHT){
         type = LIGHT;
         AIID = TIMID;
+        detectRange = 100;
+        name = "Light Slime";
     }
+
+    if(AIID == TIMID) AI_name = "Timid";
+    else if(AIID == FEROCIOUS) AI_name = "Ferocious";
+    else if(AIID == NORMAL) AI_name = "Normal";
 }
 
 void AISlime::FSM()
@@ -331,7 +339,7 @@ void AISlime::standBy()
 {
     move_animation();
     if(blood <= 99.95) {
-        blood += 0.05;
+        blood += 0.08;
     }
     if(standByState == 0){
         standByDir = {rand()%100/100.0,0,rand()%100/100.0};

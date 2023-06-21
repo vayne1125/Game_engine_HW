@@ -31,7 +31,7 @@ struct BulletInfo{
 //高1.75 寬2.5
 class AISlime{
 public:
-    string name;
+    string name,AI_name;
     AISlime(int textureID_,int AIID_,vec3 pos_,int sz_);
     vec3 pos;
     void FSM();

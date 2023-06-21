@@ -1,6 +1,7 @@
 #include "SceneJungle.h"
 #include "MyRobot.h"
 #include "UI.h"
+#include "Define.h"
 extern GraphicObj* graphicObj;
 extern mytex* myTex;
 extern Billboard* billboard;
@@ -8,6 +9,7 @@ extern MyRobot *myRobot;
 extern FPPerspective* fpperspective;
 extern UI *ui;
 extern int scene;
+extern int perspective;
 SceneJungle::SceneJungle()
 {
     dirLight = new Light(0,400,20,400,
@@ -24,18 +26,17 @@ SceneJungle::SceneJungle()
         if(rand()%2) tppos={rand()%200,0,rand()%200};
         else tppos={160 + rand()%200,0, 160 + rand()%200};
         slime.push_back(AISlime(slimeTex[rand()%3],slimeAI[rand()%3],tppos,4+rand()%2));
-        slime[i].name = i+'0';
     }
     //fireslime = new AISlime(YU_SLIME_FIRE,FEROCIOUS,{160,0,160},5);
     // slime.push_back(AISlime(YU_SLIME_WATER,NORMAL,{160,0,0},5));
     // slime[0].moveAnimationStateMax = 40;
-    // slime[0].name = "water";
-    // slime.push_back(AISlime(YU_SLIME_LIGHT,TIMID,{160,0,0},5));
+    //slime[0].name = "water";
+    // slime.push_back(AISlime(YU_SLIME_LIGHT,TIMID,{160,0,160},5));
     // slime[1].moveAnimationStateMax = 30;
-    // slime[1].name = "light";
-    // slime.push_back(AISlime(YU_SLIME_FIRE,FEROCIOUS,{160,0,0},5));
+    //slime[1].name = "light";
+    // slime.push_back(AISlime(YU_SLIME_FIRE,FEROCIOUS,{10,0,10},5));
     // slime[2].moveAnimationStateMax = 20;
-    // slime[2].name = "fire";
+    //slime[2].name = "fire";
 }
 
 
@@ -204,12 +205,71 @@ void SceneJungle::draw(float *eyeMtx, int programID)
     }
     attackSlime();
     for(int i=0;i<bullet.size();i++){
-        tp = glm::translate(glm::mat4(1), bullet[i].pos) * glm::scale(glm::mat4(1), {2,2,2});
+        tp = glm::translate(glm::mat4(1), bullet[i].pos) * glm::scale(glm::mat4(1), {1.5,1.5,1.5});
         glUniformMatrix4fv(2, 1, GL_FALSE, &tp[0][0]);
-        myTex->black->use(programID);
+        myTex->robot_blue_sub->use(programID);
         graphicObj->solidsphere->draw(programID);
     }
+
+    {   //轉移魔法陣
+        glPushMatrix();
+ 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glEnable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0.5);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        glTranslatef(350, 1, 350);  
+        glScalef(20, 1, 20);
+        glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+        glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+        myTex->magic_circle->use(programID);
+        graphicObj->square->draw(programID);
+
+        glDisable(GL_ALPHA_TEST);
+        glDisable(GL_BLEND); 
+
+        glPopMatrix();
+    }
+
+
     addSlime();
+  if(haveChooseSlime && chooseSlime->getBlood() <= 0) haveChooseSlime = 0;
+
+    //     {   //slime
+    //     glPushMatrix();
+    //     //glRotatef(90,0,1,0);
+    //     glTranslatef(180,10,180);
+    //     glRotatef(90,0,1,0);
+    //     glPushMatrix();
+    //     glScalef(5, 5, 5);
+    //     glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+    //     glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+    //     myTex->slime_water->use(programID);
+    //     graphicObj->slime->draw(programID);
+    //     glPopMatrix();
+        
+    //     glTranslatef(0,0,40);
+    //     glPushMatrix();
+    //     glScalef(5, 5, 5);
+    //     glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+    //     glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+    //     myTex->slime_fire->use(programID);
+    //     graphicObj->slime->draw(programID);
+    //     glPopMatrix();
+        
+    //     glTranslatef(0,0,40);
+    //     glPushMatrix();
+    //     glScalef(5, 5, 5);
+    //     glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+    //     glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+    //     myTex->slime_light->use(programID);
+    //     graphicObj->slime->draw(programID);
+    //     glPopMatrix();
+    //     glPopMatrix();
+
+    // }
 }
 
 void SceneJungle::useLight()
@@ -238,6 +298,10 @@ void SceneJungle::attackSlime(){
                     myRobot->money += 5 + rand() % 5; 
                     ui->addMsg(SLIME_DIE,slime[j].type);
                     slime.erase(slime.begin()+j);
+                    haveChooseSlime = 0;
+                }else{
+                    chooseSlime = &slime[j];
+                    haveChooseSlime = 1;
                 }
                 bullet.erase(bullet.begin()+i);
                 isShoot = 1;
@@ -245,7 +309,7 @@ void SceneJungle::attackSlime(){
             }
         }
         if(isShoot == 0){
-            bullet[i].pos+=bullet[i].dir;
+            bullet[i].pos += bullet[i].dir;
             bullet[i].state++;
         }
         if(bullet[i].state >= 100)bullet.erase(bullet.begin()+i);
@@ -269,8 +333,7 @@ void SceneJungle::mouseClickEvent(int btn, int state, int x, int y)
             for(int i=0;i<slime.size();i++){
                 if(slime[i].isChoose()){
                     chooseSlime = &slime[i];
-                    slime[i].name = "jj";
-                    cout << chooseSlime->name << "\n";
+                    haveChooseSlime = 1;
                 }
             }
         }
@@ -289,4 +352,15 @@ void SceneJungle::mouseClickEvent(int btn, int state, int x, int y)
 void SceneJungle::passiveMotionEvent(int x, int y)
 {
 
+}
+
+void SceneJungle::keyEvent(unsigned int key)
+{
+    if((int)key == 13){  //轉移魔法陣 
+        if(getDis(fpperspective->pos[0],fpperspective->pos[2],350,350) <= 10){
+            scene = SCENE_VENDOR;
+            perspective = TPPERSPECTIVE;
+            //fpperspective->pos[0] = fpperspective->pos[2] = 350;
+        }
+    }
 }

@@ -1,11 +1,14 @@
 #include "SceneVendor.h"
 #include "MyRobot.h"
 #include "Define.h"
+#include "Perspective.h"
 extern GraphicObj* graphicObj;
 extern mytex* myTex;
 extern Billboard* billboard;
 extern MyRobot *myRobot;
+extern FPPerspective* fpperspective;
 extern int scene;
+extern int perspective;
 SceneVendor::SceneVendor(int programID)
 {
     spotLightElf = new Elf(0,40,203);
@@ -231,6 +234,18 @@ void SceneVendor::draw(float* eyeMtx,int programID)
         graphicObj->vendor_desk->draw(programID);
         glPopMatrix();
         glPopMatrix();
+        //史萊姆攤
+        {
+        //     glPushMatrix();
+        //     glTranslatef(65, 15, 45); 
+        //     glScalef(5, 5, 5);
+        //     glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+        //     glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+        //     myTex->slime_water->use(programID);
+        //     graphicObj->slime->draw(programID);
+        //     glPopMatrix();
+
+        }
         {// 水果攤
             //籃子
             for (int i = 0; i < 5; i++) {
@@ -461,6 +476,7 @@ void SceneVendor::draw(float* eyeMtx,int programID)
 
     {   //NPC
         //村長
+        
         //chiefOfVillage->draw(programID);
         //水果店老闆
         fruitMerchant->draw(programID);
@@ -468,36 +484,39 @@ void SceneVendor::draw(float* eyeMtx,int programID)
         weaponDealer->draw(programID);
     }
     
-//     {   //slime
-//         glPushMatrix();
-//         glTranslatef(fountainPos[0], fountainPos[1], fountainPos[2]+40);
-//         glPushMatrix();
-//         glScalef(5, 5, 5);
-//         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-//         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-//         myTex->slime_water->use(programID);
-//         graphicObj->slime->draw(programID);
-// glPopMatrix();
-//         glTranslatef(0,0,20);
-//         glPushMatrix();
-//         glScalef(5, 5, 5);
-//         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-//         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-//         myTex->slime_fire->use(programID);
-//         graphicObj->slime->draw(programID);
-// glPopMatrix();
-//         glTranslatef(0,0,20);
-//         glPushMatrix();
-//         glScalef(5, 5, 5);
+    // {   //slime
+    //     glPushMatrix();
+    //     glRotatef(90,0,1,0);
+    //     glTranslatef(fountainPos[0], fountainPos[1]+10, fountainPos[2]+40);
+    //     //glRotatef(90,0,1,0);
+    //     glPushMatrix();
+    //     glScalef(5, 5, 5);
+    //     glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+    //     glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+    //     myTex->slime_water->use(programID);
+    //     graphicObj->slime->draw(programID);
+    //     glPopMatrix();
         
-//         glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
-//         glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
-//         myTex->slime_light->use(programID);
-//         graphicObj->slime->draw(programID);
-//         glPopMatrix();
-//         glPopMatrix();
+    //     glTranslatef(0,0,40);
+    //     glPushMatrix();
+    //     glScalef(5, 5, 5);
+    //     glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+    //     glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+    //     myTex->slime_fire->use(programID);
+    //     graphicObj->slime->draw(programID);
+    //     glPopMatrix();
+        
+    //     glTranslatef(0,0,40);
+    //     glPushMatrix();
+    //     glScalef(5, 5, 5);
+    //     glGetFloatv(GL_MODELVIEW_MATRIX, objMtx);
+    //     glUniformMatrix4fv(2, 1, GL_FALSE, objMtx);
+    //     myTex->slime_light->use(programID);
+    //     graphicObj->slime->draw(programID);
+    //     glPopMatrix();
+    //     glPopMatrix();
 
-//     }
+    // }
 
     {   //前往叢林 tree
         glPushMatrix();
@@ -563,7 +582,10 @@ void SceneVendor::keyEvent(unsigned char key){
     }else if((int)key == 13){  //轉移魔法陣 
         if(getDis(myRobot->pos[0],myRobot->pos[2],116,270) <= 10){
             scene = SCENE_JUNGLE;
-            myRobot->pos[0] = myRobot->pos[2] = 355;
+            //myRobot->pos[0] = myRobot->pos[2] = 350;
+            fpperspective->pos[0] = fpperspective->pos[2] = 350;
+            fpperspective->eyeAngY = 235;
+            perspective = FPPERSPECTIVE;
         }
     }
 }

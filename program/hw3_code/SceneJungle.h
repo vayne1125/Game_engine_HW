@@ -30,7 +30,9 @@ public:
     bool detectCollision(float x,float z,int MODEL); 
     void mouseClickEvent(int btn, int state, int x, int y);
     void passiveMotionEvent(int x,int y);
+    void keyEvent(unsigned int key);
     AISlime* chooseSlime;
+    bool haveChooseSlime = 0;
 private:
     float getDis(float x1, float y1, float x2, float y2) {           //算距離
         return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));

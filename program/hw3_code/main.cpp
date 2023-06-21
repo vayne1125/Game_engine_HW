@@ -48,7 +48,7 @@ TPPerspective* tpperspective;
 FPPerspective* fpperspective;
 
 int perspective = TPPERSPECTIVE;
-int scene = SCENE_JUNGLE;
+int scene = SCENE_VENDOR;
 
 double aspect = WINDOW_WIDTH / (double)WINDOW_HEIGHT;
 float   cv = cos(5.0 * PI / 180.0), sv = sin(5.0 * PI / 180.0); /* cos(5.0) and sin(5.0) */
@@ -91,6 +91,7 @@ void keybaord_fun(unsigned char key, int X, int Y) {
         sceneVendor->keyEvent(key);
         break;
     case SCENE_JUNGLE:
+        sceneJungle->keyEvent(key);
         break;
     case SCENE_PHYSICALEXPFILED:
         break;
@@ -99,11 +100,11 @@ void keybaord_fun(unsigned char key, int X, int Y) {
 
     if(key == 'Y' || key == 'y') {
         perspective^=1;
-        if(perspective == TPPERSPECTIVE){
-            glutSetCursor(GLUT_CURSOR_RIGHT_ARROW);
-        }else if(perspective == FPPERSPECTIVE){
-            glutSetCursor(GLUT_CURSOR_NONE);
-        }
+        // if(perspective == TPPERSPECTIVE){
+        //     glutSetCursor(GLUT_CURSOR_RIGHT_ARROW);
+        // }else if(perspective == FPPERSPECTIVE){
+        //     glutSetCursor(GLUT_CURSOR_NONE);
+        // }
     }
 }
 void myInit() {
@@ -132,11 +133,18 @@ void myInit() {
 }
 void myDisplay(void)
 {
+
     glUseProgram(programID);
     glEnable(GL_DEPTH_TEST);
 
-    if(perspective == FPPERSPECTIVE) fpperspective->update();    //更新眼睛位置和看的方向
-    else if(perspective == TPPERSPECTIVE) tpperspective->update();
+    if(perspective == FPPERSPECTIVE) {
+        glutSetCursor(GLUT_CURSOR_NONE);
+        fpperspective->update();    //更新眼睛位置和看的方向
+    }
+    else if(perspective == TPPERSPECTIVE) {
+        glutSetCursor(GLUT_CURSOR_RIGHT_ARROW);
+        tpperspective->update();
+    }
     
     glClearColor(0.70, 0.70, 0.70, 1.0);  //Dark grey background
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -163,7 +171,7 @@ void myDisplay(void)
     float objMtx[16];
     //robot
     {
-        myRobot->draw(programID);
+        if(perspective == TPPERSPECTIVE) myRobot->draw(programID);
     }
     
     
